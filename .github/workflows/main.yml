@@ -1,0 +1,14 @@
+name: Yew Component Library
+on: push
+jobs:
+  lint:
+    name: Cargo check and check formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: cargo check
+        run: check linter
+      - name: cargo clippy
+        run: check clippy
+      - name: check formatting
+        run: cargo fmt --check
