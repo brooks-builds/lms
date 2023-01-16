@@ -7,8 +7,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: cargo check
-        run: check linter
+        run: cargo check
       - name: cargo clippy
-        run: check clippy
+        run: cargo clippy
       - name: check formatting
         run: cargo fmt --check
