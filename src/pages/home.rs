@@ -1,4 +1,4 @@
-use ycl::{elements::title::BBTitle, foundations::container::BBContainer, modules::hero::BBHero};
+use ycl::{foundations::container::BBContainer, modules::hero::BBHero};
 use yew::prelude::*;
 
 #[function_component(Home)]

@@ -1,9 +1,6 @@
-use ycl::{
-    foundations::container::BBContainer,
-    modules::nav::{
-        navbar::BBNavbar,
-        navbar_link::{BBNavbarLink, BBNavbarLinkBuilder},
-    },
+use ycl::modules::nav::{
+    navbar::BBNavbar,
+    navbar_link::{BBNavbarLink, BBNavbarLinkBuilder},
 };
 use yew::prelude::*;
 use yew_router::prelude::*;
