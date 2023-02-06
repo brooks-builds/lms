@@ -1,6 +1,9 @@
-use ycl::modules::nav::{
-    navbar::BBNavbar,
-    navbar_link::{BBNavbarLink, BBNavbarLinkBuilder},
+use ycl::modules::{
+    nav::{
+        navbar::BBNavbar,
+        navbar_link::{BBNavbarLink, BBNavbarLinkBuilder},
+    },
+    site_footer::BBSiteFooter,
 };
 use yew::prelude::*;
 use yew_router::prelude::*;
@@ -19,6 +22,10 @@ pub fn component() -> Html {
                 show_brand={true}
             />
             <Switch<Routes> render={switch} />
+            <BBSiteFooter<Routes>
+                left_links={create_routes()}
+                right_links={vec![]}
+            />
         </BrowserRouter>
     }
 }
