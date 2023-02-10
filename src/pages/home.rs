@@ -36,11 +36,5 @@ fn community_cards_data() -> Vec<BBCardData<Routes>> {
             .href("https://discord.gg/y7GkU6UMrm")
             .href_text("Join Discord")
             .build(),
-        BBCardDataBuilder::new()
-            .title("Office Hours")
-            .text("Join Brooks live on Twitch, on Friday at 7am MST he will answer questions and give help for the courses")
-            .href("https://twitch.tv/brookzerker")
-            .href_text("Watch live on Twitch")
-            .build(),
     ]
 }

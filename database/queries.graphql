@@ -1,0 +1,12 @@
+query ListLmsCourses {
+  lms_courses {
+    id
+    lms_tag {
+      id
+      name
+    }
+    short_description
+    title
+  }
+}
+

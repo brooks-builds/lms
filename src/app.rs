@@ -31,9 +31,16 @@ pub fn component() -> Html {
 }
 
 fn create_routes() -> Vec<BBNavbarLink<Routes>> {
-    vec![BBNavbarLinkBuilder::new()
-        .to(Routes::Home)
-        .label("Home")
-        .build()
-        .unwrap()]
+    vec![
+        BBNavbarLinkBuilder::new()
+            .to(Routes::Home)
+            .label("Home")
+            .build()
+            .unwrap(),
+        BBNavbarLinkBuilder::new()
+            .to(Routes::Courses)
+            .label("Courses")
+            .build()
+            .unwrap(),
+    ]
 }

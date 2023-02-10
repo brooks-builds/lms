@@ -1,2 +1,4 @@
 /target
 /dist
+**/.env_local_db
+.env

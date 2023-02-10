@@ -10,3 +10,11 @@ yew = { version = "0.20.0", features = ["csr"] }
 ycl = { git = "https://github.com/brooks-builds/ycl", rev = "a6a472c" }
 # ycl = { path = "../ycl" }
 yew-router = "0.17.0"
+gloo = "0.8.0"
+graphql_client = "0.12.0"
+serde = { version = "1.0.152", features = ["derive"] }
+yewdux = "0.9.0"
+dotenvy_macro = "0.15.1"
+dotenvy = "0.15.6"
+yew-hooks = "0.2.0"
+thiserror = "1.0.38"
