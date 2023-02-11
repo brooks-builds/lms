@@ -1,8 +1,4 @@
-use crate::{
-    api,
-    router::Routes,
-    stores::courses_store::{self, CourseStore},
-};
+use crate::{api, router::Routes, stores::courses_store::CourseStore};
 use ycl::{
     elements::title::BBTitleLevel,
     foundations::container::BBContainer,
@@ -44,7 +40,6 @@ pub fn component() -> Html {
     {
         let load_courses_state = load_courses_state.clone();
         let course_store_dispatch = course_store_dispatch.clone();
-        let course_store = course_store.clone();
 
         use_effect(move || {
             if let Some(courses) = &load_courses_state.data {

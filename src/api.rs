@@ -5,7 +5,6 @@ use crate::{
 };
 use dotenvy_macro::dotenv;
 use graphql_client::{GraphQLQuery, Response};
-use yewdux::store::Store;
 
 static GRAPHQL_URI: &str = dotenv!("GRAPHQL_URI");
 

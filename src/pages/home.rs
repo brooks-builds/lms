@@ -4,7 +4,6 @@ use ycl::{
     modules::{
         card_list::{BBCardData, BBCardDataBuilder, BBCardList},
         hero::BBHero,
-        site_footer::BBSiteFooter,
     },
 };
 use yew::prelude::*;
