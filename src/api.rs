@@ -11,6 +11,7 @@ static GRAPHQL_URI: &str = dotenv!("GRAPHQL_URI");
 pub async fn get_courses() -> Result<Vec<StoreCourse>, LmsError> {
     let graphql_variables = list_lms_courses::Variables {};
     let body = ListLmsCourses::build_query(graphql_variables);
+
     Ok(gloo::net::http::Request::post(GRAPHQL_URI)
         .json(&body)
         .map_err(|error| {

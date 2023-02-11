@@ -4,4 +4,6 @@ use thiserror::Error;
 pub enum LmsError {
     #[error("{0}: {1}")]
     FetchingCourses(String, String),
+    #[error("console.log exists")]
+    LeftInLog,
 }

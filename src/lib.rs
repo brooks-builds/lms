@@ -4,6 +4,7 @@ mod api;
 mod app;
 mod database_queries;
 mod errors;
+mod logging;
 mod pages;
 mod router;
 mod stores;

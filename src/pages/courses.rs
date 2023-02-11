@@ -1,4 +1,9 @@
-use crate::{api, router::Routes, stores::courses_store::CourseStore};
+use crate::{
+    api,
+    logging::{log, log_error},
+    router::Routes,
+    stores::courses_store::CourseStore,
+};
 use ycl::{
     elements::title::BBTitleLevel,
     foundations::container::BBContainer,
@@ -48,7 +53,7 @@ pub fn component() -> Html {
             }
 
             if let Some(error) = &load_courses_state.error {
-                gloo::console::error!("error loading courses", format!("{:?}", error.to_string()));
+                log_error("Error loading courses", error);
             }
 
             || {}
