@@ -7,7 +7,7 @@ use ycl::{
     elements::title::BBTitleLevel,
     foundations::container::BBContainer,
     modules::{
-        card_list::{BBCardDataBuilder, BBCardList},
+        card_list::{BBCardData, BBCardDataBuilder, BBCardList},
         hero::BBHero,
     },
 };
@@ -17,18 +17,24 @@ use yewdux::prelude::use_store;
 
 #[function_component(Courses)]
 pub fn component() -> Html {
-    let courses = vec![BBCardDataBuilder::new()
-        .title("Introduction to Yew")
-        .text("Learn how to build web applications using Yew.rs and Rust.")
-        .build()];
+    let (course_store, course_store_dispatch) = use_store::<CourseStore>();
+
+    let courses = course_store
+        .courses
+        .iter()
+        .map(|store_course| {
+            BBCardDataBuilder::<Routes>::new()
+                .title(store_course.name.clone())
+                .text(store_course.description.clone())
+                .build()
+        })
+        .collect::<Vec<BBCardData<Routes>>>();
 
     let load_courses_state = use_async(async { api::get_courses().await });
-    let (course_store, course_store_dispatch) = use_store::<CourseStore>();
 
     {
         let load_courses_state = load_courses_state.clone();
         use_effect_once(move || {
-            gloo::console::log!("running course state");
             load_courses_state.run();
 
             || {}
@@ -41,15 +47,14 @@ pub fn component() -> Html {
         let course_store = course_store.clone();
 
         use_effect(move || {
-            gloo::console::log!("load courses state", load_courses_state.loading);
             if let Some(courses) = &load_courses_state.data {
                 course_store_dispatch
                     .reduce_mut(move |course_store| course_store.courses = courses.clone());
-            } else {
-                gloo::console::log!("no courses yet");
             }
 
-            gloo::console::log!("course_store", format!("{:?}", &course_store));
+            if let Some(error) = &load_courses_state.error {
+                gloo::console::error!("error loading courses", format!("{:?}", error.to_string()));
+            }
 
             || {}
         });

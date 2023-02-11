@@ -1,7 +1,7 @@
 use thiserror::Error;
 
-#[derive(Error, Debug, Clone, Copy)]
+#[derive(Error, Debug, Clone)]
 pub enum LmsError {
-    #[error("Error fetching courses from the database")]
-    GettingCourses,
+    #[error("{0}: {1}")]
+    FetchingCourses(String, String),
 }

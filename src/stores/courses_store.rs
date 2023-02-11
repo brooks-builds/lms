@@ -7,10 +7,10 @@ pub struct CourseStore {
 
 #[derive(Clone, Default, PartialEq, Eq, Debug)]
 pub struct StoreCourse {
-    pub id: i32,
+    pub id: i64,
     pub name: String,
     pub description: String,
-    pub tags: Vec<CourseTag>,
+    pub tag: CourseTag,
 }
 
 #[derive(Clone, Default, PartialEq, Eq, Debug)]
@@ -18,4 +18,13 @@ pub enum CourseTag {
     #[default]
     None,
     Yew,
+}
+
+impl From<String> for CourseTag {
+    fn from(value: String) -> Self {
+        match value.as_str() {
+            "Yew" => Self::Yew,
+            _ => Self::None,
+        }
+    }
 }
