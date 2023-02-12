@@ -1,8 +1,8 @@
 use crate::{
     api,
-    logging::{log, log_error},
     router::Routes,
     stores::courses_store::CourseStore,
+    logging::log_error,
 };
 use ycl::{
     elements::title::BBTitleLevel,
