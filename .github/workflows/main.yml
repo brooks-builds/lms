@@ -40,7 +40,7 @@ jobs:
         run: touch .env && trunk build --release
         env:
             RUST_ENV: production
-            GRAPHQL_URI: #{{ secrets.GRAPHQL_API_URI }}
+            GRAPHQL_URI: ${{ secrets.GRAPHQL_API_URI }}
       - name: deploy
         run: aws s3 sync dist ${{ secrets.DEPLOYMENT_URI }}
         env:
