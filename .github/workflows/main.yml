@@ -12,12 +12,12 @@ jobs:
             RUST_ENV: test
             GRAPHQL_URI: http://localhost:8081
       - name: cargo clippy
-        run: touch .env && argo clippy
+        run: touch .env && cargo clippy
         env:
             RUST_ENV: test
             GRAPHQL_URI: http://localhost:8081
       - name: check formatting
-        run: touch .env && argo fmt --check
+        run: touch .env && cargo fmt --check
         env:
             RUST_ENV: test
             GRAPHQL_URI: http://localhost:8081
