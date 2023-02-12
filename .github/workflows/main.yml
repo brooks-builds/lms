@@ -31,7 +31,11 @@ jobs:
       - name: install prerequisites
         run: |
           rustup target add wasm32-unknown-unknown
-          cargo install --locked trunk
+          cargo install --loccked trunk
+      - name: install component Library
+        run: |
+          cd ..
+          git clone https://github.com/brooks-builds/ycl.git
       - name: build
         run: touch .env && trunk build --release
         env:
