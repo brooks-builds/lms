@@ -2,3 +2,7 @@
 /dist
 **/.env_local_db
 .env
+node_modules/
+/test-results/
+/playwright-report/
+/playwright/.cache/

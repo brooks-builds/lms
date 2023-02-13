@@ -27,6 +27,9 @@ pub fn component() -> Html {
             BBCardDataBuilder::<Routes>::new()
                 .title(store_course.name.clone())
                 .text(store_course.description.clone())
+                .link(Routes::CourseProfile {
+                    id: store_course.id,
+                })
                 .build()
         })
         .collect::<Vec<BBCardData<Routes>>>();

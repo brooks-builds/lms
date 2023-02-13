@@ -12,8 +12,16 @@ pub fn log_error(message: impl Into<String>, error: &LmsError) {
 }
 
 #[allow(dead_code)]
-pub fn log(message: impl Into<String>, data: Option<impl Debug>) {
+pub fn log_data(message: impl Into<String>, data: impl Debug) {
     log!(message.into(), format!("{data:?}"));
+    if RUST_ENV != "dev" {
+        log_error("Left log in code", &LmsError::LeftInLog);
+    }
+}
+
+#[allow(dead_code)]
+pub fn log(message: impl Into<String>) {
+    log!(message.into());
     if RUST_ENV != "dev" {
         log_error("Left log in code", &LmsError::LeftInLog);
     }

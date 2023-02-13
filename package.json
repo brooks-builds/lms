@@ -1,0 +1,21 @@
+{
+  "name": "lms",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brooks-builds/lms.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brooks-builds/lms/issues"
+  },
+  "homepage": "https://github.com/brooks-builds/lms#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.30.0"
+  }
+}
