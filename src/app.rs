@@ -21,7 +21,9 @@ pub fn component() -> Html {
                 login_route={Routes::Login}
                 show_brand={true}
             />
-            <Switch<Routes> render={switch} />
+            <main role="main">
+                <Switch<Routes> render={switch} />
+            </main>
             <BBSiteFooter<Routes>
                 left_links={create_routes()}
                 right_links={vec![]}
