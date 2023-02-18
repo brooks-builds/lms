@@ -55,6 +55,7 @@ jobs:
         run: npx playwright test
         env:
           FRONTEND_URI: http://localhost:8082
+          GRAPHQL_URI: http://localhost:8081/v1/graphql
       - uses: actions/upload-artifact@v3
         if: always()
         with:

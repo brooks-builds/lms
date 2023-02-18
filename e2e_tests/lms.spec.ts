@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 import { courseListMockData } from "./mock_data";
 
+const GRAPHQL_URI = process.env.GRAPHQL_URI || "http://localhost:8081/v1/graphql";
+
 test.beforeEach(async ({ page }) => {
 	await page.goto("/");
 });
@@ -15,7 +17,7 @@ test("can join discord", async ({ page }) => {
 });
 
 test("can view a course", async ({ page }) => {
-	await page.route("/", async route => {
+	await page.route(GRAPHQL_URI, async route => {
 		const json = { "data": courseListMockData };
 		await route.fulfill({ json });
 	});
