@@ -37,7 +37,7 @@ jobs:
           FRONTEND_URI: http://localhost:8082
 
   deploy:
-    if: github.event_name == "pull_request" && github.ref_name == "main"
+    if: github.event_name == 'pull_request' && github.ref_name == 'main'
     name: deploy to production
     runs-on: ubuntu-latest
     needs:
