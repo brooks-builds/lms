@@ -1,5 +1,5 @@
 name: Yew Component Library
-on: push
+on: [push, pull_request]
 jobs:
   lint:
     name: Cargo check and check formatting
@@ -21,11 +21,28 @@ jobs:
         env:
             RUST_ENV: test
             GRAPHQL_URI: http://localhost:8081
+
+  test:
+    name: Run Playwright tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: create env file
+        run: touch .env
+      - name: build app
+        run: trunk build
+      - name: run tests
+        run: npx playwright test
+        env:
+          FRONTEND_URI: http://localhost:8082
+
   deploy:
+    if: github.event_name == "pull_request" && github.ref_name == "main"
     name: deploy to production
     runs-on: ubuntu-latest
     needs:
       - lint
+      - test
     steps:
       - uses: actions/checkout@v3
       - name: install prerequisites
