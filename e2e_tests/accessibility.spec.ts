@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 
 test.describe('homepage', () => {
 	test('homepage should not have any automatically detectable accessibility issues', async ({ page }) => {
-		await page.goto('http://localhost:8082', { waitUntil: 'networkidle' });
+		await page.goto('/', { waitUntil: 'networkidle' });
 
 		const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
 
@@ -13,7 +13,7 @@ test.describe('homepage', () => {
 
 test.describe('courses', () => {
 	test('courses should not have any automatically detectable accessibility issues', async ({ page }) => {
-		await page.goto('http://localhost:8082/courses');
+		await page.goto('/');
 
 		const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
 
