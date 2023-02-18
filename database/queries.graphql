@@ -7,6 +7,20 @@ query ListLmsCourses {
     }
     short_description
     title
+	price
+  }
+}
+
+query CourseById($id: Int!) {
+  lms_courses_by_pk(id: $id) {
+    id
+    lms_tag {
+      id
+      name
+    }
+    price
+    short_description
+    title
   }
 }
 

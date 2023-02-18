@@ -2,7 +2,7 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::pages::{
-    course_profile::CourseProfile, courses::Courses, create_account::CreateAccount, home::Home,
+    course_details::CourseDetails, courses::Courses, create_account::CreateAccount, home::Home,
     login::Login,
 };
 
@@ -17,7 +17,7 @@ pub enum Routes {
     #[at("/courses")]
     Courses,
     #[at("/courses/:id")]
-    CourseProfile { id: i64 },
+    CourseDetails { id: i64 },
 }
 
 pub fn switch(routes: Routes) -> Html {
@@ -26,6 +26,6 @@ pub fn switch(routes: Routes) -> Html {
         Routes::CreateAccount => html! { <CreateAccount /> },
         Routes::Login => html! { <Login /> },
         Routes::Courses => html! { <Courses /> },
-        Routes::CourseProfile { id } => html! { <CourseProfile {id} /> },
+        Routes::CourseDetails { id } => html! { <CourseDetails {id} /> },
     }
 }

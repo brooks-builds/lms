@@ -27,7 +27,7 @@ pub fn component() -> Html {
             BBCardDataBuilder::<Routes>::new()
                 .title(store_course.name.clone())
                 .text(store_course.description.clone())
-                .link(Routes::CourseProfile {
+                .link(Routes::CourseDetails {
                     id: store_course.id,
                 })
                 .build()
