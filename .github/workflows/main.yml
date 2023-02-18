@@ -33,6 +33,7 @@ jobs:
           rustup target add wasm32-unknown-unknown
           cargo install --locked trunk
           npm install
+          npx playwright install
       - name: create env file
         run: touch .env
       - name: install component Library
