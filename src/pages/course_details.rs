@@ -1,17 +1,7 @@
-use crate::{
-    api,
-    logging::{log, log_error},
-    router::Routes,
-    stores::courses_store::{CourseStore, StoreCourse},
-};
-use std::rc::Rc;
-use ycl::{
-    elements::title::{BBTitle, BBTitleLevel},
-    modules::hero::BBHero,
-};
+use crate::{api, logging::log_error, stores::courses_store::CourseStore};
+use ycl::modules::hero::BBHero;
 use yew::prelude::*;
 use yew_hooks::{use_async, use_effect_once};
-use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
 #[derive(Properties, PartialEq)]
@@ -22,7 +12,6 @@ pub struct Props {
 #[function_component(CourseDetails)]
 pub fn component(props: &Props) -> Html {
     let (course_store, course_store_dispatch) = use_store::<CourseStore>();
-    let navigation = use_navigator().unwrap();
     let fetch_course = {
         let id = props.id;
         use_async(async move { api::get_course_by_id(id).await })

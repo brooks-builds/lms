@@ -1,5 +1,6 @@
 use graphql_client::GraphQLQuery;
 
+#[allow(non_camel_case_types)]
 pub type smallint = u8;
 
 #[derive(GraphQLQuery)]
