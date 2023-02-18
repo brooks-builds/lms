@@ -33,6 +33,10 @@ jobs:
           cargo install --locked trunk
       - name: create env file
         run: touch .env
+      - name: install component Library
+        run: |
+          cd ..
+          git clone https://github.com/brooks-builds/ycl.git
       - name: build app
         run: trunk build
       - name: run tests
