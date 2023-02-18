@@ -7,11 +7,20 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: cargo check
-        run: cargo check
+        run: touch .env && cargo check
+        env:
+            RUST_ENV: test
+            GRAPHQL_URI: http://localhost:8081
       - name: cargo clippy
-        run: cargo clippy
+        run: touch .env && cargo clippy
+        env:
+            RUST_ENV: test
+            GRAPHQL_URI: http://localhost:8081
       - name: check formatting
-        run: cargo fmt --check
+        run: touch .env && cargo fmt --check
+        env:
+            RUST_ENV: test
+            GRAPHQL_URI: http://localhost:8081
   deploy:
     name: deploy to production
     runs-on: ubuntu-latest
@@ -23,10 +32,23 @@ jobs:
         run: |
           rustup target add wasm32-unknown-unknown
           cargo install --locked trunk
+      - name: install component Library
+        run: |
+          cd ..
+          git clone https://github.com/brooks-builds/ycl.git
       - name: build
-        run: trunk build --release
+        run: touch .env && trunk build --release
+        env:
+            RUST_ENV: production
+            GRAPHQL_URI: ${{ secrets.GRAPHQL_API_URI }}
       - name: deploy
         run: aws s3 sync dist ${{ secrets.DEPLOYMENT_URI }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
+      - name: invalidate cache
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_ID }} --paths "/index.html"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
