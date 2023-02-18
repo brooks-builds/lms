@@ -13,7 +13,7 @@ test.describe('homepage', () => {
 
 test.describe('courses', () => {
 	test('courses should not have any automatically detectable accessibility issues', async ({ page }) => {
-		await page.goto('/');
+		await page.goto('/courses');
 
 		const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
 
