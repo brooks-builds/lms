@@ -7,10 +7,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@stable
+      - uses: extractions/setup-crate@v1
+        with:
+          owner: thedodd
+          name: trunk
       - name: install prerequisites
         run: |
           rustup target add wasm32-unknown-unknown
-          cargo install --locked trunk
       - name: create env file
         run: touch .env
       - name: install component Library
@@ -22,6 +25,15 @@ jobs:
         env:
             RUST_ENV: test
             GRAPHQL_URI: http://localhost:8081
+      - uses: actions/upload-artifact@v3
+        with:
+          name: lms_test
+          path: dist
+      - uses: actions/upload-artifact@v3
+        with:
+          name: dev_compiled
+          path: target
+
   lint:
     name: Cargo check and check formatting
     runs-on: ubuntu-latest
@@ -49,6 +61,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: lms_test
+          path: dist
+      - uses: actions/download-artifact@v3
+        with:
+          name: dev_compiled
+          path: target
       - uses: actions/setup-node@v3
         with:
           node-version: 18
