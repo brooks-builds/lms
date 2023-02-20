@@ -77,7 +77,7 @@ jobs:
       - name: install playwright dependencies
         run: npm ci
       - name: install web server
-        npm i -g light-server
+        run: npm i -g lite-server
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: run tests
