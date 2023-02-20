@@ -12,7 +12,7 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
 	testDir: './e2e_tests',
 	/* Maximum time one test can run for. */
-	timeout: 60 * 60 * 1000,
+	timeout: 60 * 1000,
 	expect: {
 		/**
 		 * Maximum time expect() should wait for the condition to be met.
@@ -29,16 +29,18 @@ export default defineConfig({
 	/* Opt out of parallel tests on CI. */
 	workers: process.env.CI ? 1 : undefined,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
-	reporter: 'html',
+	reporter: 'list',
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	use: {
 		/* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
-		actionTimeout: 0,
+		actionTimeout: 30 * 1000,
 		/* Base URL to use in actions like `await page.goto('/')`. */
 		baseURL: process.env.FRONTEND_URI || "http://localhost:8082",
 
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 		trace: 'on-first-retry',
+		video: 'on',
+
 	},
 
 	/* Configure projects for major browsers */

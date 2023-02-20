@@ -1,5 +1,6 @@
 {
   "port": 8082,
-  "files": ["./src/**/*.*"],
-  "server": { "baseDir": "./dist" }
+  "server": { "baseDir": "./dist" },
+  "open": false,
+  "cors": true
 }
