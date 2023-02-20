@@ -84,7 +84,8 @@ export default defineConfig({
 
 	/* Run your local dev server before starting the tests */
 	webServer: {
-		command: 'trunk serve',
+		command: 'npx lite-server',
 		port: 8082,
+		reuseExistingServer:true
 	},
 });

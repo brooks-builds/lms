@@ -76,6 +76,8 @@ jobs:
           node-version: 18
       - name: install playwright dependencies
         run: npm ci
+      - name: install web server
+        npm i -g light-server
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: run tests
