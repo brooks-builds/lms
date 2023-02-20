@@ -16,12 +16,12 @@ test.describe('homepage', () => {
 
 test.describe('courses', () => {
 	test('courses should not have any automatically detectable accessibility issues', async ({ page }) => {
-	await page.route(GRAPHQL_URI, async route => {
-		const json = { "data": courseListMockData };
-		await route.fulfill({ json });
-	});
+		await page.route(GRAPHQL_URI, async route => {
+			const json = { "data": courseListMockData };
+			await route.fulfill({ json });
+		});
 
-		await page.goto('/courses');
+		await page.goto('/courses', { waitUntil: 'networkidle' });
 
 		const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
 
