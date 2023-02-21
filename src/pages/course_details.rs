@@ -1,5 +1,8 @@
 use crate::{api, logging::log_error, stores::courses_store::CourseStore};
-use ycl::modules::hero::BBHero;
+use ycl::{
+    elements::{image::BBImage, youtube_video::BBYouTubeVideo},
+    modules::hero::{BBHero, BBHeroLeftMedia},
+};
 use yew::prelude::*;
 use yew_hooks::{use_async, use_effect_once};
 use yewdux::prelude::use_store;
@@ -65,7 +68,9 @@ pub fn component(props: &Props) -> Html {
             <div>
                 <BBHero
                     title={format!("${}", course.price.unwrap_or(0))}
-                    text={course.description.clone()}
+                    subtitle={course.name.clone()}
+                    text={course.long_description.clone()}
+                    media={hero_left_media(course.trailer_uri.clone(), course.name.clone())}
                 />
             </div>
         }
@@ -75,4 +80,21 @@ pub fn component(props: &Props) -> Html {
             </div>
         }
     }
+}
+
+fn hero_left_media(trailer_uri: Option<String>, title: String) -> BBHeroLeftMedia {
+    let node = if let Some(uri) = trailer_uri {
+        html! {
+            <BBYouTubeVideo
+                src={uri}
+                {title}
+            />
+        }
+    } else {
+        html! {
+            <BBImage alt="Code stand in for the trailer" src="/public/code.png" />
+        }
+    };
+
+    BBHeroLeftMedia::LeftMedia(node)
 }

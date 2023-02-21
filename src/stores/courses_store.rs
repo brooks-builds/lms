@@ -18,6 +18,8 @@ pub struct StoreCourse {
     pub description: String,
     pub tag: CourseTag,
     pub price: Option<u8>,
+    pub long_description: String,
+    pub trailer_uri: Option<String>,
 }
 
 #[derive(Clone, Default, PartialEq, Eq, Debug)]

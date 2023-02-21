@@ -41,6 +41,8 @@ pub async fn get_courses() -> Result<Vec<StoreCourse>, LmsError> {
             course.tag = api_course.lms_tag.name.into();
             course.description = api_course.short_description;
             course.price = api_course.price;
+            course.long_description = api_course.long_description;
+            course.trailer_uri = api_course.trailer_uri;
 
             course
         })
@@ -70,6 +72,17 @@ pub async fn get_course_by_id(id: i64) -> Result<StoreCourse, LmsError> {
             )
         })?;
 
-    log_data("course by id", response);
-    todo!()
+    if let Some(response_course) = response.lms_courses_by_pk {
+        Ok(StoreCourse {
+            trailer_uri: response_course.trailer_uri,
+            name: response_course.title,
+            id: response_course.id,
+            description: response_course.short_description,
+            tag: response_course.lms_tag.name.into(),
+            price: response_course.price,
+            long_description: response_course.long_description,
+        })
+    } else {
+        Err(LmsError::CourseNotFound)
+    }
 }

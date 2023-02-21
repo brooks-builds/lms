@@ -8,6 +8,8 @@ query ListLmsCourses {
     short_description
     title
 	price
+	long_description
+	trailer_uri
   }
 }
 
@@ -21,6 +23,8 @@ query CourseById($id: Int!) {
     price
     short_description
     title
+	long_description
+	trailer_uri
   }
 }
 

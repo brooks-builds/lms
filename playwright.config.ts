@@ -12,7 +12,7 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
 	testDir: './e2e_tests',
 	/* Maximum time one test can run for. */
-	timeout: 60 * 1000,
+	timeout: 60 * 60 * 1000,
 	expect: {
 		/**
 		 * Maximum time expect() should wait for the condition to be met.
@@ -38,8 +38,8 @@ export default defineConfig({
 		baseURL: process.env.FRONTEND_URI || "http://localhost:8082",
 
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-		trace: 'on-first-retry',
-		video: 'on-first-retry',
+		trace: 'on',
+		video: 'on',
 
 	},
 

@@ -6,4 +6,6 @@ pub enum LmsError {
     FetchingCourses(String, String),
     #[error("console.log exists")]
     LeftInLog,
+    #[error("could not find course")]
+    CourseNotFound,
 }
