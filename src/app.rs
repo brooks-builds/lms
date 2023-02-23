@@ -6,12 +6,22 @@ use ycl::modules::{
     site_footer::BBSiteFooter,
 };
 use yew::prelude::*;
+use yew_hooks::use_effect_once;
 use yew_router::prelude::*;
 
-use crate::router::{switch, Routes};
+use crate::{
+    auth,
+    router::{switch, Routes},
+};
 
 #[function_component(App)]
 pub fn component() -> Html {
+    use_effect_once(|| {
+        auth::init();
+
+        || {}
+    });
+
     html! {
         <BrowserRouter>
             <BBNavbar<Routes>

@@ -2,6 +2,7 @@ use app::App;
 
 mod api;
 mod app;
+mod auth;
 mod database_queries;
 mod errors;
 mod logging;

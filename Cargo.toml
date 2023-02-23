@@ -17,3 +17,5 @@ dotenvy_macro = "0.15.1"
 dotenvy = "0.15.6"
 yew-hooks = "0.2.0"
 thiserror = "1.0.38"
+rand = "0.8.5"
+getrandom = { version = "0.2.8", features = ["js"] }
