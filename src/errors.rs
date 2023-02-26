@@ -8,4 +8,6 @@ pub enum LmsError {
     LeftInLog,
     #[error("could not find course")]
     CourseNotFound,
+    #[error("error saving cookie")]
+    SavingCookie,
 }

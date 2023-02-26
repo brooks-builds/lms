@@ -1,15 +1,20 @@
+use crate::{
+    errors::LmsError,
+    logging::{log_data, log_error},
+};
 use dotenvy_macro::dotenv;
 use rand::{distributions::Alphanumeric, rngs::ThreadRng, thread_rng, Rng};
-
-use crate::logging::log_data;
+use wasm_bindgen::JsCast;
+use web_sys::HtmlDocument;
 
 static AUTH0_DOMAIN: &str = dotenv!("AUTH0_DOMAIN");
 static AUTH0_CLIENT_ID: &str = dotenv!("AUTH0_CLIENT_ID");
 static AUTH_REDIRECT_URI: &str = dotenv!("AUTH_REDIRECT_URI");
 
-pub fn init() {
+pub fn init() -> Result<(), LmsError> {
     let state = create_state();
-    store_state(&state);
+    store_state(&state)?;
+    Ok(())
 }
 
 pub fn create_login_uri() -> String {
@@ -22,6 +27,20 @@ fn create_state() -> String {
     (0..24).map(|_| rng.sample(Alphanumeric) as char).collect()
 }
 
-fn store_state(state: &str) {
-    todo!("set cookie, we'll need to get the html document to do it")
+/// # Store the Auth0 state
+///
+/// We are storing the state into a cookie so that we can check the state they send back and verify
+/// it is them
+///
+/// Read more about storing into cookies at [MDN](https://developer.mozilla.org/en-US/docs/web/api/document/cookie)
+fn store_state(state: &str) -> Result<(), LmsError> {
+    let document = gloo::utils::document().unchecked_into::<HtmlDocument>();
+    let max_age = 60 * 5; // in seconds
+    let cookie = format!("authstate={state}; max-age={max_age}; samesite=strict; secure");
+    document.set_cookie(&cookie).map_err(|_error| {
+        let error = LmsError::SavingCookie;
+        log_error("Error storing state into cookie", &error);
+        error
+    })?;
+    Ok(())
 }
