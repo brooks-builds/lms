@@ -16,9 +16,9 @@ pub fn component() -> Html {
         log("username/password create account link clicked");
     });
 
-    // https://auth0.com/docs/api/authentication?http#signup
-    //
+    // 
     todo!("Implement a form to create an account and then send the user to login");
+    //
     html! {
         <BBContainer>
             <BBTitle align={AlignText::Center} level={BBTitleLevel::One}>{"Create Account"}</BBTitle>

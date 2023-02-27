@@ -17,6 +17,7 @@
   "homepage": "https://github.com/brooks-builds/lms#readme",
   "devDependencies": {
     "@axe-core/playwright": "^4.6.0",
+    "@faker-js/faker": "^7.6.0",
     "@playwright/test": "^1.30.0"
   }
 }

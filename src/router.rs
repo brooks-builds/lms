@@ -10,7 +10,7 @@ use crate::pages::{
 pub enum Routes {
     #[at("/")]
     Home,
-    #[at("/create_account")]
+    #[at("/auth/create_account")]
     CreateAccount,
     #[at("/login")]
     Login,
