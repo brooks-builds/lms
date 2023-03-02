@@ -10,4 +10,6 @@ pub enum LmsError {
     CourseNotFound,
     #[error("error saving cookie")]
     SavingCookie,
+    #[error("{0}: {1}")]
+    CreatingAccount(String, String),
 }

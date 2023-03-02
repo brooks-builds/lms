@@ -1,5 +1,5 @@
 use crate::{
-    database_queries::{course_by_id, list_lms_courses, CourseById, ListLmsCourses},
+    database_queries::{course_by_id, list_lms_courses, CourseById, ListLmsCourses, CreateLmsAccount},
     errors::LmsError,
     logging::log_data,
     stores::courses_store::StoreCourse,
@@ -85,4 +85,8 @@ pub async fn get_course_by_id(id: i64) -> Result<StoreCourse, LmsError> {
     } else {
         Err(LmsError::CourseNotFound)
     }
+}
+
+pub async fn create_account(email: String, password: String) -> Result<(), LmsError> {
+    let variables = create_
 }

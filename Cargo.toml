@@ -7,8 +7,8 @@ edition = "2021"
 
 [dependencies]
 yew = { version = "0.20.0", features = ["csr"] }
-# ycl = { git = "https://github.com/brooks-builds/ycl", rev = "0705ef8" }
-ycl = { path = "../ycl/" }
+ycl = { git = "https://github.com/brooks-builds/ycl", rev = "a9f4172" }
+# ycl = { path = "../ycl/" }
 yew-router = "0.17.0"
 gloo = "0.8.0"
 graphql_client = "0.12.0"
@@ -20,5 +20,6 @@ yew-hooks = "0.2.0"
 thiserror = "1.0.38"
 rand = "0.8.5"
 getrandom = { version = "0.2.8", features = ["js"] }
-web-sys = { version = "0.3.61", features = ["HtmlDocument"] }
+web-sys = { version = "0.3.61", features = ["HtmlDocument", "FormData"] }
 wasm-bindgen = "0.2.84"
+stylist = { version = "0.12.0", features = ["yew"] }
