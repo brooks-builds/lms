@@ -1,7 +1,10 @@
 use crate::{
-    database_queries::{course_by_id, list_lms_courses, CourseById, ListLmsCourses, CreateLmsAccount},
+    database_queries::{
+        course_by_id, create_lms_account, list_lms_courses, CourseById, CreateLmsAccount,
+        ListLmsCourses,
+    },
     errors::LmsError,
-    logging::log_data,
+    logging::{log_data, log_error},
     stores::courses_store::StoreCourse,
 };
 use dotenvy_macro::dotenv;
@@ -87,6 +90,41 @@ pub async fn get_course_by_id(id: i64) -> Result<StoreCourse, LmsError> {
     }
 }
 
-pub async fn create_account(email: String, password: String) -> Result<(), LmsError> {
-    let variables = create_
+pub async fn create_account(
+    email: String,
+    password: String,
+) -> Result<create_lms_account::ResponseData, LmsError> {
+    let variables = create_lms_account::Variables { email, password };
+    let query = CreateLmsAccount::build_query(variables);
+
+    let response = gloo::net::http::Request::post(GRAPHQL_URI)
+        .json(&query)
+        .map_err(|_error| {
+            let my_error =
+                LmsError::CreatingAccount("Error creating account".into(), "creating json".into());
+            log_error("error sending create account request", &my_error);
+            my_error
+        })?
+        .send()
+        .await
+        .map_err(|_error| {
+            let my_error = LmsError::CreatingAccount(
+                "Error creating account".into(),
+                "sending request to server".into(),
+            );
+            log_error("error sending create account request", &my_error);
+            my_error
+        })?
+        .json::<create_lms_account::ResponseData>()
+        .await
+        .map_err(|_error| {
+            let my_error = LmsError::CreatingAccount(
+                "Error creating account".into(),
+                "error receiving json".into(),
+            );
+            log_error("error sending create account request", &my_error);
+            my_error
+        })?;
+
+    Ok(response)
 }
