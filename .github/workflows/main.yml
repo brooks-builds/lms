@@ -25,6 +25,9 @@ jobs:
         env:
             RUST_ENV: test
             GRAPHQL_URI: http://localhost:8081
+            AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+            AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+            AUTH_REDIRECT_URI: ${{ secrets.AUTH_REDIRECT_URI }}
       - uses: actions/upload-artifact@v3
         with:
           name: lms_test
@@ -44,16 +47,25 @@ jobs:
         env:
             RUST_ENV: test
             GRAPHQL_URI: http://localhost:8081
+            AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+            AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+            AUTH_REDIRECT_URI: ${{ secrets.AUTH_REDIRECT_URI }}
       - name: cargo clippy
         run: touch .env && cargo clippy
         env:
             RUST_ENV: test
             GRAPHQL_URI: http://localhost:8081
+            AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+            AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+            AUTH_REDIRECT_URI: ${{ secrets.AUTH_REDIRECT_URI }}
       - name: check formatting
         run: touch .env && cargo fmt --check
         env:
             RUST_ENV: test
             GRAPHQL_URI: http://localhost:8081
+            AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+            AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+            AUTH_REDIRECT_URI: ${{ secrets.AUTH_REDIRECT_URI }}
 
   test:
     timeout-minutes: 60
@@ -114,6 +126,9 @@ jobs:
         env:
             RUST_ENV: production
             GRAPHQL_URI: ${{ secrets.GRAPHQL_API_URI }}
+            AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+            AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+            AUTH_REDIRECT_URI: ${{ secrets.AUTH_REDIRECT_URI }}
       - name: deploy
         run: aws s3 sync dist ${{ secrets.DEPLOYMENT_URI }}
         env:
