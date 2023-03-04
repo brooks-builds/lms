@@ -101,6 +101,10 @@ jobs:
         run: npm i -g lite-server
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+      - name: install component Library
+        run: |
+          cd ..
+          git clone https://github.com/brooks-builds/ycl.git
       - name: build app
         run: trunk build
         env:
