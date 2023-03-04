@@ -1,12 +1,8 @@
-use crate::{
-    errors::LmsError,
-    logging::{log_error},
-};
+use crate::{errors::LmsError, logging::log_error};
 use dotenvy_macro::dotenv;
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use wasm_bindgen::JsCast;
 use web_sys::HtmlDocument;
-
 
 #[allow(dead_code)]
 static AUTH0_DOMAIN: &str = dotenv!("AUTH0_DOMAIN");

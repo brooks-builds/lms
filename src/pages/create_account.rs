@@ -16,9 +16,7 @@ use ycl::{
 use yew::prelude::*;
 use yew_hooks::use_async;
 
-use crate::{
-    api,
-};
+use crate::api;
 
 #[styled_component(CreateAccount)]
 pub fn component() -> Html {
