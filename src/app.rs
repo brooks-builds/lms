@@ -17,7 +17,7 @@ use crate::{
 #[function_component(App)]
 pub fn component() -> Html {
     use_effect_once(|| {
-        auth::init();
+        auth::init().unwrap();
 
         || {}
     });

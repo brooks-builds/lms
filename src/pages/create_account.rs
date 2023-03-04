@@ -3,7 +3,6 @@ use web_sys::FormData;
 use ycl::{
     elements::{
         button::{BBButton, BBButtonStyle, BBButtonType},
-        external_link::BBLink,
         form::BBForm,
         input::{BBInput, BBInputType},
         text::BBText,
@@ -19,7 +18,6 @@ use yew_hooks::use_async;
 
 use crate::{
     api,
-    logging::{log, log_data},
 };
 
 #[styled_component(CreateAccount)]
