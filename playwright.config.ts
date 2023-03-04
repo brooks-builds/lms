@@ -38,8 +38,8 @@ export default defineConfig({
 		baseURL: process.env.FRONTEND_URI || "http://localhost:8082",
 
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-		trace: 'on',
-		video: 'on',
+		trace: 'retry-with-trace',
+		video: 'retry-with-video',
 
 	},
 

@@ -22,7 +22,7 @@ pub struct CourseById;
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "database/schema.json",
-    query_path = "database/queries.graphql",
+    query_path = "database/queries/create_lms_account.graphql",
     response_derives = "Debug, Clone"
 )]
 pub struct CreateLmsAccount;

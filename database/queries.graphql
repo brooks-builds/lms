@@ -28,8 +28,3 @@ query CourseById($id: Int!) {
   }
 }
 
-mutation CreateLmsAccount($email: String!, $password: String!) {
-  create_account(user: {email: $email, password: $password}) {
-    _id
-  }
-}

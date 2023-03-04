@@ -31,7 +31,7 @@ pub fn component() -> Html {
                 login_route={Routes::Login}
                 show_brand={true}
             />
-            <main role="main">
+            <main>
                 <Switch<Routes> render={switch} />
             </main>
             <BBSiteFooter<Routes>
