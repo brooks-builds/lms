@@ -1,6 +1,9 @@
 use graphql_client::GraphQLQuery;
 
-use crate::{database_queries::{create_lms_account, CreateLmsAccount}, errors::LmsError};
+use crate::{
+    database_queries::{create_lms_account, CreateLmsAccount},
+    errors::LmsError,
+};
 
 use super::send_to_graphql;
 
@@ -15,4 +18,3 @@ pub async fn create_account(
 
     Ok(response)
 }
-

@@ -1,6 +1,11 @@
 use graphql_client::GraphQLQuery;
 
-use crate::{stores::courses_store::StoreCourse, errors::LmsError, database_queries::{ListLmsCourses, list_lms_courses, course_by_id, CourseById}, logging::log_data};
+use crate::{
+    database_queries::{course_by_id, list_lms_courses, CourseById, ListLmsCourses},
+    errors::LmsError,
+    logging::log_data,
+    stores::courses_store::StoreCourse,
+};
 
 use super::send_to_graphql;
 
@@ -9,8 +14,7 @@ pub async fn get() -> Result<Vec<StoreCourse>, LmsError> {
     let body = ListLmsCourses::build_query(graphql_variables);
     let response = send_to_graphql::<list_lms_courses::ResponseData>(body).await?;
 
-    Ok(
-        response
+    Ok(response
         .lms_courses
         .into_iter()
         .map(|api_course| {
