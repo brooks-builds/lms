@@ -29,7 +29,7 @@ pub fn component() -> Html {
         })
         .collect::<Vec<BBCardData<Routes>>>();
 
-    let load_courses_state = use_async(async { api::get_courses().await });
+    let load_courses_state = use_async(async { api::courses::get().await });
 
     {
         let load_courses_state = load_courses_state.clone();

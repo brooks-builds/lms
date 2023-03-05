@@ -12,4 +12,6 @@ pub enum LmsError {
     SavingCookie,
     #[error("{0}: {1}")]
     CreatingAccount(String, String),
+    #[error("Error sending request to graphQL: {0}")]
+    SendingToGraphqlApi(String),
 }

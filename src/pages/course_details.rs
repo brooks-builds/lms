@@ -17,7 +17,7 @@ pub fn component(props: &Props) -> Html {
     let (course_store, course_store_dispatch) = use_store::<CourseStore>();
     let fetch_course = {
         let id = props.id;
-        use_async(async move { api::get_course_by_id(id).await })
+        use_async(async move { api::courses::get_by_id(id).await })
     };
 
     let course = course_store.get_by_course_id(props.id);

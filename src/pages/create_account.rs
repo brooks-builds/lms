@@ -27,7 +27,7 @@ pub fn component() -> Html {
         use_async(async move {
             let email = account_state.email.clone().unwrap();
             let password = account_state.password.clone().unwrap();
-            api::create_account(email, password).await
+            api::auth::create_account(email, password).await
         })
     };
 
