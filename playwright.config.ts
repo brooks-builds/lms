@@ -86,7 +86,7 @@ export default defineConfig({
 
 	/* Run your local dev server before starting the tests */
 	webServer: {
-		command: 'docker run -d -v "$(pwd)/..:/code" -p 8082:8082 -w /code/lms --env RUST_ENV --env GRAPHQL_URI --env AUTH0_DOMAIN --env AUTH0_CLIENT_ID --env AUTH_REDIRECT_URI trunk trunk serve',
+		command: 'docker run -v "$(pwd)/..:/code" -p 8082:8082 -w /code/lms --env RUST_ENV --env GRAPHQL_URI --env AUTH0_DOMAIN --env AUTH0_CLIENT_ID --env AUTH_REDIRECT_URI trunk trunk serve',
 		port: 8082,
 		reuseExistingServer: true
 	},
