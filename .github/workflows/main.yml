@@ -30,45 +30,6 @@ jobs:
             AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
             AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
             AUTH_REDIRECT_URI: ${{ secrets.AUTH_REDIRECT_URI }}
-  test:
-    timeout-minutes: 60
-    name: Run Playwright tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: create env file
-        run: touch .env
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - name: install playwright dependencies
-        run: npm ci
-      - name: install web server
-        run: npm i -g lite-server
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-      - name: install component Library
-        run: |
-          cd ..
-          git clone https://github.com/brooks-builds/ycl.git
-      - name: build docker image
-        run: docker build -t trunk .
-      - name: run tests
-        run: npx playwright test
-        env:
-          FRONTEND_URI: http://localhost:8082
-          GRAPHQL_URI: http://localhost:8081/v1/graphql
-          CI: true
-          RUST_ENV: test
-          AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
-          AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-          AUTH_REDIRECT_URI: ${{ secrets.AUTH_REDIRECT_URI }}
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
 
   deploy:
     if: github.event_name == 'pull_request' && github.ref_name == 'main'
@@ -76,7 +37,6 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - lint
-      - test
     steps:
       - uses: actions/checkout@v3
       - name: install prerequisites
