@@ -12,7 +12,7 @@ pub enum Routes {
     Home,
     #[at("/auth/create_account")]
     CreateAccount,
-    #[at("/login")]
+    #[at("/auth/login")]
     Login,
     #[at("/courses")]
     Courses,
