@@ -86,7 +86,7 @@ export default defineConfig({
 
 	/* Run your local dev server before starting the tests */
 	webServer: {
-		command: 'trunk serve',
+		command: 'mkdir test-results && trunk serve',
 		port: 8082,
 		reuseExistingServer: true,
 	},

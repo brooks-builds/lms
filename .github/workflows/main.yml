@@ -48,7 +48,10 @@ jobs:
           cd ..
           git clone https://github.com/brooks-builds/ycl.git
       - name: build
-        run: touch .env && trunk build --release
+        run: |
+          touch .env 
+          mkdir test-results
+          trunk build --release
         env:
             RUST_ENV: production
             GRAPHQL_URI: ${{ secrets.GRAPHQL_API_URI }}
