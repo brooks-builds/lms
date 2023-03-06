@@ -4,6 +4,7 @@ use ycl::{
     elements::{
         button::{BBButton, BBButtonStyle, BBButtonType},
         form::BBForm,
+        icon::BBIconType,
         input::{BBInput, BBInputType},
         text::BBText,
         title::{BBTitle, BBTitleLevel},
@@ -12,15 +13,25 @@ use ycl::{
         align_text::AlignText,
         container::{BBContainer, BBContainerMargin},
     },
+    modules::banner::BBBannerType,
 };
 use yew::prelude::*;
 use yew_hooks::use_async;
+use yew_router::prelude::use_navigator;
+use yewdux::prelude::use_store;
 
-use crate::api;
+use crate::{
+    api,
+    logging::log_error,
+    router::Routes,
+    stores::alerts::{AlertsStore, AlertsStoreBuilder},
+};
 
 #[styled_component(CreateAccount)]
 pub fn component() -> Html {
     let account_state = use_state(|| NewUser::default());
+    let navigator = use_navigator().unwrap();
+    let (_, alert_dispatch) = use_store::<AlertsStore>();
 
     let create_account_state = {
         let account_state = account_state.clone();
@@ -46,6 +57,37 @@ pub fn component() -> Html {
         })
     };
 
+    {
+        let create_account_state = create_account_state.clone();
+        let navigator = navigator.clone();
+        let alert_dispatch = alert_dispatch.clone();
+
+        use_effect(move || {
+            if !create_account_state.loading {
+                if let Some(_data) = &create_account_state.data {
+                    let alert = AlertsStoreBuilder::new()
+                        .message("Account Created")
+                        .icon(BBIconType::Heart)
+                        .build()
+                        .unwrap();
+                    alert_dispatch.reduce_mut(move |store| *store = alert);
+                    navigator.push(&Routes::Login);
+                } else if let Some(error) = &create_account_state.error {
+                    let alert = AlertsStoreBuilder::new()
+                        .message("Error creating account, please try again")
+                        .icon(BBIconType::Warning)
+                        .alert_type(BBBannerType::Error)
+                        .build()
+                        .unwrap();
+                    alert_dispatch.reduce_mut(|store| *store = alert);
+                    log_error("error creating account", error);
+                }
+            }
+
+            || {}
+        });
+    }
+
     html! {
         <BBContainer>
             <BBTitle align={AlignText::Center} level={BBTitleLevel::One}>{"Create Account"}</BBTitle>
@@ -57,6 +99,7 @@ pub fn component() -> Html {
                         label="email"
                         name="email"
                         required={true}
+                        value={account_state.email.clone().unwrap_or_default()}
                     />
                     <BBInput
                         id="password"
@@ -65,6 +108,7 @@ pub fn component() -> Html {
                         input_type={BBInputType::Password}
                         required={true}
                         message="Password requirements: 8 characters, 3 of the four types of characters ( a-z, A-Z, 0-9, !@#$%^&*() )"
+                        value={account_state.password.clone().unwrap_or_default()}
                     />
                     <div>
                         <BBButton

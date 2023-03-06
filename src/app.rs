@@ -11,6 +11,7 @@ use yew_router::prelude::*;
 
 use crate::{
     auth,
+    components::alert::Alert,
     router::{switch, Routes},
 };
 
@@ -24,6 +25,7 @@ pub fn component() -> Html {
 
     html! {
         <BrowserRouter>
+            <Alert />
             <BBNavbar<Routes>
                 create_account_route={Routes::CreateAccount}
                 is_authenticated={false}

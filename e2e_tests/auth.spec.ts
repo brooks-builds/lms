@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 import { createAccount } from "./intercept_data";
+import { createAccountMockData } from "./mock_data";
 
 const GRAPHQL_URI = process.env.GRAPHQL_URI || "http://localhost:8081/v1/graphql";
 
@@ -19,6 +20,9 @@ test("can create account", async ({ page }) => {
 
 		expect(JSON.parse(body)).toEqual(expectedBody);
 		graphQlRoutesCalled += 1;
+		return route.fulfill({
+			json: createAccountMockData,
+		});
 	});
 
 	await page.getByLabel('Email').fill(email);
@@ -26,5 +30,10 @@ test("can create account", async ({ page }) => {
 	await page.getByRole('button').click();
 
 	expect(graphQlRoutesCalled).toBe(1);
+	
+	await page.waitForURL('login');
+
+	await expect(await page.getByText(/Created/)).toBeVisible()
+	await expect(await page.url()).toMatch(/login/)
 });
 
