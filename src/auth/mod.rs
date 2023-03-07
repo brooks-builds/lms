@@ -1,3 +1,5 @@
+pub mod handle_redirect;
+
 use crate::{
     errors::LmsError,
     logging::{log_data, log_error},
