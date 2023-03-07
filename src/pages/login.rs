@@ -11,7 +11,7 @@ use ycl::{
 };
 use yew::prelude::*;
 
-use crate::auth::create_login_uri;
+use crate::auth::login;
 
 #[function_component(Login)]
 pub fn component() -> Html {
@@ -23,7 +23,7 @@ pub fn component() -> Html {
                 classes={AlignText::Center.class()}
             >
                 <BBLink
-                    href={create_login_uri()}
+                    href={login().unwrap()}
                 >
                     {"Username and Password"}
                 </BBLink>

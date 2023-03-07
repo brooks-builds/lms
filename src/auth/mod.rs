@@ -11,14 +11,14 @@ static AUTH0_DOMAIN: &str = dotenv!("AUTH0_DOMAIN");
 static AUTH0_CLIENT_ID: &str = dotenv!("AUTH0_CLIENT_ID");
 static AUTH_REDIRECT_URI: &str = dotenv!("AUTH_REDIRECT_URI");
 
-pub fn init() -> Result<(), LmsError> {
+pub fn login() -> Result<String, LmsError> {
     let state = create_state();
     store_state(&state)?;
-    Ok(())
+    Ok(create_login_uri(&state))
 }
 
-pub fn create_login_uri() -> String {
-    format!("{AUTH0_DOMAIN}/authorize?response_type=token&client_id={AUTH0_CLIENT_ID}&redirect_uri={AUTH_REDIRECT_URI}&scope=openid%20profile%20email")
+fn create_login_uri(state: &str) -> String {
+    format!("{AUTH0_DOMAIN}/authorize?response_type=token&client_id={AUTH0_CLIENT_ID}&redirect_uri={AUTH_REDIRECT_URI}&scope=openid%20profile%20email&state={state}")
 }
 
 fn create_state() -> String {

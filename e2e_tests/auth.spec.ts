@@ -35,7 +35,7 @@ test("can create account", async ({ page }) => {
 
 	expect(graphQlRoutesCalled).toBe(1);
 
-	await page.waitForURL('login');
+	await page.waitForURL('/auth/login');
 
 	await expect(await page.getByText(/Created/)).toBeVisible()
 	await expect(await page.url()).toMatch(/login/)
@@ -47,5 +47,5 @@ test("can login to an account", async ({ page }) => {
 	await page.goto("/auth/login", { waitUntil: 'networkidle' });
 	await expect(page.url()).toMatch(/login/);
 	const loginLink = await page.getByRole('link', { name: 'username' });
-	await expect(loginLink.getAttribute('href')).toMatch(LOGIN_URI);
+	await expect(await loginLink.getAttribute('href')).toMatch(LOGIN_URI);
 })
