@@ -1,4 +1,7 @@
-use crate::logging::log_data;
+use crate::{
+    auth::handle_redirect::HandleAuthRedirectUser,
+    logging::{log_data, log_error},
+};
 use serde::Deserialize;
 use url::Url;
 use ycl::{
@@ -19,13 +22,9 @@ pub struct AuthRedirectUser {
 #[function_component(AuthRedirect)]
 pub fn component() -> Html {
     let uri = gloo::utils::window().location().href().unwrap();
-    let url = Url::parse(&uri).unwrap();
-    let fragment = url.fragment().unwrap();
-    let query_pairs = url.query_pairs();
-    for pair in query_pairs {
-        log_data("query pair", pair);
-    }
-    log_data("fragment", fragment);
+    let handle_auth_redirect = HandleAuthRedirectUser::new(&uri).unwrap();
+
+    log_data("handle auth redirect", handle_auth_redirect);
 
     html! {
         <BBTitle level={BBTitleLevel::One} align={AlignText::Center}>

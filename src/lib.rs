@@ -10,6 +10,7 @@ mod logging;
 mod pages;
 mod router;
 mod stores;
+mod utils;
 
 pub fn run() {
     yew::Renderer::<App>::new().render();

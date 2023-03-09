@@ -12,4 +12,6 @@ pub enum LmsError {
     SendingToGraphqlApi(String),
     #[error("Error building alert store: {0}")]
     BuildingAlertStore(String),
+    #[error("Error handling auth redirect: {0}")]
+    HandleAuthRedirectError(String),
 }
