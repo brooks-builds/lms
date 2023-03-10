@@ -8,15 +8,25 @@ use ycl::modules::{
 use yew::prelude::*;
 use yew_hooks::use_effect_once;
 use yew_router::prelude::*;
+use yewdux::prelude::use_store;
 
 use crate::{
-    auth,
+    auth::{self, Auth},
     components::alert::Alert,
     router::{switch, Routes},
+    stores::auth_store::AuthStore,
 };
 
 #[function_component(App)]
 pub fn component() -> Html {
+    let (_, auth_dispatch) = use_store::<AuthStore>();
+
+    use_effect_once(move || {
+        auth_dispatch.reduce_mut(|store| Auth::init());
+
+        || {}
+    });
+
     html! {
         <BrowserRouter>
             <Alert />
