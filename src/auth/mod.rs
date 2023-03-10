@@ -3,6 +3,7 @@ pub mod handle_redirect;
 use crate::{
     errors::LmsError,
     logging::{log_data, log_error},
+    utils::cookies::save_cookie,
 };
 use dotenvy_macro::dotenv;
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
@@ -36,13 +37,6 @@ fn create_state() -> String {
 ///
 /// Read more about storing into cookies at [MDN](https://developer.mozilla.org/en-US/docs/web/api/document/cookie)
 fn store_state(state: &str) -> Result<(), LmsError> {
-    let document = gloo::utils::document().unchecked_into::<HtmlDocument>();
     let max_age = 60 * 5; // in seconds
-    let cookie = format!("authstate={state}; max-age={max_age}; samesite=strict; secure");
-    document.set_cookie(&cookie).map_err(|_error| {
-        let error = LmsError::SavingCookie;
-        log_error("Error storing state into cookie", &error);
-        error
-    })?;
-    Ok(())
+    save_cookie("auth_state", state, max_age)
 }

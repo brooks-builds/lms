@@ -8,6 +8,8 @@ pub enum LmsError {
     CourseNotFound,
     #[error("error saving cookie")]
     SavingCookie,
+    #[error("error getting cookie: {0}")]
+    GettingCookie(String),
     #[error("Error sending request to graphQL: {0}")]
     SendingToGraphqlApi(String),
     #[error("Error building alert store: {0}")]
