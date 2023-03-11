@@ -6,12 +6,10 @@ use ycl::modules::{
     site_footer::BBSiteFooter,
 };
 use yew::prelude::*;
-use yew_hooks::use_effect_once;
 use yew_router::prelude::*;
 use yewdux::prelude::use_store;
 
 use crate::{
-    auth::{self, Auth},
     components::alert::Alert,
     router::{switch, Routes},
     stores::auth_store::AuthStore,
@@ -19,20 +17,14 @@ use crate::{
 
 #[function_component(App)]
 pub fn component() -> Html {
-    let (_, auth_dispatch) = use_store::<AuthStore>();
-
-    use_effect_once(move || {
-        auth_dispatch.reduce_mut(|store| Auth::init());
-
-        || {}
-    });
+    let (auth_store, _auth_dispatch) = use_store::<AuthStore>();
 
     html! {
         <BrowserRouter>
             <Alert />
             <BBNavbar<Routes>
                 create_account_route={Routes::CreateAccount}
-                is_authenticated={false}
+                is_authenticated={auth_store.logged_in}
                 links={create_routes()}
                 login_route={Routes::Login}
                 show_brand={true}

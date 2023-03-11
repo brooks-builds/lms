@@ -1,5 +1,3 @@
-use std::ops::Deref;
-
 use ycl::{
     elements::{
         external_link::BBLink,
@@ -24,7 +22,7 @@ pub fn component() -> Html {
     let (auth_store, _) = use_store::<AuthStore>();
     let (_, alert_dispatch) = use_store::<AlertsStore>();
 
-    let login_uri = match auth_store.auth.login() {
+    let login_uri = match auth_store.login() {
         Ok(uri) => uri,
         Err(error) => {
             alert_dispatch.reduce_mut(|store| {

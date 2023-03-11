@@ -1547,7 +1547,6 @@ checksum = "447660ad36a13288b1db4d4248e857b510e8c3a225c822ba4fb748c0aafecffd"
 [[package]]
 name = "ycl"
 version = "0.1.0"
-source = "git+https://github.com/brooks-builds/ycl?rev=ec5e152#ec5e152d61b6e4147c1a8405368d7ec83c5d7142"
 dependencies = [
  "chrono",
  "gloo",

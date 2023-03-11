@@ -1,11 +1,11 @@
 use crate::{
-    auth::handle_redirect::HandleAuthRedirectUser,
-    logging::{log_data, log_error},
-    stores::alerts::{AlertsStore, AlertsStoreBuilder},
-    utils::cookies::load_cookie,
+    router::Routes,
+    stores::{
+        alerts::{AlertsStore, AlertsStoreBuilder},
+        auth_store::AuthStore,
+    },
 };
 use serde::Deserialize;
-use url::Url;
 use ycl::{
     elements::{
         icon::BBIconType,
@@ -14,7 +14,7 @@ use ycl::{
     foundations::align_text::AlignText,
 };
 use yew::{function_component, html, Html};
-use yew_router::prelude::use_location;
+use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
 #[derive(PartialEq, Debug, Default, Deserialize)]
@@ -28,31 +28,23 @@ pub struct AuthRedirectUser {
 #[function_component(AuthRedirect)]
 pub fn component() -> Html {
     let (_, alert_dispatch) = use_store::<AlertsStore>();
-    let uri = gloo::utils::window().location().href().unwrap();
-    let handle_auth_redirect = HandleAuthRedirectUser::new(&uri).unwrap();
-    if let Ok(cookie) = load_cookie("auth_state") {
-        if let Some(state) = cookie {
-            // compare state to make sure it's good
-        } else {
-            alert_dispatch.reduce_mut(|store| {
-                *store = AlertsStoreBuilder::new()
+    let (_, auth_dispatch) = use_store::<AuthStore>();
+    let navigation = use_navigator().unwrap();
+
+    auth_dispatch.reduce_mut(move |store| {
+        let uri = gloo::utils::window().location().href().unwrap();
+        match store.handle_redirect(&uri) {
+            Ok(_) => navigation.push(&Routes::Home),
+            Err(error) => alert_dispatch.reduce_mut(|alert_store| {
+                *alert_store = AlertsStoreBuilder::new()
                     .icon(BBIconType::Warning)
                     .message("Login timed out, please try again")
                     .alert_type(ycl::modules::banner::BBBannerType::Error)
                     .build()
                     .unwrap();
-            });
+            }),
         }
-    } else {
-        alert_dispatch.reduce_mut(|store| {
-            *store = AlertsStoreBuilder::new()
-                .icon(BBIconType::Warning)
-                .message("Could not log in please try again")
-                .alert_type(ycl::modules::banner::BBBannerType::Error)
-                .build()
-                .unwrap();
-        });
-    };
+    });
 
     html! {
         <BBTitle level={BBTitleLevel::One} align={AlignText::Center}>

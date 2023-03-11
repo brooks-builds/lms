@@ -1,10 +1,7 @@
 use wasm_bindgen::JsCast;
 use web_sys::HtmlDocument;
 
-use crate::{
-    errors::LmsError,
-    logging::{log_data, log_error},
-};
+use crate::{errors::LmsError, logging::log_error};
 
 pub fn save_cookie(key: &str, value: &str, max_age: u32) -> Result<(), LmsError> {
     let document = gloo::utils::document().unchecked_into::<HtmlDocument>();
