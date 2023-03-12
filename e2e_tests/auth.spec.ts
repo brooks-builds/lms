@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 import { createAccount } from "./intercept_data";
-import { createAccountMockData } from "./mock_data";
+import { createAccountMockData, userinfoMockData } from "./mock_data";
 import dotenv from "dotenv";
 
 dotenv.config({});
@@ -48,4 +48,15 @@ test("can login to an account", async ({ page }) => {
 	await expect(page.url()).toMatch(/login/);
 	const loginLink = await page.getByRole('link', { name: 'username' });
 	await expect(await loginLink.getAttribute('href')).toMatch(LOGIN_URI);
-})
+});
+
+test("revisiting website after logging in should work", async ({ page, context }) => {
+	await page.route(GRAPHQL_URI, route => route.fulfill({json: userinfoMockData}));
+	await page.goto("/", {waitUntil: "networkidle"});
+	await context.addCookies([{
+		name: "auth_spec",
+		value: "1234qwfp1234qwfp",
+		url: await page.url(),
+	}]);
+	await expect(await page.getByText(/Welcome, meow/)).toBeVisible();
+});

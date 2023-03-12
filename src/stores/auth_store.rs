@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::{
     errors::LmsError,
-    utils::cookies::{load_cookie, save_cookie},
+    utils::cookies::{load_cookie, save_cookie}, logging::log_error,
 };
 use dotenvy_macro::dotenv;
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
@@ -17,10 +17,10 @@ static STATE_COOKIE_KEY: &str = "auth_state";
 static TOKEN_COOKIE_KEY: &str = "auth_token";
 static STATE_COOKIE_MAX_LIFE: u32 = 60 * 5;
 
-#[derive(Clone, PartialEq, Eq, Store, Debug, Default)]
+#[derive(Clone, PartialEq, Eq, Store, Debug)]
 pub struct AuthStore {
     pub logged_in: bool,
-    pub access_token: String,
+    pub access_token: Option<String>,
     pub scope: String,
     pub expires_in: u32,
     pub token_type: String,
@@ -83,7 +83,7 @@ impl AuthStore {
         self.scope = scope;
         self.expires_in = expires_in;
         self.token_type = token_type;
-        self.access_token = access_token;
+        self.access_token = Some(access_token);
 
         Ok(())
     }
@@ -95,5 +95,22 @@ impl AuthStore {
 
     fn create_login_uri(&self, state: &str) -> String {
         format!("{AUTH0_DOMAIN}/authorize?response_type=token&client_id={AUTH0_CLIENT_ID}&redirect_uri={AUTH_REDIRECT_URI}&scope=openid%20profile%20email&state={state}")
+    }
+}
+
+impl Default for AuthStore {
+    fn default() -> Self {
+        let access_token = match load_cookie(TOKEN_COOKIE_KEY) {
+            Ok(token) => token,
+            Err(error) => {
+                log_error("error loading cookie when site loads", &error);
+                Some(String::new())
+            }
+        };
+
+        Self {
+            access_token,
+            ..Default::default()
+        }
     }
 }
