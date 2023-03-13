@@ -17,7 +17,7 @@ static STATE_COOKIE_KEY: &str = "auth_state";
 static TOKEN_COOKIE_KEY: &str = "auth_token";
 static STATE_COOKIE_MAX_LIFE: u32 = 60 * 5;
 
-#[derive(Clone, PartialEq, Eq, Store, Debug)]
+#[derive(Clone, PartialEq, Eq, Store, Debug, Default)]
 pub struct AuthStore {
     pub logged_in: bool,
     pub access_token: Option<String>,
@@ -98,19 +98,3 @@ impl AuthStore {
     }
 }
 
-impl Default for AuthStore {
-    fn default() -> Self {
-        let access_token = match load_cookie(TOKEN_COOKIE_KEY) {
-            Ok(token) => token,
-            Err(error) => {
-                log_error("error loading cookie when site loads", &error);
-                Some(String::new())
-            }
-        };
-
-        Self {
-            access_token,
-            ..Default::default()
-        }
-    }
-}

@@ -3,7 +3,7 @@ use crate::{
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
         auth_store::AuthStore,
-    },
+    }, logging::log_data, api,
 };
 use serde::Deserialize;
 use ycl::{
@@ -32,6 +32,7 @@ pub fn component() -> Html {
     let navigation = use_navigator().unwrap();
 
     auth_dispatch.reduce_mut(move |store| {
+        wasm_bindgen_futures::spawn_local(async move {
         let uri = gloo::utils::window().location().href().unwrap();
         match store.handle_redirect(&uri) {
             Ok(_) => navigation.push(&Routes::Home),
@@ -44,7 +45,14 @@ pub fn component() -> Html {
                     .unwrap();
             }),
         }
+
+        if let Some(token) = store.access_token {
+            let user_info = api::auth::get_userinfo(&token).await.unwrap();
+        }
+
+        log_data("auth store:", &store);
     });
+});
 
     html! {
         <BBTitle level={BBTitleLevel::One} align={AlignText::Center}>

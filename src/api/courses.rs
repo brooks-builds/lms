@@ -12,7 +12,7 @@ use super::send_to_graphql;
 pub async fn get() -> Result<Vec<StoreCourse>, LmsError> {
     let graphql_variables = list_lms_courses::Variables {};
     let body = ListLmsCourses::build_query(graphql_variables);
-    let response = send_to_graphql::<list_lms_courses::ResponseData>(body).await?;
+    let response = send_to_graphql::<list_lms_courses::ResponseData>(body, None).await?;
 
     Ok(response
         .lms_courses
@@ -37,7 +37,7 @@ pub async fn get_by_id(id: i64) -> Result<StoreCourse, LmsError> {
     let graphql_variables = course_by_id::Variables { id };
     let body = CourseById::build_query(graphql_variables);
 
-    let response = send_to_graphql::<course_by_id::ResponseData>(body).await?;
+    let response = send_to_graphql::<course_by_id::ResponseData>(body, None).await?;
 
     if let Some(response_course) = response.lms_courses_by_pk {
         Ok(StoreCourse {
