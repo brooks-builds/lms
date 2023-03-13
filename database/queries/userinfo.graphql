@@ -1,15 +1,15 @@
 query GetUserInfo {
   userinfo {
-    sub
+    id
     email
     address {
       country
     }
     birthdate
     email_verified
-    family_name
+    first_name
     gender
-    given_name
+    last_name
     locale
     middle_name
     name
@@ -22,5 +22,6 @@ query GetUserInfo {
     updated_at
     website
     zoneinfo
+	roles
   }
 }

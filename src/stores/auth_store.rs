@@ -2,7 +2,8 @@ use std::collections::HashMap;
 
 use crate::{
     errors::LmsError,
-    utils::cookies::{load_cookie, save_cookie}, logging::log_error,
+    logging::log_error,
+    utils::cookies::{load_cookie, save_cookie},
 };
 use dotenvy_macro::dotenv;
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
@@ -24,6 +25,7 @@ pub struct AuthStore {
     pub scope: String,
     pub expires_in: u32,
     pub token_type: String,
+    pub nickname: Option<String>,
 }
 
 impl AuthStore {
@@ -38,7 +40,7 @@ impl AuthStore {
         Ok(self.create_login_uri(&state))
     }
 
-    pub fn handle_redirect(&mut self, uri: &str) -> Result<(), LmsError> {
+    pub fn handle_redirect(&mut self, uri: &str) -> Result<String, LmsError> {
         let saved_state = load_cookie(STATE_COOKIE_KEY)?;
         let parsed_uri = Url::parse(uri)
             .map_err(|error| LmsError::HandleAuthRedirectError(error.to_string()))?;
@@ -83,9 +85,9 @@ impl AuthStore {
         self.scope = scope;
         self.expires_in = expires_in;
         self.token_type = token_type;
-        self.access_token = Some(access_token);
+        self.access_token = Some(access_token.clone());
 
-        Ok(())
+        Ok(access_token)
     }
 
     fn create_state(&self) -> String {
@@ -97,4 +99,3 @@ impl AuthStore {
         format!("{AUTH0_DOMAIN}/authorize?response_type=token&client_id={AUTH0_CLIENT_ID}&redirect_uri={AUTH_REDIRECT_URI}&scope=openid%20profile%20email&state={state}")
     }
 }
-

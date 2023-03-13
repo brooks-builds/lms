@@ -1,9 +1,11 @@
 use crate::{
+    api,
+    logging::{log_data, log_error},
     router::Routes,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
         auth_store::AuthStore,
-    }, logging::log_data, api,
+    },
 };
 use serde::Deserialize;
 use ycl::{
@@ -31,28 +33,58 @@ pub fn component() -> Html {
     let (_, auth_dispatch) = use_store::<AuthStore>();
     let navigation = use_navigator().unwrap();
 
-    auth_dispatch.reduce_mut(move |store| {
-        wasm_bindgen_futures::spawn_local(async move {
-        let uri = gloo::utils::window().location().href().unwrap();
-        match store.handle_redirect(&uri) {
-            Ok(_) => navigation.push(&Routes::Home),
-            Err(error) => alert_dispatch.reduce_mut(|alert_store| {
-                *alert_store = AlertsStoreBuilder::new()
-                    .icon(BBIconType::Warning)
-                    .message("Login timed out, please try again")
-                    .alert_type(ycl::modules::banner::BBBannerType::Error)
-                    .build()
-                    .unwrap();
-            }),
-        }
+    wasm_bindgen_futures::spawn_local(async move {
+        let alert_dispatch = alert_dispatch.clone();
+        let navigation = navigation.clone();
 
-        if let Some(token) = store.access_token {
-            let user_info = api::auth::get_userinfo(&token).await.unwrap();
-        }
+        auth_dispatch
+            .reduce_mut_future(move |state| {
+                let alert_dispatch = alert_dispatch.clone();
+                let navigation = navigation.clone();
 
-        log_data("auth store:", &store);
+                Box::pin(async move {
+                    let url = gloo::utils::window().location().href().unwrap();
+                    match state.handle_redirect(&url) {
+                        Ok(token) => {
+                            match api::auth::get_userinfo(&token).await {
+                                Ok(userinfo) => {
+                                    if let Some(userinfo) = userinfo.userinfo {
+                                        state.nickname = Some(userinfo.nickname);
+                                    } else {
+                                        state.nickname = Some("learner".to_owned());
+                                    }
+
+                                    navigation.push(&Routes::Home);
+                                },
+                                Err(error) => {
+                                    log_error("error handling auth redirect", &error);
+                                    alert_dispatch.reduce_mut(move |alert_state| {
+                                        *alert_state = AlertsStoreBuilder::new()
+                                            .icon(BBIconType::Warning)
+                                            .message("Encountered an error when attempting to get your userdata")
+                                            .alert_type(ycl::modules::banner::BBBannerType::Error)
+                                            .build()
+                                            .unwrap()
+                                    });
+                                }
+                            }
+                        }
+                        Err(error) => {
+                            log_error("error handling auth redirect", &error);
+                            alert_dispatch.reduce_mut(move |alert_state| {
+                                *alert_state = AlertsStoreBuilder::new()
+                                    .icon(BBIconType::Warning)
+                                    .message("Encountered an error when logging you in, please try again")
+                                    .alert_type(ycl::modules::banner::BBBannerType::Error)
+                                    .build()
+                                    .unwrap()
+                            });
+                        }
+                    }
+                })
+            })
+            .await;
     });
-});
 
     html! {
         <BBTitle level={BBTitleLevel::One} align={AlignText::Center}>
