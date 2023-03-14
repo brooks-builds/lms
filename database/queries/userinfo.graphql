@@ -22,6 +22,8 @@ query GetUserInfo {
     updated_at
     website
     zoneinfo
-	roles
+	roles {
+	  role
+	}
   }
 }
