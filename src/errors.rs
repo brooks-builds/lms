@@ -10,8 +10,8 @@ pub enum LmsError {
     SavingCookie,
     #[error("error getting cookie: {0}")]
     GettingCookie(String),
-    #[error("Error sending request to graphQL: {0}")]
-    SendingToGraphqlApi(String),
+    #[error("Error sending request to graphQL ({0}): {1}")]
+    SendingToGraphqlApi(String, String),
     #[error("Error building alert store: {0}")]
     BuildingAlertStore(String),
     #[error("Error handling auth redirect: {0}")]

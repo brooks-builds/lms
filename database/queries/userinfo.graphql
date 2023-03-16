@@ -1,29 +1,13 @@
 query GetUserInfo {
   userinfo {
-    id
     email
-    address {
-      country
-    }
-    birthdate
     email_verified
-    first_name
-    gender
-    last_name
-    locale
-    middle_name
-    name
+    id
     nickname
-    phone_number
-    phone_number_verified
     picture
-    preferred_username
-    profile
-    updated_at
-    website
-    zoneinfo
-	roles {
-	  role
-	}
+    roles {
+      role
+    }
   }
 }
+

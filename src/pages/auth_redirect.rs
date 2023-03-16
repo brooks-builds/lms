@@ -48,6 +48,7 @@ pub fn component() -> Html {
                         Ok(token) => {
                             match api::auth::get_userinfo(&token).await {
                                 Ok(userinfo) => {
+                                    log_data("user info", &userinfo);
                                     if let Some(userinfo) = userinfo.userinfo {
                                         state.nickname = Some(userinfo.nickname);
                                     } else {

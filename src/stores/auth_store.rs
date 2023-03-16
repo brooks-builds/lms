@@ -2,7 +2,6 @@ use std::collections::HashMap;
 
 use crate::{
     errors::LmsError,
-    logging::log_error,
     utils::cookies::{load_cookie, save_cookie},
 };
 use dotenvy_macro::dotenv;
