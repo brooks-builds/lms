@@ -8,6 +8,7 @@ dotenv.config({});
 
 const GRAPHQL_URI = process.env.GRAPHQL_URI || "http://localhost:8081/v1/graphql";
 const LOGIN_URI = process.env.LOGIN_URI || "";
+const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN;
 
 test("can create account", async ({ page }) => {
 	const email = faker.internet.email(undefined, undefined, "mailinator.com");
@@ -51,7 +52,7 @@ test("can login to an account", async ({ page }) => {
 });
 
 test("revisiting website after logging in should work", async ({ page, context }) => {
-	await page.route(GRAPHQL_URI, route => route.fulfill({json: userinfoMockData}));
+	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => route.fulfill({json: userinfoMockData}));
 	await page.goto("/", {waitUntil: "networkidle"});
 	await context.addCookies([{
 		name: "auth_spec",
