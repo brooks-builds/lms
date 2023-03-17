@@ -1,11 +1,14 @@
-use graphql_client::GraphQLQuery;
-
 use crate::{
-    database_queries::{create_lms_account, get_user_info, CreateLmsAccount, GetUserInfo},
+    database_queries::{create_lms_account, CreateLmsAccount},
     errors::LmsError,
 };
+use dotenvy_macro::dotenv;
+use graphql_client::GraphQLQuery;
+use serde::{Deserialize, Serialize};
 
 use super::SendToGraphql;
+
+static AUTH0_DOMAIN: &str = dotenv!("AUTH0_DOMAIN");
 
 pub async fn create_account(
     email: String,
@@ -22,13 +25,21 @@ pub async fn create_account(
     Ok(response)
 }
 
-pub async fn get_userinfo(token: &str) -> Result<get_user_info::ResponseData, LmsError> {
-    let variables = get_user_info::Variables {};
-    let query = GetUserInfo::build_query(variables);
-    let response = SendToGraphql::new()
-        .auth(token)
-        .json(query)?
-        .send::<get_user_info::ResponseData>()
-        .await?;
+#[derive(Serialize, Deserialize, Debug)]
+pub struct UserInfo {
+    pub nickname: String,
+}
+
+pub async fn get_userinfo(token: &str) -> Result<UserInfo, LmsError> {
+    let url = format!("{AUTH0_DOMAIN}/userinfo");
+    let authorization = format!("Bearer {token}");
+    let response = gloo::net::http::Request::get(&url)
+        .header("Authorization", &authorization)
+        .send()
+        .await
+        .map_err(|error| LmsError::GettingUserInfo(error.to_string()))?
+        .json::<UserInfo>()
+        .await
+        .map_err(|error| LmsError::GettingUserInfo(error.to_string()))?;
     Ok(response)
 }

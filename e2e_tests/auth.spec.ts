@@ -51,13 +51,33 @@ test("can login to an account", async ({ page }) => {
 	await expect(await loginLink.getAttribute('href')).toMatch(LOGIN_URI);
 });
 
+test.only("auth redirect should work", async ({ page, context }) => {
+	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => route.fulfill({ json: userinfoMockData }));
+	await page.goto("/auth/login", { waitUntil: "networkidle" });
+
+	const cookies = await page.context().cookies();
+	const stateCookie = cookies.find(cookie => {
+		console.log(cookie, cookie.name == "auth_state");
+		return cookie.name == "auth_state"
+	});
+
+	if (!stateCookie) throw new Error("state cookie doesn't exist");
+
+	const redirectUri = `/auth/redirect#access_token=1234qwfpdrfyupg&scope=openid%20profile%20email&expires_in=7200&token_type=Bearer&state=${stateCookie.value}`;
+
+	await page.goto(redirectUri, { waitUntil: "networkidle" });
+
+	await expect(await page.getByText(/Welcome, meow/)).toBeVisible();
+});
+
 test("revisiting website after logging in should work", async ({ page, context }) => {
-	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => route.fulfill({json: userinfoMockData}));
-	await page.goto("/", {waitUntil: "networkidle"});
-	await context.addCookies([{
-		name: "auth_spec",
+	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => route.fulfill({ json: userinfoMockData }));
+	await page.goto("/", { waitUntil: "networkidle" });
+	await page.context().addCookies([{
+		name: "auth_token",
 		value: "1234qwfp1234qwfp",
 		url: await page.url(),
 	}]);
+	await page.goto("/", { waitUntil: "networkidle" });
 	await expect(await page.getByText(/Welcome, meow/)).toBeVisible();
 });

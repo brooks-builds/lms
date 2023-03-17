@@ -22,4 +22,6 @@ pub enum LmsError {
     AuthStateDoesNotMatch,
     #[error("Auth0 state was not found in the cookie")]
     AuthStateMissing,
+    #[error("Error getting userinfo from Auth0: {0}")]
+    GettingUserInfo(String),
 }

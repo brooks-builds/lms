@@ -26,11 +26,3 @@ pub struct CourseById;
     response_derives = "Debug, Clone"
 )]
 pub struct CreateLmsAccount;
-
-#[derive(GraphQLQuery)]
-#[graphql(
-    schema_path = "database/schema.json",
-    query_path = "database/queries/userinfo.graphql",
-    response_derives = "Debug, Clone"
-)]
-pub struct GetUserInfo;

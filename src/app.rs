@@ -28,6 +28,7 @@ pub fn component() -> Html {
                 links={create_routes()}
                 login_route={Routes::Login}
                 show_brand={true}
+                username={auth_store.nickname.clone()}
             />
             <main>
                 <Switch<Routes> render={switch} />
