@@ -15,7 +15,7 @@ jobs:
             AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
             AUTH_REDIRECT_URI: ${{ secrets.AUTH_REDIRECT_URI }}
       - name: cargo clippy
-        run: touch .env && cargo clippy
+        run: touch .env && cargo clippy -- -Dwarnings
         env:
             RUST_ENV: test
             GRAPHQL_URI: http://localhost:8081
