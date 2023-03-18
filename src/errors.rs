@@ -24,4 +24,6 @@ pub enum LmsError {
     AuthStateMissing,
     #[error("Error getting userinfo from Auth0: {0}")]
     GettingUserInfo(String),
+    #[error("Error getting the url")]
+    CannotGetURL,
 }
