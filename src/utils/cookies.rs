@@ -6,7 +6,7 @@ use crate::{errors::LmsError, logging::log_error};
 pub fn save_cookie(key: &str, value: &str, max_age: u32) -> Result<(), LmsError> {
     let secure = if is_localhost()? { "" } else { "secure" };
     let document = gloo::utils::document().unchecked_into::<HtmlDocument>();
-    let cookie = format!("{key}={value}; max-age={max_age}; samesite=strict; {secure}");
+    let cookie = format!("{key}={value}; path=/; max-age={max_age}; samesite=strict; {secure}");
     document.set_cookie(&cookie).map_err(|_error| {
         let error = LmsError::SavingCookie;
         log_error("Error storing state into cookie", &error);
@@ -35,10 +35,15 @@ pub fn load_cookie(key: &str) -> Result<Option<String>, LmsError> {
     Ok(None)
 }
 
+pub fn delete_cookie(key: &str) -> Result<(), LmsError> {
+    save_cookie(key, "", 0)
+}
+
 fn is_localhost() -> Result<bool, LmsError> {
-    let url = gloo::utils::window().location().href().map_err(|error| {
-        LmsError::CannotGetURL
-    })?;
+    let url = gloo::utils::window()
+        .location()
+        .href()
+        .map_err(|error| LmsError::CannotGetURL)?;
 
     Ok(url.contains("http://localhost"))
 }

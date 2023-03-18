@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { Cookie, expect, test } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 import { createAccount } from "./intercept_data";
 import { createAccountMockData, userinfoMockData } from "./mock_data";
@@ -9,6 +9,8 @@ dotenv.config({});
 const GRAPHQL_URI = process.env.GRAPHQL_URI || "http://localhost:8081/v1/graphql";
 const LOGIN_URI = process.env.LOGIN_URI || "";
 const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN;
+const LOGOUT_REDIRECT = process.env.LOGOUT_REDIRECT;
+const AUTH0_CLIENT_ID = process.env.AUTH0_CLIENT_ID;
 
 test("can create account", async ({ page }) => {
 	const email = faker.internet.email(undefined, undefined, "mailinator.com");
@@ -51,13 +53,12 @@ test("can login to an account", async ({ page }) => {
 	await expect(await loginLink.getAttribute('href')).toMatch(LOGIN_URI);
 });
 
-test.only("auth redirect should work", async ({ page, context }) => {
+test("auth redirect should work", async ({ page, context }) => {
 	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => route.fulfill({ json: userinfoMockData }));
 	await page.goto("/auth/login", { waitUntil: "networkidle" });
 
 	const cookies = await page.context().cookies();
 	const stateCookie = cookies.find(cookie => {
-		console.log(cookie, cookie.name == "auth_state");
 		return cookie.name == "auth_state"
 	});
 
@@ -67,7 +68,7 @@ test.only("auth redirect should work", async ({ page, context }) => {
 
 	await page.goto(redirectUri, { waitUntil: "networkidle" });
 
-	await expect(await page.getByText(/Welcome, meow/)).toBeVisible();
+	await expect(await page.getByText(/Welcome meow/)).toBeVisible();
 });
 
 test("revisiting website after logging in should work", async ({ page, context }) => {
@@ -79,5 +80,37 @@ test("revisiting website after logging in should work", async ({ page, context }
 		url: await page.url(),
 	}]);
 	await page.goto("/", { waitUntil: "networkidle" });
-	await expect(await page.getByText(/Welcome, meow/)).toBeVisible();
+	await expect(await page.getByText(/Welcome meow/)).toBeVisible();
 });
+
+test("logout", async ({ page }) => {
+	const expectedLogoutHref = `${AUTH0_DOMAIN}/v2/logout?returnTo=${LOGOUT_REDIRECT}&client_id=${AUTH0_CLIENT_ID}`
+
+	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => route.fulfill({ json: userinfoMockData }));
+	await page.route(`${AUTH0_DOMAIN}/v2/logout`, route => route.fulfill({ path: "/" }));
+	await page.goto("/", { waitUntil: "networkidle" });
+	await page.context().addCookies([{
+		name: "auth_token",
+		value: "1234qwfp1234qwfp",
+		url: await page.url(),
+	}]);
+	await page.goto("/", { waitUntil: "networkidle" });
+
+	const logoutButton = await page.getByRole("link", { name: "logout" });
+
+	await expect(logoutButton).toBeVisible();
+
+	const href = await logoutButton.getAttribute("href");
+
+	await expect(href).toBe(expectedLogoutHref);
+
+	await logoutButton.click();
+
+	await expect(page.getByRole("link", { name: "login" })).toBeVisible();
+
+	const cookies = await page.context().cookies();
+
+	for (let cookie of cookies) {
+		await expect(cookie.name).not.toMatch(/auth_token/);
+	}
+})
