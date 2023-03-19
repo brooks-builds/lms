@@ -22,16 +22,15 @@ pub async fn get() -> Result<Vec<StoreCourse>, LmsError> {
         .into_iter()
         .map(|api_course| {
             log_data("api course", &api_course);
-            let mut course = StoreCourse::default();
-            course.name = api_course.title;
-            course.id = api_course.id;
-            course.tag = api_course.lms_tag.name.into();
-            course.description = api_course.short_description;
-            course.price = api_course.price;
-            course.long_description = api_course.long_description;
-            course.trailer_uri = api_course.trailer_uri;
-
-            course
+            StoreCourse{
+                name: api_course.title,
+                id: api_course.id,
+                tag: api_course.lms_tag.name.into(),
+                description: api_course.short_description,
+                price: api_course.price,
+                long_description: api_course.long_description,
+                trailer_uri: api_course.trailer_uri,
+            }
         })
         .collect::<Vec<StoreCourse>>())
 }

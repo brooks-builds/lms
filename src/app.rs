@@ -38,7 +38,7 @@ pub fn component() -> Html {
                 Ok(token) => token,
                 Err(error) => {
                     log_error("Error loading token on app boot", &error);
-                    alert_dispatch.clone().reduce_mut(|alert_store| {
+                    alert_dispatch.reduce_mut(|alert_store| {
                         *alert_store = AlertsStoreBuilder::new()
                             .icon(BBIconType::Warning)
                             .message("Error logging in, please try logging in again")
@@ -58,7 +58,7 @@ pub fn component() -> Html {
                             match get_userinfo(&token).await {
                                 Ok(userinfo) => {
                                     auth_state.nickname = Some(userinfo.nickname);
-                                    auth_state.roles = userinfo.brooks_builds.roles.clone();
+                                    auth_state.roles = userinfo.brooks_builds.roles;
                                     auth_state.logged_in = true;
                                 }
                                 Err(error) => {
@@ -84,7 +84,6 @@ pub fn component() -> Html {
     }
 
     let logout_onclick = {
-        let alert_dispatch = alert_dispatch.clone();
         Callback::from(move |_event: ()| {
             if let Err(error) = delete_cookie("auth_token") {
                 alert_dispatch.reduce_mut(|alert_store| {

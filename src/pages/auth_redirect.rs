@@ -40,7 +40,6 @@ pub fn component() -> Html {
         auth_dispatch
             .reduce_mut_future(move |state| {
                 let alert_dispatch = alert_dispatch.clone();
-                let navigation = navigation.clone();
 
                 Box::pin(async move {
                     let url = gloo::utils::window().location().href().unwrap();

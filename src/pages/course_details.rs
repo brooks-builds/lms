@@ -35,9 +35,7 @@ pub fn component(props: &Props) -> Html {
     }
 
     {
-        let fetch_course = fetch_course.clone();
         let fetching_course = course.is_none();
-        let course_store_dispatch = course_store_dispatch.clone();
         use_effect(move || {
             let return_closure = || {};
 

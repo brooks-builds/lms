@@ -18,8 +18,8 @@ pub fn component(_props: &Props) -> Html {
         html! {
             <BBBanner
                 text={message.clone()}
-                banner_type={alert_store.alert_type.clone()}
-                icon={alert_store.icon.clone().unwrap()}
+                banner_type={alert_store.alert_type}
+                icon={alert_store.icon.unwrap()}
                 close_onclick={onclick}
             />
         }
