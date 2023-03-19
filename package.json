@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+	  "test": "playwright test"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brooks-builds/lms.git"
@@ -18,6 +20,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.6.0",
     "@faker-js/faker": "^7.6.0",
-    "@playwright/test": "^1.30.0"
+    "@playwright/test": "^1.30.0",
+    "dotenv": "^16.0.3"
   }
 }

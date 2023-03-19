@@ -38,3 +38,23 @@ test.describe('create account', async () => {
 		expect(accessibilityScanResults.violations).toEqual([]);
 	});
 });
+
+test.describe('login', async () => {
+	test('login page should not have any automatically detectable accessibility issues', async ({ page }) => {
+		await page.goto('/auth/login', { waitUntil: 'networkidle' });
+
+		const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+
+		expect(accessibilityScanResults.violations).toEqual([]);
+	});
+});
+
+test.describe('auth redirect', async () => {
+	test('auth redirect page should not have any automatically detectable accessibility issues', async ({ page }) => {
+		await page.goto('/auth/redirect', { waitUntil: 'networkidle' });
+
+		const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+
+		expect(accessibilityScanResults.violations).toEqual([]);
+	});
+});

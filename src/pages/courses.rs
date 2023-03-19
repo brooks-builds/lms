@@ -40,23 +40,18 @@ pub fn component() -> Html {
         });
     }
 
-    {
-        let load_courses_state = load_courses_state.clone();
-        let course_store_dispatch = course_store_dispatch.clone();
+    use_effect(move || {
+        if let Some(courses) = &load_courses_state.data {
+            course_store_dispatch
+                .reduce_mut(move |course_store| course_store.courses = courses.clone());
+        }
 
-        use_effect(move || {
-            if let Some(courses) = &load_courses_state.data {
-                course_store_dispatch
-                    .reduce_mut(move |course_store| course_store.courses = courses.clone());
-            }
+        if let Some(error) = &load_courses_state.error {
+            log_error("Error loading courses", error);
+        }
 
-            if let Some(error) = &load_courses_state.error {
-                log_error("Error loading courses", error);
-            }
-
-            || {}
-        });
-    }
+        || {}
+    });
 
     html! {
         <BBContainer>

@@ -14,14 +14,16 @@ jobs:
             AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
             AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
             AUTH_REDIRECT_URI: ${{ secrets.AUTH_REDIRECT_URI }}
+            LOGOUT_REDIRECT: http://localhost:8082
       - name: cargo clippy
-        run: touch .env && cargo clippy
+        run: touch .env && cargo clippy -- -Dwarnings
         env:
             RUST_ENV: test
             GRAPHQL_URI: http://localhost:8081
             AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
             AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
             AUTH_REDIRECT_URI: ${{ secrets.AUTH_REDIRECT_URI }}
+            LOGOUT_REDIRECT: http://localhost:8082
       - name: check formatting
         run: touch .env && cargo fmt --check
         env:
@@ -30,6 +32,7 @@ jobs:
             AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
             AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
             AUTH_REDIRECT_URI: ${{ secrets.AUTH_REDIRECT_URI }}
+            LOGOUT_REDIRECT: http://localhost:8082
 
   deploy:
     if: github.event_name == 'push' && github.ref_name == 'main'
@@ -58,6 +61,7 @@ jobs:
             AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
             AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
             AUTH_REDIRECT_URI: ${{ secrets.AUTH_REDIRECT_URI }}
+            LOGOUT_REDIRECT: https://learning.brooksbuilds.com/
       - name: deploy
         run: aws s3 sync dist ${{ secrets.DEPLOYMENT_URI }}
         env:
