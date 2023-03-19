@@ -60,7 +60,7 @@ jobs:
             GRAPHQL_URI: ${{ secrets.GRAPHQL_API_URI }}
             AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
             AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-            AUTH_REDIRECT_URI: ${{ secrets.AUTH_REDIRECT_URI }}
+            AUTH_REDIRECT_URI: https://learning.brooksbuilds.com/auth/redirect
             LOGOUT_REDIRECT: https://learning.brooksbuilds.com/
       - name: deploy
         run: aws s3 sync dist ${{ secrets.DEPLOYMENT_URI }}
