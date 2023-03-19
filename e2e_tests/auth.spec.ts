@@ -115,7 +115,7 @@ test("logout", async ({ page }) => {
 	}
 })
 
-test("role is displayed if user is an admin", async ({page}) => {
+test("roles are displayed", async ({page}) => {
 	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => route.fulfill({ json: userinfoMockData }));
 	await page.goto("/", { waitUntil: "networkidle" });
 	await page.context().addCookies([{
@@ -126,5 +126,38 @@ test("role is displayed if user is an admin", async ({page}) => {
 	await page.goto("/", { waitUntil: "networkidle" });
 
 	await expect(await page.getByText("Author")).toBeVisible();
+	await expect(await page.getByText("Learner")).toBeVisible();
+});
 
+test("one role is displayed", async ({page}) => {
+	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => {
+		userinfoMockData["https://brooksbuilds.com"].roles = ["Learner"];
+		route.fulfill({ json: userinfoMockData })
+	});
+	await page.goto("/", { waitUntil: "networkidle" });
+	await page.context().addCookies([{
+		name: "auth_token",
+		value: "1234qwfp1234qwfp",
+		url: await page.url(),
+	}]);
+	await page.goto("/", { waitUntil: "networkidle" });
+
+	await expect(await page.getByText("Author")).toBeVisible({visible: false});
+	await expect(await page.getByText("Learner")).toBeVisible();
+});
+
+test("Learner role is displayed if a user doesn't have a role", async ({page}) => {
+	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => {
+		userinfoMockData["https://brooksbuilds.com"].roles = [];
+		route.fulfill({ json: userinfoMockData })
+	});
+	await page.goto("/", { waitUntil: "networkidle" });
+	await page.context().addCookies([{
+		name: "auth_token",
+		value: "1234qwfp1234qwfp",
+		url: await page.url(),
+	}]);
+	await page.goto("/", { waitUntil: "networkidle" });
+
+	await expect(await page.getByText("Learner")).toBeVisible();
 });

@@ -5,6 +5,7 @@ use crate::{
 use dotenvy_macro::dotenv;
 use graphql_client::GraphQLQuery;
 use serde::{Deserialize, Serialize};
+use ycl::foundations::roles::BBRole;
 
 use super::SendToGraphql;
 
@@ -28,12 +29,19 @@ pub async fn create_account(
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UserInfo {
     pub nickname: String,
+    #[serde(rename = "https://brooksbuilds.com")]
+    pub brooks_builds: UserInfoBrooksBuilds
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct UserInfoBrooksBuilds {
+    pub roles: Vec<BBRole>
 }
 
 pub async fn get_userinfo(token: &str) -> Result<UserInfo, LmsError> {
     let url = format!("{AUTH0_DOMAIN}/userinfo");
     let authorization = format!("Bearer {token}");
-    let response = gloo::net::http::Request::get(&url)
+    let mut response = gloo::net::http::Request::get(&url)
         .header("Authorization", &authorization)
         .send()
         .await
@@ -41,5 +49,10 @@ pub async fn get_userinfo(token: &str) -> Result<UserInfo, LmsError> {
         .json::<UserInfo>()
         .await
         .map_err(|error| LmsError::GettingUserInfo(error.to_string()))?;
+
+    if response.brooks_builds.roles.is_empty() {
+        response.brooks_builds.roles.push(BBRole::Learner);
+    }
+
     Ok(response)
 }

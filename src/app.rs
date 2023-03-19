@@ -59,6 +59,7 @@ pub fn component() -> Html {
                             match get_userinfo(&token).await {
                                 Ok(userinfo) => {
                                     auth_state.nickname = Some(userinfo.nickname);
+                                    auth_state.roles = userinfo.brooks_builds.roles.clone();
                                     auth_state.logged_in = true;
                                 }
                                 Err(error) => {
@@ -123,6 +124,7 @@ pub fn component() -> Html {
                 username={auth_store.nickname.clone()}
                 logout_url={logout_url()}
                 {logout_onclick}
+                roles={auth_store.roles.clone()}
             />
             <main>
                 <Switch<Routes> render={switch} />

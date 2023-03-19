@@ -49,6 +49,7 @@ pub fn component() -> Html {
                             match api::auth::get_userinfo(&token).await {
                                 Ok(userinfo) => {
                                     state.nickname = Some(userinfo.nickname);
+                                    state.roles = userinfo.brooks_builds.roles;
                                     navigation.push(&Routes::Home);
                                 },
                                 Err(error) => {
