@@ -114,3 +114,17 @@ test("logout", async ({ page }) => {
 		await expect(cookie.name).not.toMatch(/auth_token/);
 	}
 })
+
+test("role is displayed if user is an admin", async ({page}) => {
+	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => route.fulfill({ json: userinfoMockData }));
+	await page.goto("/", { waitUntil: "networkidle" });
+	await page.context().addCookies([{
+		name: "auth_token",
+		value: "1234qwfp1234qwfp",
+		url: await page.url(),
+	}]);
+	await page.goto("/", { waitUntil: "networkidle" });
+
+	await expect(await page.getByText("Author")).toBeVisible();
+
+});

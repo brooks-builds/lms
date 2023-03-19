@@ -8,6 +8,7 @@ use dotenvy_macro::dotenv;
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use url::form_urlencoded;
 use url::Url;
+use ycl::foundations::roles::BBRole;
 use yewdux::store::Store;
 
 static AUTH0_DOMAIN: &str = dotenv!("AUTH0_DOMAIN");
@@ -26,6 +27,7 @@ pub struct AuthStore {
     pub expires_in: u32,
     pub token_type: String,
     pub nickname: Option<String>,
+    pub roles: Vec<BBRole>,
 }
 
 impl AuthStore {
