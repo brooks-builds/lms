@@ -30,12 +30,12 @@ pub async fn create_account(
 pub struct UserInfo {
     pub nickname: String,
     #[serde(rename = "https://brooksbuilds.com")]
-    pub brooks_builds: UserInfoBrooksBuilds
+    pub brooks_builds: UserInfoBrooksBuilds,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UserInfoBrooksBuilds {
-    pub roles: Vec<BBRole>
+    pub roles: Vec<BBRole>,
 }
 
 pub async fn get_userinfo(token: &str) -> Result<UserInfo, LmsError> {

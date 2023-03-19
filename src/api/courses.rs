@@ -22,7 +22,7 @@ pub async fn get() -> Result<Vec<StoreCourse>, LmsError> {
         .into_iter()
         .map(|api_course| {
             log_data("api course", &api_course);
-            StoreCourse{
+            StoreCourse {
                 name: api_course.title,
                 id: api_course.id,
                 tag: api_course.lms_tag.name.into(),
