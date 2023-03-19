@@ -1,4 +1,3 @@
-use gloo::utils::document;
 use ycl::{
     elements::icon::BBIconType,
     modules::{
@@ -16,9 +15,9 @@ use yew_router::prelude::*;
 use yewdux::prelude::use_store;
 
 use crate::{
-    api::{self, auth::get_userinfo},
+    api::auth::get_userinfo,
     components::alert::Alert,
-    logging::{self, log_error},
+    logging::log_error,
     router::{switch, Routes},
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
@@ -99,7 +98,7 @@ pub fn component() -> Html {
                 log_error("error deleting token cookie", &error);
             }
 
-            if let Err(error) = gloo::utils::window().location().set_href(&logout_url()) {
+            if let Err(_error) = gloo::utils::window().location().set_href(&logout_url()) {
                 alert_dispatch.reduce_mut(|alert_store| {
                     *alert_store = AlertsStoreBuilder::new()
                         .icon(BBIconType::Warning)

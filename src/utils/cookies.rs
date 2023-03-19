@@ -43,7 +43,7 @@ fn is_localhost() -> Result<bool, LmsError> {
     let url = gloo::utils::window()
         .location()
         .href()
-        .map_err(|error| LmsError::CannotGetURL)?;
+        .map_err(|_error| LmsError::CannotGetURL)?;
 
     Ok(url.contains("http://localhost"))
 }

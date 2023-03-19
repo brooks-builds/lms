@@ -17,8 +17,6 @@ pub enum LmsError {
     #[error("Error handling auth redirect: {0}")]
     HandleAuthRedirectError(String),
     #[error("There was an error, please refresh your browser and try again")]
-    AuthGetState,
-    #[error("Auth0 state does not match the saved state")]
     AuthStateDoesNotMatch,
     #[error("Auth0 state was not found in the cookie")]
     AuthStateMissing,

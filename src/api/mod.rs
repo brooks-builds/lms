@@ -24,13 +24,6 @@ impl SendToGraphql {
         Self { request }
     }
 
-    pub fn auth(mut self, token: &str) -> Self {
-        self.request = self
-            .request
-            .header("Authorization", &format!("Bearer {token}"));
-        self
-    }
-
     pub fn json(mut self, body: impl Serialize) -> Result<Self, LmsError> {
         self.request = self.request.json(&body).map_err(|error| {
             LmsError::SendingToGraphqlApi("adding json".to_owned(), error.to_string())
