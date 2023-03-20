@@ -3,6 +3,7 @@ use yewdux::prelude::*;
 #[derive(Clone, Default, PartialEq, Eq, Store, Debug)]
 pub struct CourseStore {
     pub courses: Vec<StoreCourse>,
+    pub tags: Vec<StoreTag>,
 }
 
 impl CourseStore {
@@ -36,4 +37,10 @@ impl From<String> for CourseTag {
             _ => Self::None,
         }
     }
+}
+
+#[derive(Clone, Default, PartialEq, Eq, Debug)]
+pub struct StoreTag {
+    pub id: i64,
+    pub name: String,
 }

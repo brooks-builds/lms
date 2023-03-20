@@ -1,0 +1,6 @@
+query LmsTags {
+  lms_tags {
+    id
+    name
+  }
+}

@@ -1,10 +1,12 @@
 use graphql_client::GraphQLQuery;
 
 use crate::{
-    database_queries::{course_by_id, list_lms_courses, CourseById, ListLmsCourses},
+    database_queries::{
+        course_by_id, list_lms_courses, lms_tags, CourseById, ListLmsCourses, LmsTags,
+    },
     errors::LmsError,
     logging::log_data,
-    stores::courses_store::StoreCourse,
+    stores::courses_store::{StoreCourse, StoreTag},
 };
 
 use super::SendToGraphql;
@@ -57,4 +59,25 @@ pub async fn get_by_id(id: i64) -> Result<StoreCourse, LmsError> {
     } else {
         Err(LmsError::CourseNotFound)
     }
+}
+
+pub async fn get_tags() -> Result<Vec<StoreTag>, LmsError> {
+    let variables = lms_tags::Variables {};
+    let body = LmsTags::build_query(variables);
+
+    let response = SendToGraphql::new()
+        .json(body)?
+        .send::<lms_tags::ResponseData>()
+        .await?;
+
+    let store_tags = response
+        .lms_tags
+        .into_iter()
+        .map(|lms_tag| StoreTag {
+            id: lms_tag.id,
+            name: lms_tag.name,
+        })
+        .collect::<Vec<StoreTag>>();
+
+    Ok(store_tags)
 }

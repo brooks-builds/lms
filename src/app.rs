@@ -152,5 +152,10 @@ fn create_routes() -> Vec<BBNavbarLink<Routes>> {
             .label("Create Course")
             .build()
             .unwrap(),
+        BBNavbarLinkBuilder::new()
+            .to(Routes::Tags)
+            .label("Tags")
+            .build()
+            .unwrap(),
     ]
 }
