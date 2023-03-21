@@ -1,14 +1,16 @@
 use ycl::{
     elements::title::{BBTitle, BBTitleLevel},
-    foundations::align_text::AlignText, modules::card_list::BBCardDataBuilder,
+    foundations::{align_text::AlignText, container::BBContainer},
+    modules::card_list::{BBCardData, BBCardDataBuilder, BBCardList},
 };
-use yew::{function_component, html, use_effect, Html};
+use yew::{function_component, html, Html};
 use yew_hooks::use_effect_once;
 use yewdux::prelude::use_store;
 
 use crate::{
     api,
     logging::log_error,
+    router::Routes,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
         courses_store::CourseStore,
@@ -45,13 +47,27 @@ pub fn component() -> Html {
         || ()
     });
 
-    let tag_cards = courses_store.tags.iter().map(|tag| {
-        BBCardDataBuilder::new()
-            .
-            .build()
-    })
+    let tag_cards = courses_store
+        .tags
+        .iter()
+        .map(|tag| {
+            BBCardDataBuilder::<Routes>::new()
+                .tag(tag.name.as_str().into())
+                .title(&tag.name)
+                .build()
+        })
+        .collect::<Vec<_>>();
 
     html! {
-        <BBTitle level={BBTitleLevel::One} align={AlignText::Center}>{"Course Tags"}</BBTitle>
+        <BBContainer>
+            <BBTitle level={BBTitleLevel::One} align={AlignText::Center}>{"Course Tags"}</BBTitle>
+            <BBCardList<Routes>
+                card_data={tag_cards}
+                card_title_level={BBTitleLevel::Two}
+                action="Create Tag"
+                title="Tags"
+                more={true}
+            />
+        </BBContainer>
     }
 }
