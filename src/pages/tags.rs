@@ -1,9 +1,17 @@
+use std::collections::HashMap;
+
 use ycl::{
-    elements::title::{BBTitle, BBTitleLevel},
-    foundations::{align_text::AlignText, container::BBContainer},
+    elements::{
+        table::BBTable,
+        title::{BBTitle, BBTitleLevel},
+    },
+    foundations::{
+        align_text::AlignText,
+        container::{BBContainer, BBContainerMargin},
+    },
     modules::card_list::{BBCardData, BBCardDataBuilder, BBCardList},
 };
-use yew::{function_component, html, Html};
+use yew::{function_component, html, AttrValue, Html};
 use yew_hooks::use_effect_once;
 use yewdux::prelude::use_store;
 
@@ -47,27 +55,22 @@ pub fn component() -> Html {
         || ()
     });
 
-    let tag_cards = courses_store
+    let tag_titles = vec!["Tag Name".into()];
+
+    let tag_values = courses_store
         .tags
         .iter()
-        .map(|tag| {
-            BBCardDataBuilder::<Routes>::new()
-                .tag(tag.name.as_str().into())
-                .title(&tag.name)
-                .build()
+        .map(|store_tag| {
+            let mut row = HashMap::new();
+            row.insert("Tag Name".into(), store_tag.name.clone().into());
+            row
         })
-        .collect::<Vec<_>>();
+        .collect::<Vec<HashMap<AttrValue, AttrValue>>>();
 
     html! {
-        <BBContainer>
+        <BBContainer margin={BBContainerMargin::Normal}>
             <BBTitle level={BBTitleLevel::One} align={AlignText::Center}>{"Course Tags"}</BBTitle>
-            <BBCardList<Routes>
-                card_data={tag_cards}
-                card_title_level={BBTitleLevel::Two}
-                action="Create Tag"
-                title="Tags"
-                more={true}
-            />
+            <BBTable titles={tag_titles} values={tag_values} />
         </BBContainer>
     }
 }
