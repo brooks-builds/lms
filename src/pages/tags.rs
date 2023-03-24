@@ -1,7 +1,11 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, ops::Deref};
 
+use web_sys::FormData;
 use ycl::{
     elements::{
+        button::{BBButton, BBButtonStyle, BBButtonType},
+        form::BBForm,
+        input::BBInput,
         table::BBTable,
         title::{BBTitle, BBTitleLevel},
     },
@@ -11,13 +15,13 @@ use ycl::{
     },
     modules::card_list::{BBCardData, BBCardDataBuilder, BBCardList},
 };
-use yew::{function_component, html, AttrValue, Html};
+use yew::{function_component, html, use_state, AttrValue, Callback, Html};
 use yew_hooks::use_effect_once;
 use yewdux::prelude::use_store;
 
 use crate::{
     api,
-    logging::log_error,
+    logging::{log_data, log_error},
     router::Routes,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
@@ -67,9 +71,42 @@ pub fn component() -> Html {
         })
         .collect::<Vec<HashMap<AttrValue, AttrValue>>>();
 
+    let new_tag_state = use_state(|| AttrValue::from(""));
+
+    let new_tag_onsubmit = {
+        let new_tag_state = new_tag_state.clone();
+
+        Callback::from(move |event: FormData| {
+            let tag_name = event.get("tag_name");
+            log_data("tag name", tag_name);
+
+            new_tag_state.set(AttrValue::from(""));
+        })
+    };
+
+    let new_tag_onchange = {
+        let new_tag_state = new_tag_state.clone();
+        Callback::from(move |event: AttrValue| {
+            new_tag_state.set(event);
+        })
+    };
+
     html! {
         <BBContainer margin={BBContainerMargin::Normal}>
             <BBTitle level={BBTitleLevel::One} align={AlignText::Center}>{"Course Tags"}</BBTitle>
+            <BBTitle level={BBTitleLevel::Two}>{"Create Tag"}</BBTitle>
+            <BBForm onsubmit={new_tag_onsubmit}>
+                <BBInput
+                    id="tag-name"
+                    label="Tag Name"
+                    name="tag_name"
+                    value={new_tag_state.deref().clone()}
+                    onchange={new_tag_onchange}
+                />
+                <BBButton button_style={BBButtonStyle::PrimaryLight} button_type={BBButtonType::Submit}>{"Create Tag"}</BBButton>
+                <pre>{&*new_tag_state}</pre>
+            </BBForm>
+
             <BBTable titles={tag_titles} values={tag_values} />
         </BBContainer>
     }
