@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use stylist::{yew::styled_component, Style};
 use web_sys::FormData;
 use ycl::{
@@ -82,6 +84,26 @@ pub fn component() -> Html {
         || {}
     });
 
+    let username_onchange = {
+        let account_state = account_state.clone();
+
+        Callback::from(move |email: AttrValue| {
+            let mut state = account_state.deref().clone();
+            state.email = Some(email.to_string());
+            account_state.set(state);
+        })
+    };
+
+    let password_onchange = {
+        let account_state = account_state.clone();
+
+        Callback::from(move |password: AttrValue| {
+            let mut state = account_state.deref().clone();
+            state.password = Some(password.to_string());
+            account_state.set(state);
+        })
+    };
+
     html! {
         <BBContainer>
             <BBTitle align={AlignText::Center} level={BBTitleLevel::One}>{"Create Account"}</BBTitle>
@@ -94,6 +116,7 @@ pub fn component() -> Html {
                         name="email"
                         required={true}
                         value={account_state.email.clone().unwrap_or_default()}
+                        onchange={username_onchange}
                     />
                     <BBInput
                         id="password"
@@ -103,6 +126,7 @@ pub fn component() -> Html {
                         required={true}
                         message="Password requirements: 8 characters, 3 of the four types of characters ( a-z, A-Z, 0-9, !@#$%^&*() )"
                         value={account_state.password.clone().unwrap_or_default()}
+                        onchange={password_onchange}
                     />
                     <div>
                         <BBButton
@@ -119,7 +143,7 @@ pub fn component() -> Html {
     }
 }
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 struct NewUser {
     pub email: Option<String>,
     pub password: Option<String>,

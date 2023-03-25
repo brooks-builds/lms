@@ -1,0 +1,7 @@
+mutation CreateTag($name: String!) {
+  insert_lms_tags_one(object: {name: $name}) {
+    id
+    name
+  }
+}
+

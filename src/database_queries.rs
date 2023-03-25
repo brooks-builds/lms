@@ -34,3 +34,11 @@ pub struct CreateLmsAccount;
     response_derives = "Debug, Clone"
 )]
 pub struct LmsTags;
+
+#[derive(GraphQLQuery)]
+#[graphql(
+    schema_path = "database/schema.json",
+    query_path = "database/queries/create_tag.graphql",
+    response_derives = "Debug, Clone"
+)]
+pub struct CreateTag;

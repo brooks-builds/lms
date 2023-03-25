@@ -1,5 +1,6 @@
 pub mod auth;
 pub mod courses;
+pub mod tags;
 
 use dotenvy_macro::dotenv;
 use gloo::net::http::Request;

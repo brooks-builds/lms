@@ -13,9 +13,7 @@ const routes = [
 ];
 
 for (let route of routes) {
-	if (route != "/tags") continue;
-
-	test.only(`${route} should not have any automatically detectable accessibility issues`, async ({ page }) => {
+	test(`${route} should not have any automatically detectable accessibility issues`, async ({ page }) => {
 		await page.route(GRAPHQL_URI, async route => {
 			const json = { "data": courseListMockData };
 			await route.fulfill({ json });

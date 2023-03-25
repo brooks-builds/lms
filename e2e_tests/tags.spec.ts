@@ -24,24 +24,29 @@ test("Author can see a list of existing tags", async ({ page }) => {
 	}
 });
 
-test.only("Author can create a new Tag", async ({ page }) => {
+test("Author can create a new Tag", async ({ page }) => {
 	const tagName = faker.random.word();
 
 	await page.route(`${GRAPHQL_URI}`, route => {
 		const request = route.request();
-		const postData = request.postData() || "";
+		const postData = request.postData() || '';
 		const tags = tagsMockData();
-
-		if (postData.search(/mutation/)) {
-			tags.data.lms_tags.push({ id: 50, name: tagName });
-		}
 
 		return route.fulfill({ json: tags })
 	});
 	await login(Role.Author, page);
-	await page.goto("/tags");
+	await page.getByRole("link", { name: "Tags" }).first().click();
 
 	await expect(page.getByText(tagName)).toBeVisible({ visible: false });
+
+	await page.route(`${GRAPHQL_URI}`, route => {
+		const request = route.request();
+		const postData = request.postData() || '';
+		const tags = tagsMockData();
+		tags.data.lms_tags.push({ id: 50, name: tagName });
+
+		return route.fulfill({ json: tags })
+	});
 
 	const tagNameInput = page.getByLabel("Tag Name");
 	await tagNameInput.type(tagName);

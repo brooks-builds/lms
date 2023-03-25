@@ -34,30 +34,34 @@ pub fn component() -> Html {
     let (courses_store, courses_dispatch) = use_store::<CourseStore>();
     let (_, alert_dispatch) = use_store::<AlertsStore>();
 
-    use_effect_once(move || {
+    {
+        let alert_dispatch = alert_dispatch.clone();
         let courses_dispatch = courses_dispatch.clone();
+        use_effect_once(move || {
+            let courses_dispatch = courses_dispatch.clone();
 
-        wasm_bindgen_futures::spawn_local(async move {
-            match api::courses::get_tags().await {
-                Ok(store_tags) => courses_dispatch.reduce_mut(|course_store| {
-                    course_store.tags = store_tags;
-                }),
-                Err(error) => {
-                    log_error("Error getting tags", &error);
-                    alert_dispatch.reduce_mut(|alert_store| {
-                        *alert_store = AlertsStoreBuilder::new()
-                            .icon(ycl::elements::icon::BBIconType::Warning)
-                            .message("Error getting tags")
-                            .alert_type(ycl::modules::banner::BBBannerType::Error)
-                            .build()
-                            .unwrap();
-                    })
+            wasm_bindgen_futures::spawn_local(async move {
+                match api::courses::get_tags().await {
+                    Ok(store_tags) => courses_dispatch.reduce_mut(|course_store| {
+                        course_store.tags = store_tags;
+                    }),
+                    Err(error) => {
+                        log_error("Error getting tags", &error);
+                        alert_dispatch.reduce_mut(|alert_store| {
+                            *alert_store = AlertsStoreBuilder::new()
+                                .icon(ycl::elements::icon::BBIconType::Warning)
+                                .message("Error getting tags")
+                                .alert_type(ycl::modules::banner::BBBannerType::Error)
+                                .build()
+                                .unwrap();
+                        })
+                    }
                 }
-            }
-        });
+            });
 
-        || ()
-    });
+            || ()
+        });
+    }
 
     let tag_titles = vec!["Tag Name".into()];
 
@@ -75,12 +79,76 @@ pub fn component() -> Html {
 
     let new_tag_onsubmit = {
         let new_tag_state = new_tag_state.clone();
+        let alert_dispatch = alert_dispatch.clone();
+        let courses_dispatch = courses_dispatch.clone();
 
         Callback::from(move |event: FormData| {
-            let tag_name = event.get("tag_name");
-            log_data("tag name", tag_name);
+            let tag_name = if let Some(name) = event.get("tag_name").as_string() {
+                if name.is_empty() {
+                    alert_dispatch.clone().reduce_mut(|alert_store| {
+                        *alert_store = AlertsStoreBuilder::new()
+                            .icon(ycl::elements::icon::BBIconType::Warning)
+                            .message("Cannot create a tag without a name")
+                            .alert_type(ycl::modules::banner::BBBannerType::Error)
+                            .build()
+                            .unwrap();
+                    });
+                    return;
+                }
+                name
+            } else {
+                alert_dispatch.clone().reduce_mut(|alert_store| {
+                    *alert_store = AlertsStoreBuilder::new()
+                        .icon(ycl::elements::icon::BBIconType::Warning)
+                        .message("Error creating new tag")
+                        .alert_type(ycl::modules::banner::BBBannerType::Error)
+                        .build()
+                        .unwrap();
+                });
+                return;
+            };
+            let new_tag_state = new_tag_state.clone();
+            let alert_dispatch = alert_dispatch.clone();
+            let courses_dispatch = courses_dispatch.clone();
 
-            new_tag_state.set(AttrValue::from(""));
+            wasm_bindgen_futures::spawn_local(async move {
+                match api::tags::insert_tag(tag_name).await {
+                    Ok(tag) => courses_dispatch.reduce_mut(move |courses_store| {
+                        let tag = if let Some(tag) = tag.insert_lms_tags_one {
+                            tag
+                        } else {
+                            alert_dispatch.clone().reduce_mut(move |alert_store| {
+                                *alert_store = AlertsStoreBuilder::new()
+                                    .icon(ycl::elements::icon::BBIconType::Warning)
+                                    .message("Error creating new tag")
+                                    .alert_type(ycl::modules::banner::BBBannerType::Error)
+                                    .build()
+                                    .unwrap();
+                            });
+                            return;
+                        };
+
+                        courses_store
+                            .tags
+                            .push(crate::stores::courses_store::StoreTag {
+                                id: tag.id,
+                                name: tag.name,
+                            })
+                    }),
+                    Err(error) => {
+                        log_error("error creating new tag", &error);
+                        alert_dispatch.reduce_mut(move |alert_store| {
+                            *alert_store = AlertsStoreBuilder::new()
+                                .icon(ycl::elements::icon::BBIconType::Warning)
+                                .message("Error creating new tag")
+                                .alert_type(ycl::modules::banner::BBBannerType::Error)
+                                .build()
+                                .unwrap();
+                        });
+                    }
+                }
+                new_tag_state.set(AttrValue::from(""));
+            });
         })
     };
 
@@ -100,11 +168,10 @@ pub fn component() -> Html {
                     id="tag-name"
                     label="Tag Name"
                     name="tag_name"
-                    value={new_tag_state.deref().clone()}
+                    value={new_tag_state.deref()}
                     onchange={new_tag_onchange}
                 />
                 <BBButton button_style={BBButtonStyle::PrimaryLight} button_type={BBButtonType::Submit}>{"Create Tag"}</BBButton>
-                <pre>{&*new_tag_state}</pre>
             </BBForm>
 
             <BBTable titles={tag_titles} values={tag_values} />
