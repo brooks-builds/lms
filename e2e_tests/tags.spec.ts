@@ -56,6 +56,51 @@ test("Author can create a new Tag", async ({ page }) => {
 	await expect(page.getByText(tagName)).toBeVisible();
 });
 
-// test("Author can create a new Tag by pressing the submit button", async ({ page }) => {
+test("Author can create a new Tag by pressing the submit button", async ({ page }) => {
+	const tagName = faker.random.word();
+
+	await page.route(`${GRAPHQL_URI}`, route => {
+		const request = route.request();
+		const postData = request.postData() || '';
+		const tags = tagsMockData();
+
+		return route.fulfill({ json: tags })
+	});
+	await login(Role.Author, page);
+	await page.getByRole("link", { name: "Tags" }).first().click();
+
+	await expect(page.getByText(tagName)).toBeVisible({ visible: false });
+
+	await page.route(`${GRAPHQL_URI}`, route => {
+		const request = route.request();
+		const postData = request.postData() || '';
+		const tags = createdTagMockData(tagName);
+
+		return route.fulfill({ json: tags })
+	});
+
+	const tagNameInput = page.getByLabel("Tag Name");
+	await tagNameInput.type(tagName);
+	await page.getByRole("button", {name: "Create Tag"}).click();
+	const inputValue = await tagNameInput.inputValue();
+	expect(inputValue).toBe("");
+
+	await expect(page.getByText(tagName)).toBeVisible();
+});
+
+test("Author can't create a new Tag with an empty name", async ({ page }) => {
+	await page.route(`${GRAPHQL_URI}`, route => {
+		const request = route.request();
+		const postData = request.postData() || '';
+		const tags = tagsMockData();
+
+		return route.fulfill({ json: tags })
+	});
+	await login(Role.Author, page);
+	await page.getByRole("link", { name: "Tags" }).first().click();
+	await page.getByRole("button", {name: "Create Tag"}).click();
+	await expect(page.getByText("Cannot create a tag without a name")).toBeVisible();
+});
+
 // test("Author cannot create a tag with the same name");
 // test("Author cannot create a tag with an empty name");
