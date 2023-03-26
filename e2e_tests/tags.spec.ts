@@ -60,8 +60,6 @@ test("Author can create a new Tag by pressing the submit button", async ({ page 
 	const tagName = faker.random.word();
 
 	await page.route(`${GRAPHQL_URI}`, route => {
-		const request = route.request();
-		const postData = request.postData() || '';
 		const tags = tagsMockData();
 
 		return route.fulfill({ json: tags })
@@ -72,8 +70,6 @@ test("Author can create a new Tag by pressing the submit button", async ({ page 
 	await expect(page.getByText(tagName)).toBeVisible({ visible: false });
 
 	await page.route(`${GRAPHQL_URI}`, route => {
-		const request = route.request();
-		const postData = request.postData() || '';
 		const tags = createdTagMockData(tagName);
 
 		return route.fulfill({ json: tags })
@@ -90,8 +86,6 @@ test("Author can create a new Tag by pressing the submit button", async ({ page 
 
 test("Author can't create a new Tag with an empty name", async ({ page }) => {
 	await page.route(`${GRAPHQL_URI}`, route => {
-		const request = route.request();
-		const postData = request.postData() || '';
 		const tags = tagsMockData();
 
 		return route.fulfill({ json: tags })
