@@ -77,8 +77,8 @@ pub fn component() -> Html {
 
     let new_tag_onsubmit = {
         let new_tag_state = new_tag_state.clone();
-        let alert_dispatch = alert_dispatch.clone();
-        let courses_dispatch = courses_dispatch.clone();
+        let alert_dispatch = alert_dispatch;
+        let courses_dispatch = courses_dispatch;
 
         Callback::from(move |event: FormData| {
             let tag_name = if let Some(name) = event.get("tag_name").as_string() {
@@ -115,7 +115,7 @@ pub fn component() -> Html {
                         let tag = if let Some(tag) = tag.insert_lms_tags_one {
                             tag
                         } else {
-                            alert_dispatch.clone().reduce_mut(move |alert_store| {
+                            alert_dispatch.reduce_mut(move |alert_store| {
                                 *alert_store = AlertsStoreBuilder::new()
                                     .icon(ycl::elements::icon::BBIconType::Warning)
                                     .message("Error creating new tag")
