@@ -1,5 +1,5 @@
 import test, { expect } from "@playwright/test";
-import { tagsMockData } from "./mock_data";
+import { createdTagMockData, tagsMockData } from "./mock_data";
 import { login, Role } from "./utils";
 import { faker } from "@faker-js/faker";
 
@@ -42,8 +42,7 @@ test("Author can create a new Tag", async ({ page }) => {
 	await page.route(`${GRAPHQL_URI}`, route => {
 		const request = route.request();
 		const postData = request.postData() || '';
-		const tags = tagsMockData();
-		tags.data.lms_tags.push({ id: 50, name: tagName });
+		const tags = createdTagMockData(tagName);
 
 		return route.fulfill({ json: tags })
 	});

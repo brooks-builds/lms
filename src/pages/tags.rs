@@ -13,7 +13,6 @@ use ycl::{
         align_text::AlignText,
         container::{BBContainer, BBContainerMargin},
     },
-    modules::card_list::{BBCardData, BBCardDataBuilder, BBCardList},
 };
 use yew::{function_component, html, use_state, AttrValue, Callback, Html};
 use yew_hooks::use_effect_once;
@@ -21,8 +20,7 @@ use yewdux::prelude::use_store;
 
 use crate::{
     api,
-    logging::{log_data, log_error},
-    router::Routes,
+    logging::log_error,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
         courses_store::CourseStore,
