@@ -1,6 +1,6 @@
 use crate::{
     api,
-    logging::log_error,
+    logging::{log_error, log_data},
     router::Routes,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
@@ -43,6 +43,7 @@ pub fn component() -> Html {
 
                 Box::pin(async move {
                     let url = gloo::utils::window().location().href().unwrap();
+                    log_data("url", &url);
                     match state.handle_redirect(&url) {
                         Ok(token) => {
                             match api::auth::get_userinfo(&token).await {

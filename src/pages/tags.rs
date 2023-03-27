@@ -16,6 +16,7 @@ use ycl::{
 };
 use yew::{function_component, html, use_state, AttrValue, Callback, Html};
 use yew_hooks::use_effect_once;
+use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
 use crate::{
@@ -23,14 +24,22 @@ use crate::{
     logging::log_error,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
-        courses_store::CourseStore,
-    },
+        courses_store::CourseStore, auth_store::AuthStore,
+    }, router::Routes,
 };
 
 #[function_component(Tags)]
 pub fn component() -> Html {
-    let (courses_store, courses_dispatch) = use_store::<CourseStore>();
     let (_, alert_dispatch) = use_store::<AlertsStore>();
+    let (auth_store, _) = use_store::<AuthStore>();
+    let navigator = use_navigator().unwrap();
+
+    if !auth_store.is_author() {
+        alert_dispatch.reduce_mut(|alert_state| *alert_state = AlertsStoreBuilder::new_error("Only Authors can manage tags"));
+        navigator.push(&Routes::Home);
+    }
+
+    let (courses_store, courses_dispatch) = use_store::<CourseStore>();
 
     {
         let alert_dispatch = alert_dispatch.clone();

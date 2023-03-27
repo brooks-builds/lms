@@ -57,4 +57,13 @@ impl AlertsStoreBuilder {
             alert_type: self.alert_type,
         })
     }
+
+    pub fn new_error(message: impl Into<AttrValue>) -> AlertsStore {
+        Self::new()
+            .message(message)
+            .icon(BBIconType::Warning)
+            .alert_type(BBBannerType::Error)
+            .build()
+            .unwrap()
+    }
 }

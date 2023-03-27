@@ -20,8 +20,8 @@ pub struct SendToGraphql {
 }
 
 impl SendToGraphql {
-    pub fn new() -> Self {
-        let request = Request::post(GRAPHQL_URI);
+    pub fn new(token: &str) -> Self {
+        let request = Request::post(GRAPHQL_URI).header("Authorization", &format!("Bearer {token}"));
         Self { request }
     }
 

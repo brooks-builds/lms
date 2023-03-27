@@ -7,7 +7,7 @@ use ycl::{
             navbar_link::{BBNavbarLink, BBNavbarLinkBuilder},
         },
         site_footer::BBSiteFooter,
-    },
+    }, foundations::roles::BBRole,
 };
 use yew::prelude::*;
 use yew_hooks::use_effect_once;
@@ -116,7 +116,7 @@ pub fn component() -> Html {
             <BBNavbar<Routes>
                 create_account_route={Routes::CreateAccount}
                 is_authenticated={auth_store.logged_in}
-                links={create_routes()}
+                links={create_routes(&auth_store.roles)}
                 login_route={Routes::Login}
                 show_brand={true}
                 username={auth_store.nickname.clone()}
@@ -128,15 +128,15 @@ pub fn component() -> Html {
                 <Switch<Routes> render={switch} />
             </main>
             <BBSiteFooter<Routes>
-                left_links={create_routes()}
+                left_links={create_routes(&auth_store.roles)}
                 right_links={vec![]}
             />
         </BrowserRouter>
     }
 }
 
-fn create_routes() -> Vec<BBNavbarLink<Routes>> {
-    vec![
+fn create_routes(roles: &[BBRole]) -> Vec<BBNavbarLink<Routes>> {
+    let mut routes = vec![
         BBNavbarLinkBuilder::new()
             .to(Routes::Home)
             .label("Home")
@@ -152,10 +152,19 @@ fn create_routes() -> Vec<BBNavbarLink<Routes>> {
             .label("Create Course")
             .build()
             .unwrap(),
+    ];
+
+    for role in roles {
+        match role {
+            BBRole::Author => routes.push(
         BBNavbarLinkBuilder::new()
             .to(Routes::Tags)
             .label("Tags")
             .build()
             .unwrap(),
-    ]
+                ),
+            BBRole::Learner => (),
+        }
+    }
+    routes
 }

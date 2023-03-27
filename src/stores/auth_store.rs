@@ -92,13 +92,17 @@ impl AuthStore {
         Ok(access_token)
     }
 
+    pub fn is_author(&self) -> bool {
+        self.roles.contains(&BBRole::Author)
+    }
+
     fn create_state(&self) -> String {
         let mut rng = thread_rng();
         (0..24).map(|_| rng.sample(Alphanumeric) as char).collect()
     }
 
     fn create_login_uri(&self, state: &str) -> String {
-        format!("{AUTH0_DOMAIN}/authorize?response_type=token&client_id={AUTH0_CLIENT_ID}&redirect_uri={AUTH_REDIRECT_URI}&scope=openid%20profile%20email&state={state}")
+        format!("{AUTH0_DOMAIN}/authorize?response_type=token&client_id={AUTH0_CLIENT_ID}&redirect_uri={AUTH_REDIRECT_URI}&scope=openid%20profile%20email&state={state}&audience=Hasura")
     }
 }
 

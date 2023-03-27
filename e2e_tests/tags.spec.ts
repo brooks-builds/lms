@@ -96,5 +96,11 @@ test("Author can't create a new Tag with an empty name", async ({ page }) => {
 	await expect(page.getByText("Cannot create a tag without a name")).toBeVisible();
 });
 
-// test("Author cannot create a tag with the same name");
-// test("Author cannot create a tag with an empty name");
+test("learner can't navigate to the tags page", async ({page}) => {
+	await login(Role.Learner, page);
+	await expect(page.getByText("Author")).not.toBeVisible();
+	await expect(page.getByRole("link", {name: "Tags"})).not.toBeVisible();
+	await page.goto("/tags", {waitUntil: "networkidle"});
+	await expect(page.getByText("Only Authors can manage tags")).toBeVisible();
+})
+
