@@ -1,6 +1,6 @@
 use crate::{
     api,
-    logging::{log_error, log_data},
+    logging::{log_data, log_error},
     router::Routes,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
@@ -43,13 +43,13 @@ pub fn component() -> Html {
 
                 Box::pin(async move {
                     let url = gloo::utils::window().location().href().unwrap();
-                    log_data("url", &url);
                     match state.handle_redirect(&url) {
                         Ok(token) => {
                             match api::auth::get_userinfo(&token).await {
                                 Ok(userinfo) => {
                                     state.nickname = Some(userinfo.nickname);
                                     state.roles = userinfo.brooks_builds.roles;
+                                    state.access_token = Some(token.clone());
                                     navigation.push(&Routes::Home);
                                 },
                                 Err(error) => {

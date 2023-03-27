@@ -22,10 +22,12 @@ use yewdux::prelude::use_store;
 use crate::{
     api,
     logging::log_error,
+    router::Routes,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
-        courses_store::CourseStore, auth_store::AuthStore,
-    }, router::Routes,
+        auth_store::AuthStore,
+        courses_store::CourseStore,
+    },
 };
 
 #[function_component(Tags)]
@@ -35,7 +37,9 @@ pub fn component() -> Html {
     let navigator = use_navigator().unwrap();
 
     if !auth_store.is_author() {
-        alert_dispatch.reduce_mut(|alert_state| *alert_state = AlertsStoreBuilder::new_error("Only Authors can manage tags"));
+        alert_dispatch.reduce_mut(|alert_state| {
+            *alert_state = AlertsStoreBuilder::new_error("Only Authors can manage tags")
+        });
         navigator.push(&Routes::Home);
     }
 
@@ -88,6 +92,7 @@ pub fn component() -> Html {
         let new_tag_state = new_tag_state.clone();
         let alert_dispatch = alert_dispatch;
         let courses_dispatch = courses_dispatch;
+        let auth_store = auth_store.clone();
 
         Callback::from(move |event: FormData| {
             let tag_name = if let Some(name) = event.get("tag_name").as_string() {
@@ -117,9 +122,18 @@ pub fn component() -> Html {
             let new_tag_state = new_tag_state.clone();
             let alert_dispatch = alert_dispatch.clone();
             let courses_dispatch = courses_dispatch.clone();
+            let token = if let Some(token) = &auth_store.access_token {
+                token.clone()
+            } else {
+                alert_dispatch.clone().reduce_mut(|alert_state| {
+                    *alert_state =
+                        AlertsStoreBuilder::new_error("Must be logged in to create a tag");
+                });
+                return;
+            };
 
             wasm_bindgen_futures::spawn_local(async move {
-                match api::tags::insert_tag(tag_name).await {
+                match api::tags::insert_tag(tag_name, &token).await {
                     Ok(tag) => courses_dispatch.reduce_mut(move |courses_store| {
                         let tag = if let Some(tag) = tag.insert_lms_tags_one {
                             tag

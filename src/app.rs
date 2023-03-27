@@ -1,5 +1,6 @@
 use ycl::{
     elements::icon::BBIconType,
+    foundations::roles::BBRole,
     modules::{
         banner::BBBannerType,
         nav::{
@@ -7,7 +8,7 @@ use ycl::{
             navbar_link::{BBNavbarLink, BBNavbarLinkBuilder},
         },
         site_footer::BBSiteFooter,
-    }, foundations::roles::BBRole,
+    },
 };
 use yew::prelude::*;
 use yew_hooks::use_effect_once;
@@ -60,6 +61,7 @@ pub fn component() -> Html {
                                     auth_state.nickname = Some(userinfo.nickname);
                                     auth_state.roles = userinfo.brooks_builds.roles;
                                     auth_state.logged_in = true;
+                                    auth_state.access_token = Some(token.clone());
                                 }
                                 Err(error) => {
                                     log_error("Error getting user info", &error);
@@ -157,12 +159,12 @@ fn create_routes(roles: &[BBRole]) -> Vec<BBNavbarLink<Routes>> {
     for role in roles {
         match role {
             BBRole::Author => routes.push(
-        BBNavbarLinkBuilder::new()
-            .to(Routes::Tags)
-            .label("Tags")
-            .build()
-            .unwrap(),
-                ),
+                BBNavbarLinkBuilder::new()
+                    .to(Routes::Tags)
+                    .label("Tags")
+                    .build()
+                    .unwrap(),
+            ),
             BBRole::Learner => (),
         }
     }

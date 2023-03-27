@@ -5,6 +5,7 @@ pub mod tags;
 use dotenvy_macro::dotenv;
 use gloo::net::http::Request;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
+use ycl::foundations::roles::BBRole;
 
 use crate::errors::LmsError;
 
@@ -20,8 +21,8 @@ pub struct SendToGraphql {
 }
 
 impl SendToGraphql {
-    pub fn new(token: &str) -> Self {
-        let request = Request::post(GRAPHQL_URI).header("Authorization", &format!("Bearer {token}"));
+    pub fn new() -> Self {
+        let request = Request::post(GRAPHQL_URI);
         Self { request }
     }
 
@@ -50,5 +51,17 @@ impl SendToGraphql {
                 )
             })?
             .data)
+    }
+
+    pub fn authorization(mut self, token: &str) -> Self {
+        let bearer_token = format!("Bearer {token}");
+        self.request = self.request.header("Authorization", &bearer_token);
+        self
+    }
+
+    pub fn role(mut self, role: BBRole) -> Self {
+        let role_string = role.to_string();
+        self.request = self.request.header("x-hasura-role", &role_string);
+        self
     }
 }
