@@ -49,6 +49,7 @@ pub fn component() -> Html {
                                 Ok(userinfo) => {
                                     state.nickname = Some(userinfo.nickname);
                                     state.roles = userinfo.brooks_builds.roles;
+                                    state.access_token = Some(token.clone());
                                     navigation.push(&Routes::Home);
                                 },
                                 Err(error) => {

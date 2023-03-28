@@ -1,5 +1,6 @@
 use ycl::{
     elements::icon::BBIconType,
+    foundations::roles::BBRole,
     modules::{
         banner::BBBannerType,
         nav::{
@@ -53,6 +54,7 @@ pub fn component() -> Html {
             wasm_bindgen_futures::spawn_local(async move {
                 if let Some(token) = token {
                     auth_dispatch
+                    .clone()
                     .reduce_mut_future(|auth_state| {
                         Box::pin(async move {
                             match get_userinfo(&token).await {
@@ -60,6 +62,7 @@ pub fn component() -> Html {
                                     auth_state.nickname = Some(userinfo.nickname);
                                     auth_state.roles = userinfo.brooks_builds.roles;
                                     auth_state.logged_in = true;
+                                    auth_state.access_token = Some(token.clone());
                                 }
                                 Err(error) => {
                                     log_error("Error getting user info", &error);
@@ -77,6 +80,8 @@ pub fn component() -> Html {
                     })
                     .await
                 }
+
+                auth_dispatch.reduce_mut(|auth_state| auth_state.loading = false);
             });
 
             || ()
@@ -116,7 +121,7 @@ pub fn component() -> Html {
             <BBNavbar<Routes>
                 create_account_route={Routes::CreateAccount}
                 is_authenticated={auth_store.logged_in}
-                links={create_routes()}
+                links={create_routes(&auth_store.roles)}
                 login_route={Routes::Login}
                 show_brand={true}
                 username={auth_store.nickname.clone()}
@@ -128,15 +133,15 @@ pub fn component() -> Html {
                 <Switch<Routes> render={switch} />
             </main>
             <BBSiteFooter<Routes>
-                left_links={create_routes()}
+                left_links={create_routes(&auth_store.roles)}
                 right_links={vec![]}
             />
         </BrowserRouter>
     }
 }
 
-fn create_routes() -> Vec<BBNavbarLink<Routes>> {
-    vec![
+fn create_routes(roles: &[BBRole]) -> Vec<BBNavbarLink<Routes>> {
+    let mut routes = vec![
         BBNavbarLinkBuilder::new()
             .to(Routes::Home)
             .label("Home")
@@ -152,10 +157,19 @@ fn create_routes() -> Vec<BBNavbarLink<Routes>> {
             .label("Create Course")
             .build()
             .unwrap(),
-        BBNavbarLinkBuilder::new()
-            .to(Routes::Tags)
-            .label("Tags")
-            .build()
-            .unwrap(),
-    ]
+    ];
+
+    for role in roles {
+        match role {
+            BBRole::Author => routes.push(
+                BBNavbarLinkBuilder::new()
+                    .to(Routes::Tags)
+                    .label("Tags")
+                    .build()
+                    .unwrap(),
+            ),
+            BBRole::Learner => (),
+        }
+    }
+    routes
 }

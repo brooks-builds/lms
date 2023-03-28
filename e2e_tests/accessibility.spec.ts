@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { courseListMockData } from "./mock_data";
+import { courseListMockData, tagsMockData } from "./mock_data";
+import { login, Role } from './utils';
 
 const GRAPHQL_URI = process.env.GRAPHQL_URI || "http://localhost:8081/v1/graphql";
 const routes = [
@@ -9,7 +10,6 @@ const routes = [
 	"/auth/create_account",
 	"/auth/login",
 	"/auth/redirect",
-	"/tags",
 ];
 
 for (let route of routes) {
@@ -18,10 +18,22 @@ for (let route of routes) {
 			const json = { "data": courseListMockData };
 			await route.fulfill({ json });
 		});
-		await page.goto(route, { waitUntil: 'networkidle' });
+		await login(Role.Author, page, route);
 
 		const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
 
 		expect(accessibilityScanResults.violations).toEqual([]);
 	});
 }
+
+test(`/tags should not have any automatically detectable accessibility issues`, async ({ page }) => {
+	await page.route(GRAPHQL_URI, async route => {
+		const json = tagsMockData();
+		await route.fulfill({ json });
+	});
+	await login(Role.Author, page, "/tags");
+
+	const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+
+	expect(accessibilityScanResults.violations).toEqual([]);
+});

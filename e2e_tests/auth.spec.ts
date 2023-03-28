@@ -54,7 +54,7 @@ test("can login to an account", async ({ page }) => {
 });
 
 test("auth redirect should work", async ({ page, context }) => {
-	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => route.fulfill({ json: userinfoMockData }));
+	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => route.fulfill({ json: userinfoMockData() }));
 	await page.goto("/auth/login", { waitUntil: "networkidle" });
 
 	const cookies = await page.context().cookies();
@@ -72,7 +72,7 @@ test("auth redirect should work", async ({ page, context }) => {
 });
 
 test("revisiting website after logging in should work", async ({ page, context }) => {
-	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => route.fulfill({ json: userinfoMockData }));
+	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => route.fulfill({ json: userinfoMockData() }));
 	await page.goto("/", { waitUntil: "networkidle" });
 	await page.context().addCookies([{
 		name: "auth_token",
@@ -86,7 +86,7 @@ test("revisiting website after logging in should work", async ({ page, context }
 test("logout", async ({ page }) => {
 	const expectedLogoutHref = `${AUTH0_DOMAIN}/v2/logout?returnTo=${LOGOUT_REDIRECT}&client_id=${AUTH0_CLIENT_ID}`
 
-	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => route.fulfill({ json: userinfoMockData }));
+	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => route.fulfill({ json: userinfoMockData() }));
 	await page.route(`${AUTH0_DOMAIN}/v2/logout`, route => route.fulfill({ path: "/" }));
 	await page.goto("/", { waitUntil: "networkidle" });
 	await page.context().addCookies([{
@@ -115,8 +115,8 @@ test("logout", async ({ page }) => {
 	}
 })
 
-test("roles are displayed", async ({page}) => {
-	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => route.fulfill({ json: userinfoMockData }));
+test("roles are displayed", async ({ page }) => {
+	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => route.fulfill({ json: userinfoMockData() }));
 	await page.goto("/", { waitUntil: "networkidle" });
 	await page.context().addCookies([{
 		name: "auth_token",
@@ -129,10 +129,11 @@ test("roles are displayed", async ({page}) => {
 	await expect(await page.getByText("Learner")).toBeVisible();
 });
 
-test("one role is displayed", async ({page}) => {
+test("one role is displayed", async ({ page }) => {
 	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => {
-		userinfoMockData["https://brooksbuilds.com"].roles = ["Learner"];
-		route.fulfill({ json: userinfoMockData })
+		const userInfo = userinfoMockData();
+		userInfo["https://brooksbuilds.com"].roles = ["Learner"];
+		route.fulfill({ json: userInfo })
 	});
 	await page.goto("/", { waitUntil: "networkidle" });
 	await page.context().addCookies([{
@@ -142,14 +143,15 @@ test("one role is displayed", async ({page}) => {
 	}]);
 	await page.goto("/", { waitUntil: "networkidle" });
 
-	await expect(await page.getByText("Author")).toBeVisible({visible: false});
+	await expect(await page.getByText("Author")).toBeVisible({ visible: false });
 	await expect(await page.getByText("Learner")).toBeVisible();
 });
 
-test("Learner role is displayed if a user doesn't have a role", async ({page}) => {
+test("Learner role is displayed if a user doesn't have a role", async ({ page }) => {
 	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => {
-		userinfoMockData["https://brooksbuilds.com"].roles = [];
-		route.fulfill({ json: userinfoMockData })
+		const userInfo = userinfoMockData();
+		userInfo["https://brooksbuilds.com"].roles = [];
+		route.fulfill({ json: userInfo })
 	});
 	await page.goto("/", { waitUntil: "networkidle" });
 	await page.context().addCookies([{
