@@ -1,6 +1,6 @@
 use crate::{
     api,
-    logging::{log_data, log_error},
+    logging::log_error,
     router::Routes,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},

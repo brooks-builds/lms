@@ -92,7 +92,7 @@ pub fn component() -> Html {
         let new_tag_state = new_tag_state.clone();
         let alert_dispatch = alert_dispatch;
         let courses_dispatch = courses_dispatch;
-        let auth_store = auth_store.clone();
+        let auth_store = auth_store;
 
         Callback::from(move |event: FormData| {
             let tag_name = if let Some(name) = event.get("tag_name").as_string() {
@@ -125,7 +125,7 @@ pub fn component() -> Html {
             let token = if let Some(token) = &auth_store.access_token {
                 token.clone()
             } else {
-                alert_dispatch.clone().reduce_mut(|alert_state| {
+                alert_dispatch.reduce_mut(|alert_state| {
                     *alert_state =
                         AlertsStoreBuilder::new_error("Must be logged in to create a tag");
                 });
