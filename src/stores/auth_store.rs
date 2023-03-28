@@ -19,7 +19,7 @@ static STATE_COOKIE_KEY: &str = "auth_state";
 static TOKEN_COOKIE_KEY: &str = "auth_token";
 static STATE_COOKIE_MAX_LIFE: u32 = 60 * 5;
 
-#[derive(Clone, PartialEq, Eq, Store, Debug, Default)]
+#[derive(Clone, PartialEq, Eq, Store, Debug)]
 pub struct AuthStore {
     pub logged_in: bool,
     pub access_token: Option<String>,
@@ -28,6 +28,7 @@ pub struct AuthStore {
     pub token_type: String,
     pub nickname: Option<String>,
     pub roles: Vec<BBRole>,
+    pub loading: bool,
 }
 
 impl AuthStore {
@@ -108,4 +109,19 @@ impl AuthStore {
 
 pub fn logout_url() -> String {
     format!("{AUTH0_DOMAIN}/v2/logout?returnTo={AUTH_LOGOUT_REDIRECT}&client_id={AUTH0_CLIENT_ID}")
+}
+
+impl Default for AuthStore {
+    fn default() -> Self {
+        Self {
+            logged_in: false,
+            access_token: None,
+            scope: String::new(),
+            expires_in: 0,
+            token_type: String::new(),
+            nickname: None,
+            roles: vec![],
+            loading: true,
+        }
+    }
 }

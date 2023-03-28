@@ -54,6 +54,7 @@ pub fn component() -> Html {
             wasm_bindgen_futures::spawn_local(async move {
                 if let Some(token) = token {
                     auth_dispatch
+                    .clone()
                     .reduce_mut_future(|auth_state| {
                         Box::pin(async move {
                             match get_userinfo(&token).await {
@@ -79,6 +80,8 @@ pub fn component() -> Html {
                     })
                     .await
                 }
+
+                auth_dispatch.reduce_mut(|auth_state| auth_state.loading = false);
             });
 
             || ()

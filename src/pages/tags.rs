@@ -36,7 +36,7 @@ pub fn component() -> Html {
     let (auth_store, _) = use_store::<AuthStore>();
     let navigator = use_navigator().unwrap();
 
-    if !auth_store.is_author() {
+    if !auth_store.loading && !auth_store.is_author() {
         alert_dispatch.reduce_mut(|alert_state| {
             *alert_state = AlertsStoreBuilder::new_error("Only Authors can manage tags")
         });

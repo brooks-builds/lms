@@ -12,14 +12,14 @@ export enum Role {
 }
 
 const userInfo = {
-	Learner: learnerInfoMockData,
-	Author: userinfoMockData,
+	[Role.Learner]: learnerInfoMockData,
+	[Role.Author]: userinfoMockData(),
 }
 
-export async function login(role: Role, page: Page): Promise<void> {
+export async function login(role: Role, page: Page, destination: string = "/"): Promise<void> {
 	await page.goto("/", { waitUntil: "networkidle" });
+
 	await page.route(`${AUTH0_DOMAIN}/userinfo`, route => {
-		
 		return route.fulfill({ json: userInfo[role] })
 	});
 	await page.context().addCookies([{
@@ -27,6 +27,6 @@ export async function login(role: Role, page: Page): Promise<void> {
 		value: "1234qwfp1234qwfp",
 		url: page.url(),
 	}]);
-	await page.goto("/", { waitUntil: "networkidle" });
+	await page.goto(destination, { waitUntil: "networkidle" });
 }
 

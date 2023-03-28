@@ -16,8 +16,7 @@ test("Author can navigate to the tags page", async ({ page }) => {
 
 test("Author can see a list of existing tags", async ({ page }) => {
 	await page.route(`${GRAPHQL_URI}`, route => route.fulfill({ json: tagsMockData() }));
-	await login(Role.Author, page);
-	await page.goto("/tags");
+	await login(Role.Author, page, "/tags");
 
 	for (let lmsTag of tagsMockData().data.lms_tags) {
 		await expect(page.getByText(lmsTag.name)).toBeVisible();
@@ -77,7 +76,7 @@ test("Author can create a new Tag by pressing the submit button", async ({ page 
 
 	const tagNameInput = page.getByLabel("Tag Name");
 	await tagNameInput.type(tagName);
-	await page.getByRole("button", {name: "Create Tag"}).click();
+	await page.getByRole("button", { name: "Create Tag" }).click();
 	const inputValue = await tagNameInput.inputValue();
 	expect(inputValue).toBe("");
 
@@ -92,15 +91,15 @@ test("Author can't create a new Tag with an empty name", async ({ page }) => {
 	});
 	await login(Role.Author, page);
 	await page.getByRole("link", { name: "Tags" }).first().click();
-	await page.getByRole("button", {name: "Create Tag"}).click();
+	await page.getByRole("button", { name: "Create Tag" }).click();
 	await expect(page.getByText("Cannot create a tag without a name")).toBeVisible();
 });
 
-test("learner can't navigate to the tags page", async ({page}) => {
+test("learner can't navigate to the tags page", async ({ page }) => {
 	await login(Role.Learner, page);
 	await expect(page.getByText("Author")).not.toBeVisible();
-	await expect(page.getByRole("link", {name: "Tags"})).not.toBeVisible();
-	await page.goto("/tags", {waitUntil: "networkidle"});
+	await expect(page.getByRole("link", { name: "Tags" })).not.toBeVisible();
+	await page.goto("/tags", { waitUntil: "networkidle" });
 	await expect(page.getByText("Only Authors can manage tags")).toBeVisible();
 })
 
