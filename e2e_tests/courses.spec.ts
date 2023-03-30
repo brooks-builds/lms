@@ -6,7 +6,19 @@ test("Author can create a course", async ({ page }) => {
 	await page.goto("/", { waitUntil: "networkidle" });
 	await page.getByRole("link", { name: "Create Course" }).first().click();
 
-	await expect(page.url()).toMatch(/create_course/);
+	expect(page.url()).toMatch(/create_course/);
+});
 
+test("Learner cannot create a course", async ({ page }) => {
+	await login(Role.Learner, page);
+	const createCourseLink = page.getByRole("link", { name: "Create Course" });
 
+	await expect(createCourseLink).not.toBeVisible();
+});
+
+test("Not logged in users cannot create a course", async ({ page }) => {
+	await page.goto("/")
+	const createCourseLink = page.getByRole("link", { name: "Create Course" });
+
+	await expect(createCourseLink).not.toBeVisible();
 });
