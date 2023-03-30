@@ -1,6 +1,14 @@
 use ycl::{
-    elements::title::{BBTitle, BBTitleLevel},
-    foundations::align_text::AlignText,
+    elements::{
+        icon::BBIconType,
+        input::{BBInput, BBInputType},
+        text_area::BBTextArea,
+        title::{BBTitle, BBTitleLevel},
+    },
+    foundations::{
+        align_text::AlignText,
+        container::{BBContainer, BBContainerMargin},
+    },
 };
 use yew::{function_component, html, use_effect, Html};
 use yew_router::prelude::use_navigator;
@@ -32,6 +40,24 @@ pub fn component() -> Html {
     });
 
     html! {
-        <BBTitle level={BBTitleLevel::One} align={AlignText::Center}>{"Create Course"}</BBTitle>
+        <BBContainer margin={BBContainerMargin::Normal}>
+            <BBTitle level={BBTitleLevel::One} align={AlignText::Center}>{"Create Course"}</BBTitle>
+            <BBTextArea
+                id="long-description"
+                label="Long Description"
+                rows=5
+            />
+            <BBInput
+                id="price"
+                label="Price (In Dollars)"
+                name="price"
+                input_type={BBInputType::Number}
+            />
+            <BBInput
+                id="short-description"
+                label="Short Description"
+                name="short_description"
+            />
+        </BBContainer>
     }
 }

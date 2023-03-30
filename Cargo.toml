@@ -7,8 +7,8 @@ edition = "2021"
 
 [dependencies]
 yew = { version = "0.20.0", features = ["csr"] }
- ycl = { git = "https://github.com/brooks-builds/ycl", rev = "c4f4ddf" }
-#ycl = { path = "../ycl/" }
+#ycl = { git = "https://github.com/brooks-builds/ycl", rev = "c4f4ddf" }
+ycl = { path = "../ycl/" }
 yew-router = "0.17.0"
 gloo = "0.8.0"
 graphql_client = "0.12.0"

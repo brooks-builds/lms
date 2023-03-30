@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import test, { expect } from "@playwright/test";
 import { login, Role } from "./utils";
 
@@ -7,6 +8,19 @@ test("Author can create a course", async ({ page }) => {
 	await page.getByRole("link", { name: "Create Course" }).first().click();
 
 	expect(page.url()).toMatch(/create_course/);
+
+	const longDescription = faker.lorem.paragraphs();
+	await page.getByLabel("Long Description").type(longDescription);
+
+	const price = faker.random.numeric();
+	await page.getByLabel("Price (in dollars)").type(price);
+
+	const shortDescription = faker.lorem.words(15);
+	await page.getByLabel("Short Description").type(shortDescription);
+
+	const possibleTags = ["Yew", "Axum"];
+	const randomTag = possibleTags[Math.floor(Math.random() * 2)];
+	await page.getByLabel("Tag").selectOption(randomTag);
 });
 
 test("Learner cannot create a course", async ({ page }) => {
