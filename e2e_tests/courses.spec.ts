@@ -14,6 +14,10 @@ test("Learner cannot create a course", async ({ page }) => {
 	const createCourseLink = page.getByRole("link", { name: "Create Course" });
 
 	await expect(createCourseLink).not.toBeVisible();
+
+	await page.goto('/create_course', { waitUntil: "networkidle" });
+	expect(page.url()).not.toMatch(/create_course/);
+	await expect(page.getByText("Only Authors can create courses")).toBeVisible();
 });
 
 test("Not logged in users cannot create a course", async ({ page }) => {
@@ -21,4 +25,8 @@ test("Not logged in users cannot create a course", async ({ page }) => {
 	const createCourseLink = page.getByRole("link", { name: "Create Course" });
 
 	await expect(createCourseLink).not.toBeVisible();
+
+	await page.goto('/create_course', { waitUntil: "networkidle" });
+	expect(page.url()).not.toMatch(/create_course/);
+	await expect(page.getByText("Only Authors can create courses")).toBeVisible();
 });
