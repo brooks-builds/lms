@@ -19,3 +19,4 @@ export function createAccount(email: string, password: string): CreateAccountGra
 		"operationName": "CreateLmsAccount"
 	}
 }
+

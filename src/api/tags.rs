@@ -2,7 +2,7 @@ use graphql_client::GraphQLQuery;
 use ycl::foundations::roles::BBRole;
 
 use crate::{
-    database_queries::{create_tag, CreateTag},
+    database_queries::{create_tag, lms_tags, CreateTag, LmsTags},
     errors::LmsError,
 };
 
@@ -22,5 +22,14 @@ pub async fn insert_tag(
         .role(BBRole::Author)
         .json(body)?
         .send::<create_tag::ResponseData>()
+        .await
+}
+
+pub async fn get_tags() -> Result<lms_tags::ResponseData, LmsError> {
+    let variables = lms_tags::Variables {};
+    let query = LmsTags::build_query(variables);
+    SendToGraphql::new()
+        .json(query)?
+        .send::<lms_tags::ResponseData>()
         .await
 }
