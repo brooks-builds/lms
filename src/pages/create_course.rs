@@ -3,6 +3,7 @@ use std::ops::Deref;
 use web_sys::FormData;
 use ycl::{
     elements::{
+        button::{BBButton, BBButtonStyle, BBButtonType},
         form::BBForm,
         input::{BBInput, BBInputType},
         text_area::BBTextArea,
@@ -101,6 +102,14 @@ pub fn component() -> Html {
         })
     };
 
+    let short_description_onchange = {
+        let short_description = short_description.clone();
+
+        Callback::from(move |event: AttrValue| {
+            short_description.set(event);
+        })
+    };
+
     html! {
         <BBContainer margin={BBContainerMargin::Normal}>
             <BBTitle level={BBTitleLevel::One} align={AlignText::Center}>{"Create Course"}</BBTitle>
@@ -115,7 +124,7 @@ pub fn component() -> Html {
                 <BBSelect
                     id="tag"
                     label="Tag"
-                    options={courses_store.tags.iter().map(|tag| BBOption {value: tag.name.clone().into(), label: tag.name.clone().into()}).collect::<Vec<BBOption>>()}
+                    options={courses_store.tags.iter().map(|tag| BBOption {value: tag.id.to_string().into(), label: tag.name.clone().into()}).collect::<Vec<BBOption>>()}
                     name="tag"
                  />
                 <BBTextArea
@@ -129,7 +138,9 @@ pub fn component() -> Html {
                     label="Short Description"
                     name="short_description"
                     value={short_description.deref().clone()}
+                    onchange={short_description_onchange}
                 />
+                <BBButton button_type={BBButtonType::Submit} button_style={BBButtonStyle::PrimaryLight}>{"Create Course"}</BBButton>
             </BBForm>
         </BBContainer>
     }
