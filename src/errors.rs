@@ -24,4 +24,6 @@ pub enum LmsError {
     GettingUserInfo(String),
     #[error("Error getting the url")]
     CannotGetURL,
+    #[error("Cannot create course, missing {0}")]
+    MissingCreateCourseData(String),
 }

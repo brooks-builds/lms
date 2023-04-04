@@ -1,5 +1,6 @@
 use std::ops::Deref;
 
+use wasm_bindgen::JsValue;
 use web_sys::FormData;
 use ycl::{
     elements::{
@@ -22,6 +23,7 @@ use yewdux::prelude::use_store;
 
 use crate::{
     api,
+    errors::LmsError,
     logging::{log_data, log_error},
     router::Routes,
     stores::{
@@ -82,19 +84,22 @@ pub fn component() -> Html {
         || {}
     });
 
-    let onsubmit = Callback::from(|event: FormData| {
-        let title = match event.get("title").as_string() {
-            Some(value) => value,
-            None => 
-        }
+    let onsubmit = Callback::from(move |event: FormData| {
+        let title = event.get("title");
         let tag = event.get("tag");
         let long_description = event.get("long_description");
         let short_description = event.get("short_description");
 
-        log_data("title", title);
-        log_data("tag", tag);
-        log_data("long_description", long_description);
-        log_data("short_description", short_description);
+        match validate_create_course(title, short_description, long_description, tag) {
+            Ok(course_data) => {
+                wasm_bindgen_futures::spawn_local(async move {});
+            }
+            Err(error) => {
+                alert_dispatch.reduce_mut(|alert_state| {
+                    *alert_state = AlertsStoreBuilder::new_error(error.to_string())
+                });
+            }
+        }
     });
 
     let title_onchange = {
@@ -146,5 +151,92 @@ pub fn component() -> Html {
                 <BBButton button_type={BBButtonType::Submit} button_style={BBButtonStyle::PrimaryLight}>{"Create Course"}</BBButton>
             </BBForm>
         </BBContainer>
+    }
+}
+
+#[derive(Default)]
+struct CreateCourseData {
+    pub title: String,
+    pub short_description: String,
+    pub long_description: String,
+    pub tag_id: i64,
+}
+
+fn validate_create_course(
+    title: JsValue,
+    short_description: JsValue,
+    long_description: JsValue,
+    tag_id: JsValue,
+) -> Result<CreateCourseData, LmsError> {
+    let mut error_messages: Vec<String> = vec![];
+    let mut course_data = CreateCourseData::default();
+
+    if let Some(title) = require_string(title.as_string(), &mut error_messages, "title") {
+        course_data.title = title;
+    }
+
+    if let Some(short_description) = require_string(
+        short_description.as_string(),
+        &mut error_messages,
+        "short_description",
+    ) {
+        course_data.short_description = short_description;
+    }
+
+    if let Some(long_description) = require_string(
+        long_description.as_string(),
+        &mut error_messages,
+        "long_description",
+    ) {
+        course_data.long_description = long_description;
+    }
+
+    if let Some(tag_id) = require_i64(tag_id.as_string(), &mut error_messages, "tag_id") {
+        course_data.tag_id = tag_id;
+    }
+
+    if error_messages.is_empty() {
+        Ok(course_data)
+    } else {
+        let message = error_messages.join(", ");
+        Err(LmsError::MissingCreateCourseData(message))
+    }
+}
+
+fn require_string(
+    value: Option<String>,
+    error_messages: &mut Vec<String>,
+    name: &str,
+) -> Option<String> {
+    match value {
+        Some(s) => {
+            if s.is_empty() {
+                error_messages.push(format!("{name} cannot be empty"));
+                None
+            } else {
+                Some(s)
+            }
+        }
+        None => {
+            error_messages.push(format!("{name} must be a string"));
+            None
+        }
+    }
+}
+
+fn require_i64(value: Option<String>, error_messages: &mut Vec<String>, name: &str) -> Option<i64> {
+    match value {
+        Some(s) => {
+            if s.is_empty() {
+                error_messages.push(format!("{name} cannot be empty"));
+                None
+            } else {
+                s.parse().ok()
+            }
+        }
+        None => {
+            error_messages.push(format!("{name} must be a string"));
+            None
+        }
     }
 }
