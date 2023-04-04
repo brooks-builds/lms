@@ -83,7 +83,10 @@ pub fn component() -> Html {
     });
 
     let onsubmit = Callback::from(|event: FormData| {
-        let title = event.get("title");
+        let title = match event.get("title").as_string() {
+            Some(value) => value,
+            None => 
+        }
         let tag = event.get("tag");
         let long_description = event.get("long_description");
         let short_description = event.get("short_description");

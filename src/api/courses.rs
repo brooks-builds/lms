@@ -2,7 +2,8 @@ use graphql_client::GraphQLQuery;
 
 use crate::{
     database_queries::{
-        course_by_id, list_lms_courses, lms_tags, CourseById, ListLmsCourses, LmsTags,
+        course_by_id, create_lms_course, list_lms_courses, lms_tags, CourseById, CreateLmsCourse,
+        ListLmsCourses, LmsTags,
     },
     errors::LmsError,
     logging::log_data,
@@ -80,4 +81,26 @@ pub async fn get_tags() -> Result<Vec<StoreTag>, LmsError> {
         .collect::<Vec<StoreTag>>();
 
     Ok(store_tags)
+}
+
+pub async fn insert_course(
+    long_description: String,
+    short_description: String,
+    tag_id: i64,
+    title: String,
+    token: &str,
+) -> Result<create_lms_course::ResponseData, LmsError> {
+    let variables = create_lms_course::Variables {
+        long_description,
+        short_description,
+        tag_id,
+        title,
+    };
+    let query = CreateLmsCourse::build_query(variables);
+    SendToGraphql::new()
+        .authorization(token)
+        .role(ycl::foundations::roles::BBRole::Author)
+        .json(query)?
+        .send::<create_lms_course::ResponseData>()
+        .await
 }
