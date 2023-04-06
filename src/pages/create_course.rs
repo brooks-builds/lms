@@ -44,6 +44,9 @@ pub fn component() -> Html {
 
     {
         let alert_dispatch = alert_dispatch.clone();
+        let auth_store = auth_store.clone();
+        let navigator = navigator.clone();
+
         use_effect(move || {
             if !auth_store.loading && !auth_store.is_author() {
                 alert_dispatch.reduce_mut(|alert_state| {
@@ -56,43 +59,79 @@ pub fn component() -> Html {
         });
     }
 
-    use_effect_once(move || {
+    {
         let alert_dispatch = alert_dispatch.clone();
-        let courses_dispatch = courses_dispatch.clone();
 
-        wasm_bindgen_futures::spawn_local(async move {
-            match api::tags::get_tags().await {
-                Ok(tags) => courses_dispatch.reduce_mut(|course_state| {
-                    course_state.tags = tags
-                        .lms_tags
-                        .into_iter()
-                        .map(|tag| StoreTag {
-                            id: tag.id,
-                            name: tag.name,
-                        })
-                        .collect()
-                }),
-                Err(error) => {
-                    log_error("Error getting tags", &error);
-                    alert_dispatch.reduce_mut(|state| {
-                        *state = AlertsStoreBuilder::new_error("Error loading all tags")
-                    });
+        use_effect_once(move || {
+            let alert_dispatch = alert_dispatch.clone();
+            let courses_dispatch = courses_dispatch.clone();
+
+            wasm_bindgen_futures::spawn_local(async move {
+                match api::tags::get_tags().await {
+                    Ok(tags) => courses_dispatch.reduce_mut(|course_state| {
+                        course_state.tags = tags
+                            .lms_tags
+                            .into_iter()
+                            .map(|tag| StoreTag {
+                                id: tag.id,
+                                name: tag.name,
+                            })
+                            .collect()
+                    }),
+                    Err(error) => {
+                        log_error("Error getting tags", &error);
+                        alert_dispatch.reduce_mut(|state| {
+                            *state = AlertsStoreBuilder::new_error("Error loading all tags")
+                        });
+                    }
                 }
-            }
-        });
+            });
 
-        || {}
-    });
+            || {}
+        });
+    }
 
     let onsubmit = Callback::from(move |event: FormData| {
         let title = event.get("title");
         let tag = event.get("tag");
         let long_description = event.get("long_description");
         let short_description = event.get("short_description");
+        let alert_dispatch = alert_dispatch.clone();
+        let token = auth_store.access_token.clone().unwrap_or_default();
+        let navigator = navigator.clone();
 
         match validate_create_course(title, short_description, long_description, tag) {
             Ok(course_data) => {
-                wasm_bindgen_futures::spawn_local(async move {});
+                let alert_dispatch = alert_dispatch.clone();
+
+                wasm_bindgen_futures::spawn_local(async move {
+                    match api::courses::insert_course(
+                        course_data.long_description,
+                        course_data.short_description,
+                        course_data.tag_id,
+                        course_data.title,
+                        &token,
+                    )
+                    .await
+                    {
+                        Ok(course) => {
+                            let destination = Routes::CourseDetails {
+                                id: course
+                                    .insert_lms_courses_one
+                                    .expect("we should have the course now")
+                                    .id,
+                            };
+
+                            navigator.push(&destination);
+                        }
+                        Err(error) => {
+                            alert_dispatch.reduce_mut(|alert_state| {
+                                *alert_state =
+                                    AlertsStoreBuilder::new_error("Error creating course")
+                            });
+                        }
+                    }
+                });
             }
             Err(error) => {
                 alert_dispatch.reduce_mut(|alert_state| {
@@ -154,6 +193,16 @@ pub fn component() -> Html {
     }
 }
 
+/// # Create Course Data
+///
+/// ```rust
+/// let mut create_course_data = CreateCourseData::default();
+///
+/// create_course_data.title = "New Title".to_owned();
+/// create_course_data.short_description = "My new short description".to_owned();
+/// create_course_data.long_description = "New long description".to_owned();
+/// create_course_data.tag_id = 100;
+/// ```
 #[derive(Default)]
 struct CreateCourseData {
     pub title: String,

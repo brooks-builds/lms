@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-	  "test": "playwright test",
-	  "test:ui": "playwright test --ui"
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
   },
   "repository": {
     "type": "git",
@@ -23,5 +23,8 @@
     "@faker-js/faker": "^7.6.0",
     "@playwright/test": "^1.30.0",
     "dotenv": "^16.0.3"
+  },
+  "dependencies": {
+    "typescript": "^5.0.3"
   }
 }
