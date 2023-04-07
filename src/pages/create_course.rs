@@ -6,7 +6,7 @@ use ycl::{
     elements::{
         button::{BBButton, BBButtonStyle, BBButtonType},
         form::BBForm,
-        input::{BBInput, BBInputType},
+        input::BBInput,
         text_area::BBTextArea,
         title::{BBTitle, BBTitleLevel},
     },
@@ -24,7 +24,7 @@ use yewdux::prelude::use_store;
 use crate::{
     api,
     errors::LmsError,
-    logging::{log_data, log_error},
+    logging::log_error,
     router::Routes,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
@@ -64,7 +64,6 @@ pub fn component() -> Html {
 
         use_effect_once(move || {
             let alert_dispatch = alert_dispatch.clone();
-            let courses_dispatch = courses_dispatch.clone();
 
             wasm_bindgen_futures::spawn_local(async move {
                 match api::tags::get_tags().await {
@@ -102,8 +101,6 @@ pub fn component() -> Html {
 
         match validate_create_course(title, short_description, long_description, tag) {
             Ok(course_data) => {
-                let alert_dispatch = alert_dispatch.clone();
-
                 wasm_bindgen_futures::spawn_local(async move {
                     match api::courses::insert_course(
                         course_data.long_description,
@@ -124,7 +121,7 @@ pub fn component() -> Html {
 
                             navigator.push(&destination);
                         }
-                        Err(error) => {
+                        Err(_error) => {
                             alert_dispatch.reduce_mut(|alert_state| {
                                 *alert_state =
                                     AlertsStoreBuilder::new_error("Error creating course")
