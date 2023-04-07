@@ -152,22 +152,24 @@ fn create_routes(roles: &[BBRole]) -> Vec<BBNavbarLink<Routes>> {
             .label("Courses")
             .build()
             .unwrap(),
-        BBNavbarLinkBuilder::new()
-            .to(Routes::CreateCourse)
-            .label("Create Course")
-            .build()
-            .unwrap(),
     ];
 
     for role in roles {
         match role {
-            BBRole::Author => routes.push(
-                BBNavbarLinkBuilder::new()
-                    .to(Routes::Tags)
-                    .label("Tags")
-                    .build()
-                    .unwrap(),
-            ),
+            BBRole::Author => {
+                routes.extend([
+                    BBNavbarLinkBuilder::new()
+                        .to(Routes::Tags)
+                        .label("Tags")
+                        .build()
+                        .unwrap(),
+                    BBNavbarLinkBuilder::new()
+                        .to(Routes::CreateCourse)
+                        .label("Create Course")
+                        .build()
+                        .unwrap(),
+                ]);
+            }
             BBRole::Learner => (),
         }
     }

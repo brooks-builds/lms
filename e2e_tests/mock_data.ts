@@ -30,3 +30,8 @@ export function tagsMockData() {
 export function createdTagMockData(name: string) {
 	return { "data": { "insert_lms_tags_one": { "id": 3, "name": name } } }
 }
+
+export function lmsCoursByPk(id: number, title: string, shortDescription: string, longDescription: string, tag: string) {
+	return {"data":{"insert_lms_courses_one":{id,"long_description": longDescription,"short_description": shortDescription,"lms_tag":{"id":1,"name":tag},"tag_id":1,title,"trailer_uri":null,"price":null}}}
+}
+
