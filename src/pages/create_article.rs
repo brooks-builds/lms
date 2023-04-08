@@ -45,6 +45,12 @@ pub fn component() -> Html {
 
         Callback::from(move |form: FormData| {
             let title = form.get("title").as_string().unwrap();
+            if title.is_empty() {
+                alert_dispatch.reduce_mut(|alert_state| {
+                    *alert_state = AlertsStoreBuilder::new_error("Articles must have a title");
+                });
+                return;
+            }
             let content = form.get("content").as_string().unwrap();
             let token = auth.access_token.clone().unwrap_or_default();
             let alert_dispatch = alert_dispatch.clone();
