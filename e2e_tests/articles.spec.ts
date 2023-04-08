@@ -57,7 +57,22 @@ test("An article cannot be created with a missing title", async ({page}) => {
   expect(called).toBeFalsy();
 });
 
-// test("An article cannot be created with a missing content", async ({page}) => {});
+test("An article cannot be created with a missing content", async ({page}) => {
+  await login(Role.Author, page);
+  await page.goto("/create_article");
+
+  const randomTitle = faker.lorem.words(3);
+  await page.getByLabel("Title").type(randomTitle);
+
+  let called = false;
+  await page.route(GRAPHQL_URI, async route => {
+    called = true;
+  });
+
+  await page.getByRole('button', {name: "Create Article"}).click();
+  await expect(page.getByText("Articles must have content")).toBeVisible();
+  expect(called).toBeFalsy();
+});
 
 // test("An learner cannot create an article", async ({page}) => {});
 

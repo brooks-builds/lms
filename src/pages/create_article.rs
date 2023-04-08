@@ -51,7 +51,15 @@ pub fn component() -> Html {
                 });
                 return;
             }
+
             let content = form.get("content").as_string().unwrap();
+            if content.is_empty() {
+                alert_dispatch.reduce_mut(|alert_state| {
+                    *alert_state = AlertsStoreBuilder::new_error("Articles must have content")
+                });
+                return;
+            }
+
             let token = auth.access_token.clone().unwrap_or_default();
             let alert_dispatch = alert_dispatch.clone();
             let title_state = title_state.clone();
