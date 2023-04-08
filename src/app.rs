@@ -169,8 +169,8 @@ fn create_routes(roles: &[BBRole]) -> Vec<BBNavbarLink<Routes>> {
                         .build()
                         .unwrap(),
                     BBNavbarLinkBuilder::new()
-                        .to(Routes::Articles)
-                        .label("Articles")
+                        .to(Routes::CreateArticle)
+                        .label("Create Article")
                         .build()
                         .unwrap(),
                 ]);
