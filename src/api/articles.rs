@@ -10,10 +10,7 @@ pub async fn create_article(
     content: String,
     token: String,
 ) -> Result<insert_lms_article::ResponseData, LmsError> {
-    let variables = insert_lms_article::Variables {
-        title: title.into(),
-        content: content.into(),
-    };
+    let variables = insert_lms_article::Variables { title, content };
     let query = InsertLmsArticle::build_query(variables);
     SendToGraphql::new()
         .json(query)?

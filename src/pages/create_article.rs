@@ -16,13 +16,12 @@ use ycl::{
     modules::banner::BBBannerType,
 };
 use yew::prelude::*;
-use yew_hooks::use_effect_once;
 use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
 use crate::{
     api,
-    logging::{log_data, log_error},
+    logging::log_error,
     router::Routes,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
