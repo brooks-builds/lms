@@ -41,3 +41,16 @@ export function createArticleMockData() {
 	return {"data":{"insert_lms_articles_one":{"id": 2}}}
 }
 
+export function createArticleErrorMockData() {
+	return {
+	  "errors": [
+	    {
+	      "extensions": {
+	        "code": "validation-failed",
+	        "path": "$.selectionSet.insert_lms_articles_one"
+	      },
+	      "message": "field 'insert_lms_articles_one' not found in type: 'mutation_root'"
+	    }
+	  ]
+	}
+}

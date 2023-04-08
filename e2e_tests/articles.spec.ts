@@ -2,7 +2,7 @@ import {test, expect} from "@playwright/test";
 import {faker} from "@faker-js/faker";
 import {Role, login} from "./utils";
 import { createArticleIntercept } from "./intercept_data";
-import { createArticleMockData } from "./mock_data";
+import { createArticleErrorMockData, createArticleMockData } from "./mock_data";
 
 const GRAPHQL_URI = process.env.GRAPHQL_URI || "http://localhost:8081/v1/graphql";
 
@@ -96,4 +96,24 @@ test("An visitor cannot create an article", async ({page}) => {
   await expect(page.getByText("Only Authors can create Articles")).toBeVisible();
 });
 
-// test("An error message displays when there is an error creating an article", async ({page}) => {});
+test("An error message displays when there is an error creating an article", async ({page}) => {
+  await login(Role.Author, page, "/create_article");
+  
+  const randomTitle = faker.lorem.words(3);
+  await page.getByLabel("Title").type(randomTitle);
+
+  const randomMarkdown = `
+    # ${faker.lorem.words(3)}
+
+    ${faker.lorem.paragraphs(3)}
+  `;
+  await page.getByLabel("Article Body").type(randomMarkdown);
+
+  await page.route(GRAPHQL_URI, async route => {
+    const responseJson = createArticleErrorMockData();
+
+    return route.fulfill({json: responseJson});
+  });
+  await page.getByRole('button', {name: "Create Article"}).click();
+  await expect(page.getByText("There was an error trying to create the article")).toBeVisible();
+});
