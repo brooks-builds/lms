@@ -16,11 +16,14 @@ use ycl::{
     modules::banner::BBBannerType,
 };
 use yew::prelude::*;
+use yew_hooks::use_effect_once;
+use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
 use crate::{
     api,
     logging::{log_data, log_error},
+    router::Routes,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
         auth_store::AuthStore,
@@ -39,6 +42,24 @@ pub fn component() -> Html {
 
     let (auth, _) = use_store::<AuthStore>();
     let (_, alert_dispatch) = use_store::<AlertsStore>();
+
+    let navigator = use_navigator().unwrap();
+
+    {
+        let auth = auth.clone();
+        let alert_dispatch = alert_dispatch.clone();
+
+        use_effect(move || {
+            if !auth.loading && !auth.is_author() {
+                alert_dispatch.reduce_mut(|alert_state| {
+                    *alert_state = AlertsStoreBuilder::new_error("Only Authors can create Articles")
+                });
+                navigator.push(&Routes::Home);
+            }
+
+            || {}
+        })
+    }
 
     let onsubmit = {
         let title_state = title.clone();

@@ -74,7 +74,16 @@ test("An article cannot be created with a missing content", async ({page}) => {
   expect(called).toBeFalsy();
 });
 
-// test("An learner cannot create an article", async ({page}) => {});
+test("An learner cannot create an article", async ({page}) => {
+  await login(Role.Learner, page);
+  
+  await expect(page.getByRole("link", {name: "Create Article"})).not.toBeVisible();
+
+  await page.goto("/create_article", {waitUntil: "networkidle"});
+  
+  expect(page.url()).not.toMatch(/create_article/);
+  await expect(page.getByText("Only Authors can create Articles")).toBeVisible();
+});
 
 // test("An visitor cannot create an article", async ({page}) => {});
 
