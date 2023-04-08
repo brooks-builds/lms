@@ -85,6 +85,15 @@ test("An learner cannot create an article", async ({page}) => {
   await expect(page.getByText("Only Authors can create Articles")).toBeVisible();
 });
 
-// test("An visitor cannot create an article", async ({page}) => {});
+test("An visitor cannot create an article", async ({page}) => {
+  await page.goto("/", {waitUntil: 'networkidle'});
+  
+  await expect(page.getByRole("link", {name: "Create Article"})).not.toBeVisible();
+
+  await page.goto("/create_article", {waitUntil: "networkidle"});
+  
+  expect(page.url()).not.toMatch(/create_article/);
+  await expect(page.getByText("Only Authors can create Articles")).toBeVisible();
+});
 
 // test("An error message displays when there is an error creating an article", async ({page}) => {});
