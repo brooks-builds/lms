@@ -10,6 +10,7 @@ const routes = [
 	"/auth/create_account",
 	"/auth/login",
 	"/auth/redirect",
+	"/create_article",
 ];
 
 for (let route of routes) {

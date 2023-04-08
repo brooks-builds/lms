@@ -1,3 +1,4 @@
+pub mod articles;
 pub mod auth;
 pub mod courses;
 pub mod tags;

@@ -1,3 +1,5 @@
+import {faker} from "@faker-js/faker";
+
 export const courseListMockData = { "lms_courses": [{ "id": 1, "lms_tag": { "id": 1, "name": "Yew" }, "short_description": "Learn how to build websites using Yew.rs, a frontend framework modeled after React.", "title": "Yew.rs", "long_description": "Yew.rs", "trailer_uri": null }, { "id": 2, "lms_tag": { "id": 2, "name": "Axum" }, "short_description": "Learn how to build API's with Axum, a Rust based backend framework just like Express", "title": "Axum", "long_description": "Axum", "trailer_uri": null }] };
 
 export const createAccountMockData = { "data": { "create_account": { "_id": "64051def82a59da572bddce9" } } }
@@ -33,5 +35,9 @@ export function createdTagMockData(name: string) {
 
 export function lmsCoursByPk(id: number, title: string, shortDescription: string, longDescription: string, tag: string) {
 	return {"data":{"insert_lms_courses_one":{id,"long_description": longDescription,"short_description": shortDescription,"lms_tag":{"id":1,"name":tag},"tag_id":1,title,"trailer_uri":null,"price":null}}}
+}
+
+export function createArticleMockData() {
+	return {"data":{"insert_lms_articles_one":{"id": 2}}}
 }
 
