@@ -20,3 +20,6 @@ export function createAccount(email: string, password: string): CreateAccountGra
 	}
 }
 
+export function createArticleIntercept(content: string, title: string) {
+	return {"variables":{content,title},"query":"mutation InsertLmsArticle($content: String!, $title: String!) {\n  insert_lms_articles_one(object: {content: $content, title: $title}) {\n    id\n  }\n}\n","operationName":"InsertLmsArticle"}
+}

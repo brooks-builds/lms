@@ -168,6 +168,11 @@ fn create_routes(roles: &[BBRole]) -> Vec<BBNavbarLink<Routes>> {
                         .label("Create Course")
                         .build()
                         .unwrap(),
+                    BBNavbarLinkBuilder::new()
+                        .to(Routes::CreateArticle)
+                        .label("Create Article")
+                        .build()
+                        .unwrap(),
                 ]);
             }
             BBRole::Learner => (),
