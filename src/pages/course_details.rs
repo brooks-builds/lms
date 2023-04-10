@@ -1,7 +1,19 @@
-use crate::{api, logging::log_error, stores::courses_store::CourseStore};
+use crate::{
+    api,
+    logging::log_error,
+    router::Routes,
+    stores::{auth_store::AuthStore, courses_store::CourseStore},
+};
 use ycl::{
     elements::{image::BBImage, youtube_video::BBYouTubeVideo},
-    modules::hero::{BBHero, BBHeroLeftMedia},
+    foundations::container::{BBContainer, BBContainerMargin},
+    modules::{
+        hero::{BBHero, BBHeroLeftMedia},
+        nav::{
+            admin::BBAdminNav,
+            navbar_link::{BBNavbarLink, BBNavbarLinkBuilder},
+        },
+    },
 };
 use yew::prelude::*;
 use yew_hooks::{use_async, use_effect_once};
@@ -15,6 +27,8 @@ pub struct Props {
 #[function_component(CourseDetails)]
 pub fn component(props: &Props) -> Html {
     let (course_store, course_store_dispatch) = use_store::<CourseStore>();
+    let (auth_store, _) = use_store::<AuthStore>();
+
     let fetch_course = {
         let id = props.id;
         use_async(async move { api::courses::get_by_id(id).await })
@@ -64,6 +78,19 @@ pub fn component(props: &Props) -> Html {
     if let Some(course) = course {
         html! {
             <div>
+                {
+                    if auth_store.is_author() {
+                        html! {
+                            <BBContainer margin={BBContainerMargin::Normal}>
+                                <BBAdminNav<Routes>
+                                    links={create_admin_nav_routes()}
+                                />
+                            </BBContainer>
+                        }
+                    } else {
+                    html! {}
+                }
+                }
                 <BBHero
                     title={format!("${}", course.price.unwrap_or(0))}
                     subtitle={course.name.clone()}
@@ -95,4 +122,12 @@ fn hero_left_media(trailer_uri: Option<String>, title: String) -> BBHeroLeftMedi
     };
 
     BBHeroLeftMedia::LeftMedia(node)
+}
+
+fn create_admin_nav_routes() -> Vec<BBNavbarLink<Routes>> {
+    vec![BBNavbarLinkBuilder::<Routes>::new()
+        .to(Routes::CourseArticles)
+        .label("Course Articles")
+        .build()
+        .unwrap()]
 }

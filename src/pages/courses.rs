@@ -1,4 +1,9 @@
-use crate::{api, logging::log_error, router::Routes, stores::courses_store::CourseStore};
+use crate::{
+    api,
+    logging::log_error,
+    router::Routes,
+    stores::{auth_store::AuthStore, courses_store::CourseStore},
+};
 use ycl::{
     elements::title::BBTitleLevel,
     foundations::container::BBContainer,

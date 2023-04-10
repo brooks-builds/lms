@@ -54,3 +54,23 @@ export function createArticleErrorMockData() {
 	  ]
 	}
 }
+
+export interface LmsArticleMockData {
+	id: number;
+	created_at: Date;
+	title: string;
+}
+
+export function lmsArticlesMockData(titles: string[]): {data: {lms_articles: LmsArticleMockData[]}} {
+	return {
+		data: {
+			lms_articles: titles.map(title => {
+				return {
+					created_at: faker.date.past(),
+					id: faker.datatype.number(),
+					title
+				};
+			})
+		}
+	}
+}

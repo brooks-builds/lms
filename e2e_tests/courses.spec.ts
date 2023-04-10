@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import test, { expect } from "@playwright/test";
 import { login, Role } from "./utils";
-import { lmsCoursByPk, tagsMockData } from "./mock_data";
+import { courseListMockData, lmsArticlesMockData, lmsCoursByPk, tagsMockData } from "./mock_data";
 
 const GRAPHQL_URI = process.env.GRAPHQL_URI || "http://localhost:8081/v1/graphql";
 
@@ -57,4 +57,25 @@ test("Not logged in users cannot create a course", async ({ page }) => {
 	await page.goto('/create_course', { waitUntil: "networkidle" });
 	expect(page.url()).not.toMatch(/create_course/);
 	await expect(page.getByText("Only Authors can create courses")).toBeVisible();
+});
+
+test("Author add articles to a course", async ({page}) => {
+	await login(Role.Author, page);
+	await page.route(GRAPHQL_URI, async route => {
+		return route.fulfill({json: {data: courseListMockData}});
+	})
+
+	await page.goto("/courses", {waitUntil: "networkidle"});
+	await page.getByText("Yew.rs").first().click();
+
+	const articles = [
+		faker.commerce.productName(),
+	];
+
+	await page.route(GRAPHQL_URI, async route => {
+		 return route.fulfill({json: lmsArticlesMockData(articles)});
+	});
+
+	await page.getByRole("link", {name: "Course Articles"}).click();
+	await expect(page.getByText(articles[0])).toBeVisible();
 });

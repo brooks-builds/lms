@@ -2,9 +2,9 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::pages::{
-    auth_redirect::AuthRedirect, course_details::CourseDetails, courses::Courses,
-    create_account::CreateAccount, create_article::CreateArticle, create_course::CreateCourse,
-    home::Home, login::Login, tags::Tags,
+    auth_redirect::AuthRedirect, course_articles::CourseArticles, course_details::CourseDetails,
+    courses::Courses, create_account::CreateAccount, create_article::CreateArticle,
+    create_course::CreateCourse, home::Home, login::Login, tags::Tags,
 };
 
 #[derive(Clone, Routable, PartialEq)]
@@ -27,6 +27,8 @@ pub enum Routes {
     Tags,
     #[at("/create_article")]
     CreateArticle,
+    #[at("/course_articles")]
+    CourseArticles,
 }
 
 pub fn switch(routes: Routes) -> Html {
@@ -40,5 +42,6 @@ pub fn switch(routes: Routes) -> Html {
         Routes::CreateCourse => html! { <CreateCourse />},
         Routes::Tags => html! { <Tags />},
         Routes::CreateArticle => html! { <CreateArticle />},
+        Routes::CourseArticles => html! { <CourseArticles />},
     }
 }

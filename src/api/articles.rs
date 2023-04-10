@@ -2,7 +2,9 @@ use graphql_client::GraphQLQuery;
 use ycl::foundations::roles::BBRole;
 
 use crate::api::SendToGraphql;
-use crate::database_queries::{insert_lms_article, InsertLmsArticle};
+use crate::database_queries::{
+    get_lms_article_titles, insert_lms_article, GetLmsArticleTitles, InsertLmsArticle,
+};
 use crate::errors::LmsError;
 
 pub async fn create_article(
@@ -16,6 +18,19 @@ pub async fn create_article(
         .json(query)?
         .authorization(&token)
         .role(BBRole::Author)
+        .send()
+        .await
+}
+
+pub async fn get_article_titles(
+    token: String,
+) -> Result<get_lms_article_titles::ResponseData, LmsError> {
+    let variables = get_lms_article_titles::Variables {};
+    let query = GetLmsArticleTitles::build_query(variables);
+    SendToGraphql::new()
+        .authorization(&token)
+        .role(BBRole::Author)
+        .json(query)?
         .send()
         .await
 }
