@@ -6,6 +6,7 @@ use crate::database_queries::{
     get_lms_article_titles, insert_lms_article, GetLmsArticleTitles, InsertLmsArticle,
 };
 use crate::errors::LmsError;
+use crate::stores::articles::{Article, ArticlesStore};
 
 pub async fn create_article(
     title: String,
@@ -22,15 +23,15 @@ pub async fn create_article(
         .await
 }
 
-pub async fn get_article_titles(
-    token: String,
-) -> Result<get_lms_article_titles::ResponseData, LmsError> {
+pub async fn get_article_titles(token: String) -> Result<ArticlesStore, LmsError> {
     let variables = get_lms_article_titles::Variables {};
     let query = GetLmsArticleTitles::build_query(variables);
-    SendToGraphql::new()
+    let response = SendToGraphql::new()
         .authorization(&token)
         .role(BBRole::Author)
         .json(query)?
-        .send()
-        .await
+        .send::<get_lms_article_titles::ResponseData>()
+        .await?;
+
+    Ok(response.into())
 }

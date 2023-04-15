@@ -82,6 +82,7 @@ test("Author add articles to a course", async ({page}) => {
 		.filter({has: page.getByRole('heading', {name: "Assigned"})})
 		.getByRole('button', {name: articles[0]})
 	await expect(firstArticleAddedToCourse).toBeVisible();
+	await expect(page.getByText(articles[0])).toHaveCount(1);
 });
 
 test.skip("Articles should load when navigating directly to course articles page", async ({page}) => {});
