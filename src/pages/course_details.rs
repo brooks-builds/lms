@@ -83,7 +83,7 @@ pub fn component(props: &Props) -> Html {
                         html! {
                             <BBContainer margin={BBContainerMargin::Normal}>
                                 <BBAdminNav<Routes>
-                                    links={create_admin_nav_routes()}
+                                    links={create_admin_nav_routes(props.id)}
                                 />
                             </BBContainer>
                         }
@@ -124,9 +124,9 @@ fn hero_left_media(trailer_uri: Option<String>, title: String) -> BBHeroLeftMedi
     BBHeroLeftMedia::LeftMedia(node)
 }
 
-fn create_admin_nav_routes() -> Vec<BBNavbarLink<Routes>> {
+fn create_admin_nav_routes(course_id: i64) -> Vec<BBNavbarLink<Routes>> {
     vec![BBNavbarLinkBuilder::<Routes>::new()
-        .to(Routes::CourseArticles)
+        .to(Routes::CourseArticles { id: course_id })
         .label("Course Articles")
         .build()
         .unwrap()]

@@ -2,7 +2,7 @@ use std::ops::Deref;
 
 use ycl::{
     elements::{
-        text::BBText,
+        button::{BBButton, BBButtonStyle},
         title::{BBTitle, BBTitleLevel},
     },
     foundations::{
@@ -14,14 +14,12 @@ use ycl::{
     modules::lists::button_list::{BBButtonList, BBButtonListItem},
 };
 pub use yew::prelude::*;
-use yew_hooks::{use_async, use_effect_once};
 use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
 use crate::{
     api,
-    database_queries::get_lms_article_titles,
-    logging::{log_data, log_error},
+    logging::log_error,
     router::Routes,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
@@ -31,20 +29,32 @@ use crate::{
 };
 
 #[derive(Properties, PartialEq)]
-pub struct Props {}
+pub struct Props {
+    pub course_id: i64,
+}
 
 #[function_component(CourseArticles)]
-pub fn component(_props: &Props) -> Html {
+pub fn component(props: &Props) -> Html {
     let (auth_state, _) = use_store::<AuthStore>();
     let (articles_store, articles_dispatch) = use_store::<ArticlesStore>();
     let (_alert_store, alert_dispatch) = use_store::<AlertsStore>();
     let navigator = use_navigator().unwrap();
+    let available_articles = use_state(|| Vec::<Article>::new());
+    let loaded = use_state(|| false);
 
     {
+        let available_articles = available_articles.clone();
+        let auth_state = auth_state.clone();
+        let alert_dispatch = alert_dispatch.clone();
+
         use_effect(move || {
             let result = || {};
 
-            if auth_state.loading {
+            if *loaded {
+                return result;
+            }
+
+            if auth_state.clone().loading {
                 return result;
             }
 
@@ -61,13 +71,15 @@ pub fn component(_props: &Props) -> Html {
             let token = auth_state.access_token.clone().unwrap_or_default();
             let alert_dispatch = alert_dispatch.clone();
             let articles_dispatch = articles_dispatch.clone();
+            let available_articles = available_articles.clone();
 
             wasm_bindgen_futures::spawn_local(async move {
                 match api::articles::get_article_titles(token).await {
                     Ok(articles) => {
                         articles_dispatch.reduce_mut(|articles_state| {
-                            *articles_state = articles;
+                            *articles_state = articles.clone();
                         });
+                        available_articles.set(articles.articles);
                     }
                     Err(error) => {
                         log_error("Error getting article titles", &error);
@@ -79,6 +91,8 @@ pub fn component(_props: &Props) -> Html {
                 }
             });
 
+            loaded.set(true);
+
             result
         });
     }
@@ -88,6 +102,7 @@ pub fn component(_props: &Props) -> Html {
     let all_articles_onclick = {
         let assigned_article_titles = assigned_article_titles.clone();
         let articles_store = articles_store.clone();
+        let available_articles = available_articles.clone();
 
         Callback::from(move |id: AttrValue| {
             let id = id.to_string().parse::<i64>().unwrap();
@@ -97,10 +112,59 @@ pub fn component(_props: &Props) -> Html {
                 assigned_articles.push(article);
             }
             assigned_article_titles.set(assigned_articles);
+
+            let available_articles_clone = available_articles
+                .deref()
+                .clone()
+                .into_iter()
+                .filter(|article| article.id != id)
+                .collect::<Vec<Article>>();
+            available_articles.set(available_articles_clone);
         })
     };
 
     let assigned_articles_onclick = Callback::from(|id: AttrValue| {});
+
+    let save_onclick = {
+        let assigned_article_titles = assigned_article_titles.clone();
+        let course_id = props.course_id;
+        let auth_state = auth_state.clone();
+        let alert_dispatch = alert_dispatch.clone();
+
+        Callback::from(move |_| {
+            let course_id = course_id.clone();
+            let articles = assigned_article_titles.clone();
+            let auth_state = auth_state.clone();
+            let alert_dispatch = alert_dispatch.clone();
+            let assigned_article_titles = assigned_article_titles.clone();
+
+            wasm_bindgen_futures::spawn_local(async move {
+                let assigned_article_titles = assigned_article_titles.clone();
+                let token = auth_state.access_token.clone().unwrap_or_default();
+                match api::courses::set_course_articles(course_id, &*assigned_article_titles, token)
+                    .await
+                {
+                    Ok(_result) => {
+                        alert_dispatch.reduce_mut(|alert_state| {
+                            *alert_state = AlertsStoreBuilder::new()
+                                .message("Articles saved to course")
+                                .icon(ycl::elements::icon::BBIconType::Star)
+                                .alert_type(ycl::modules::banner::BBBannerType::Success)
+                                .build()
+                                .unwrap()
+                        });
+                    }
+                    Err(error) => {
+                        log_error("Erro saving articles to course", &error);
+                        alert_dispatch.reduce_mut(|alert_state| {
+                            *alert_state =
+                                AlertsStoreBuilder::new_error("Error saving articles to course")
+                        });
+                    }
+                }
+            });
+        })
+    };
 
     html! {
         <BBContainer margin={BBContainerMargin::Normal}>
@@ -118,8 +182,11 @@ pub fn component(_props: &Props) -> Html {
                     <BBTitle level={BBTitleLevel::Two} align={AlignText::Center}>
                         {"All Articles"}
                     </BBTitle>
-                    <BBButtonList items={extract_article_titles(&articles_store.articles)} onclick={all_articles_onclick} />
+                    <BBButtonList items={extract_article_titles(&*available_articles)} onclick={all_articles_onclick} />
                 </BBCol>
+            </BBRow>
+            <BBRow>
+                <BBButton button_style={BBButtonStyle::PrimaryLight} onclick={save_onclick}>{"Save"}</BBButton>
             </BBRow>
         </BBContainer>
     }

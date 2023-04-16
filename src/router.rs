@@ -27,8 +27,8 @@ pub enum Routes {
     Tags,
     #[at("/create_article")]
     CreateArticle,
-    #[at("/course_articles")]
-    CourseArticles,
+    #[at("/course_articles/:id")]
+    CourseArticles { id: i64 },
 }
 
 pub fn switch(routes: Routes) -> Html {
@@ -42,6 +42,6 @@ pub fn switch(routes: Routes) -> Html {
         Routes::CreateCourse => html! { <CreateCourse />},
         Routes::Tags => html! { <Tags />},
         Routes::CreateArticle => html! { <CreateArticle />},
-        Routes::CourseArticles => html! { <CourseArticles />},
+        Routes::CourseArticles { id } => html! { <CourseArticles course_id={id}/>},
     }
 }

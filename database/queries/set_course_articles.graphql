@@ -1,0 +1,6 @@
+mutation SetLmsCourseArticles($id: Int!, $article_ids: json!) {
+  update_lms_courses_by_pk(pk_columns: {id: $id}, _set: {article_ids: $article_ids}) {
+    id
+    article_ids
+  }
+}
