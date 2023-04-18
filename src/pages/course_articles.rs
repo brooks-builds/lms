@@ -25,6 +25,7 @@ use crate::{
         alerts::{AlertsStore, AlertsStoreBuilder},
         articles::{Article, ArticlesStore},
         auth_store::AuthStore,
+        courses_store::CourseStore,
     },
 };
 
@@ -41,16 +42,53 @@ pub fn component(props: &Props) -> Html {
     let navigator = use_navigator().unwrap();
     let available_articles = use_state(|| Vec::<Article>::new());
     let loaded = use_state(|| false);
+    let really_loaded = use_state(|| false);
+    let (course_store, course_dispatch) = use_store::<CourseStore>();
+    let assigned_article_titles = use_state(|| Vec::<Article>::new());
 
     {
         let available_articles = available_articles.clone();
         let auth_state = auth_state.clone();
         let alert_dispatch = alert_dispatch.clone();
+        let course_id = props.course_id;
+        let course_dispatch = course_dispatch.clone();
+        let assigned_article_titles = assigned_article_titles.clone();
 
         use_effect(move || {
             let result = || {};
 
-            if *loaded {
+            if *loaded && *really_loaded {
+                return result;
+            }
+
+            if *loaded && !*really_loaded {
+                let course_article_ids = if let Some(store_course) = course_store
+                    .courses
+                    .iter()
+                    .rfind(|course| course.id == course_id)
+                {
+                    // remove articles from available and put into assigned
+                    store_course.article_ids.clone()
+                } else {
+                    alert_dispatch.clone().reduce_mut(|alert_state| {
+                        *alert_state = AlertsStoreBuilder::new_error(
+                            "Could not find the course we are adding articles to",
+                        )
+                    });
+                    return result;
+                };
+
+                let assigned_articles = available_articles
+                    .iter()
+                    .filter(move |available_article| {
+                        course_article_ids.contains(&available_article.id)
+                    })
+                    .map(ToOwned::to_owned)
+                    .collect::<Vec<Article>>();
+
+                assigned_article_titles.set(assigned_articles);
+
+                really_loaded.set(true);
                 return result;
             }
 
@@ -72,8 +110,36 @@ pub fn component(props: &Props) -> Html {
             let alert_dispatch = alert_dispatch.clone();
             let articles_dispatch = articles_dispatch.clone();
             let available_articles = available_articles.clone();
+            let course_id = course_id.clone();
+            let course_dispatch = course_dispatch.clone();
+            let assigned_article_titles = assigned_article_titles.clone();
 
             wasm_bindgen_futures::spawn_local(async move {
+                match api::courses::get_by_id(course_id).await {
+                    Ok(course) => {
+                        course_dispatch.reduce_mut(|course_state| {
+                            if let Some((index, store_course)) = course_state
+                                .courses
+                                .iter()
+                                .enumerate()
+                                .find(|(index, store_course)| store_course.id == course.id)
+                            {
+                                course_state.courses.remove(index);
+                            }
+
+                            course_state.courses.push(course);
+                        });
+                    }
+                    Err(error) => {
+                        log_error("error getting course", &error);
+                        alert_dispatch.clone().reduce_mut(|alert_state| {
+                            *alert_state = AlertsStoreBuilder::new_error(
+                                "There was a problem loading the course",
+                            )
+                        });
+                    }
+                }
+
                 match api::articles::get_article_titles(token).await {
                     Ok(articles) => {
                         articles_dispatch.reduce_mut(|articles_state| {
@@ -89,15 +155,13 @@ pub fn component(props: &Props) -> Html {
                         });
                     }
                 }
-            });
 
-            loaded.set(true);
+                loaded.set(true);
+            });
 
             result
         });
     }
-
-    let assigned_article_titles = use_state(|| Vec::<Article>::new());
 
     let all_articles_onclick = {
         let assigned_article_titles = assigned_article_titles.clone();

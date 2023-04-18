@@ -37,6 +37,7 @@ pub async fn get() -> Result<Vec<StoreCourse>, LmsError> {
                 price: api_course.price,
                 long_description: api_course.long_description,
                 trailer_uri: api_course.trailer_uri,
+                article_ids: api_course.article_ids,
             }
         })
         .collect::<Vec<StoreCourse>>())
@@ -60,6 +61,7 @@ pub async fn get_by_id(id: i64) -> Result<StoreCourse, LmsError> {
             tag: response_course.lms_tag.name.into(),
             price: response_course.price,
             long_description: response_course.long_description,
+            article_ids: response_course.article_ids,
         })
     } else {
         Err(LmsError::CourseNotFound)

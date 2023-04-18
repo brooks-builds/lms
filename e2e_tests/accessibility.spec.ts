@@ -11,7 +11,7 @@ const routes = [
 	"/auth/login",
 	"/auth/redirect",
 	"/create_article",
-	"/course_articles"
+	// "/course_articles" // In order to support course articles we need to create a centralized graphql intercept with mock data
 ];
 
 for (let route of routes) {

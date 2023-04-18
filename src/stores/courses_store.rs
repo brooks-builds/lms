@@ -21,6 +21,7 @@ pub struct StoreCourse {
     pub price: Option<u8>,
     pub long_description: String,
     pub trailer_uri: Option<String>,
+    pub article_ids: Vec<i64>,
 }
 
 #[derive(Clone, Default, PartialEq, Eq, Debug)]
