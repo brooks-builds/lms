@@ -3,12 +3,12 @@
     {
       "created_at": "2023-04-08T15:19:58.102174",
       "id": 1,
-      "title": "Hello Rust",
+      "title": "Hello Rust"
     },
     {
       "created_at": "2023-04-09T15:19:58.102174",
       "id": 2,
-      "title": "How to Learn",
+      "title": "How to Learn"
     }
   ]
 }

@@ -1,14 +1,7 @@
 import { faker } from "@faker-js/faker";
 import test, { expect } from "@playwright/test";
 import { login, Role } from "./utils";
-import {
-  courseListMockData,
-  lmsArticlesMockData,
-  lmsCoursByPk,
-  setCourseArticlesMockData,
-  tagsMockData,
-} from "./mock_data";
-import { addArticleToCourseIntercept } from "./intercept_data";
+import { lmsCoursByPk, tagsMockData } from "./mock_data";
 import { interceptGraphql } from "./graphql_intercepter";
 
 const GRAPHQL_URI =
@@ -76,30 +69,22 @@ test("Not logged in users cannot create a course", async ({ page }) => {
 
 test("Author add articles to a course", async ({ page }) => {
   await login(Role.Author, page);
-
   await interceptGraphql(page);
-
-  // await page.route(GRAPHQL_URI, async (route) => {
-  //   return route.fulfill({ json: { data: courseListMockData } });
-  // });
 
   await page.goto("/courses", { waitUntil: "networkidle" });
   await page.getByText("Yew.rs").first().click();
-
-  const articles = [faker.commerce.productName(), faker.commerce.productName()];
-  // const articlesMockData = lmsArticlesMockData(articles);
-  // await page.route(GRAPHQL_URI, async (route) => {
-  //   return route.fulfill({ json: articlesMockData });
-  // });
-
   await page.getByRole("link", { name: "Course Articles" }).click();
-  await expect(
-    page.locator(".col").filter({
-      has: page
-        .getByRole("heading", { name: "Assigned" })
-        .getByRole("button", { name: articles[1] }),
+
+  const howToLearnArticle = page
+    .locator(".col")
+    .filter({
+      has: page.getByRole("heading", { name: "Assigned" }),
     })
-  ).toBeVisible();
+    .filter({
+      has: page.getByRole("button", { name: "How to Learn" }),
+    });
+
+  await expect(howToLearnArticle).toBeVisible();
   // await page.getByText(articles[0]).click();
   // const firstArticleAddedToCourse = page
   //   .locator(".col")
