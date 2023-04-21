@@ -1,4 +1,4 @@
-use std::ops::Deref;
+use std::{collections::HashMap, ops::Deref};
 
 use ycl::{
     elements::{
@@ -19,6 +19,7 @@ use yewdux::prelude::use_store;
 
 use crate::{
     api,
+    database_queries::get_lms_article_titles,
     logging::log_error,
     router::Routes,
     stores::{
@@ -40,11 +41,12 @@ pub fn component(props: &Props) -> Html {
     let (articles_store, articles_dispatch) = use_store::<ArticlesStore>();
     let (_alert_store, alert_dispatch) = use_store::<AlertsStore>();
     let navigator = use_navigator().unwrap();
-    let available_articles = use_state(|| Vec::<Article>::new());
-    let loaded = use_state(|| false);
-    let really_loaded = use_state(|| false);
+    let available_articles = use_state(|| HashMap::<i64, Article>::new());
     let (course_store, course_dispatch) = use_store::<CourseStore>();
-    let assigned_article_titles = use_state(|| Vec::<Article>::new());
+    let assigned_article_titles = use_state(|| HashMap::<i64, Article>::new());
+    let article_titles_loaded = use_state(|| false);
+    let course_loaded = use_state(|| false);
+    let assigned_article_titles_loaded = use_state(|| false);
 
     {
         let available_articles = available_articles.clone();
@@ -57,107 +59,166 @@ pub fn component(props: &Props) -> Html {
         use_effect(move || {
             let result = || {};
 
-            if *loaded && *really_loaded {
+            if *article_titles_loaded && *course_loaded {
                 return result;
             }
 
-            if *loaded && !*really_loaded {
-                let course_article_ids = if let Some(store_course) = course_store
-                    .courses
-                    .iter()
-                    .rfind(|course| course.id == course_id)
-                {
-                    // remove articles from available and put into assigned
-                    store_course.article_ids.clone()
-                } else {
-                    alert_dispatch.clone().reduce_mut(|alert_state| {
-                        *alert_state = AlertsStoreBuilder::new_error(
-                            "Could not find the course we are adding articles to",
-                        )
-                    });
-                    return result;
-                };
+            if !*course_loaded {
+                let course_dispatch = course_dispatch.clone();
+                let alert_dispatch = alert_dispatch.clone();
 
-                let assigned_articles = available_articles
-                    .iter()
-                    .filter(move |available_article| {
-                        course_article_ids.contains(&available_article.id)
-                    })
-                    .map(ToOwned::to_owned)
-                    .collect::<Vec<Article>>();
+                wasm_bindgen_futures::spawn_local(async move {
+                    match api::courses::get_by_id(course_id).await {
+                        Ok(course) => course_dispatch.reduce_mut(|courses_state| {
+                            courses_state.upsert_course(course.id, course);
+                        }),
+                        Err(error) => {
+                            log_error("error getting course", &error);
+                            alert_dispatch.clone().reduce_mut(|alert_state| {
+                                *alert_state = AlertsStoreBuilder::new_error(
+                                    "There was a problem loading the course",
+                                )
+                            });
+                        }
+                    }
 
-                assigned_article_titles.set(assigned_articles);
-
-                really_loaded.set(true);
-                return result;
-            }
-
-            if auth_state.clone().loading {
-                return result;
-            }
-
-            if !auth_state.is_author() {
-                alert_dispatch.clone().reduce_mut(|alert_state| {
-                    *alert_state = AlertsStoreBuilder::new_error(
-                        "You must be an author to assign articles to courses",
-                    )
+                    course_loaded.set(true);
                 });
-                navigator.push(&Routes::Home);
-                return result;
             }
 
-            let token = auth_state.access_token.clone().unwrap_or_default();
-            let alert_dispatch = alert_dispatch.clone();
-            let articles_dispatch = articles_dispatch.clone();
-            let available_articles = available_articles.clone();
-            let course_id = course_id.clone();
-            let course_dispatch = course_dispatch.clone();
-            let assigned_article_titles = assigned_article_titles.clone();
+            if !*article_titles_loaded {
+                let assigned_article_titles = assigned_article_titles.clone();
+                let alert_dispatch = alert_dispatch.clone();
+                let token = auth_state.access_token.clone().unwrap_or_default();
 
-            wasm_bindgen_futures::spawn_local(async move {
-                match api::courses::get_by_id(course_id).await {
-                    Ok(course) => {
-                        course_dispatch.reduce_mut(|course_state| {
-                            if let Some((index, store_course)) = course_state
-                                .courses
-                                .iter()
-                                .enumerate()
-                                .find(|(index, store_course)| store_course.id == course.id)
-                            {
-                                course_state.courses.remove(index);
-                            }
+                wasm_bindgen_futures::spawn_local(async move {
+                    match api::articles::get_article_titles(token).await {
+                        Ok(articles) => {
+                            articles_dispatch.reduce_mut(|articles_state| {
+                                *articles_state = articles.clone();
+                            });
+                            available_articles.set(articles.articles);
+                        }
+                        Err(error) => {
+                            log_error("Error getting article titles", &error);
+                            alert_dispatch.reduce_mut(|alert_state| {
+                                *alert_state =
+                                    AlertsStoreBuilder::new_error("Error getting article titles")
+                            });
+                        }
+                    }
 
-                            course_state.courses.push(course);
-                        });
-                    }
-                    Err(error) => {
-                        log_error("error getting course", &error);
-                        alert_dispatch.clone().reduce_mut(|alert_state| {
-                            *alert_state = AlertsStoreBuilder::new_error(
-                                "There was a problem loading the course",
-                            )
-                        });
-                    }
-                }
+                    article_titles_loaded.set(true);
+                });
+            }
 
-                match api::articles::get_article_titles(token).await {
-                    Ok(articles) => {
-                        articles_dispatch.reduce_mut(|articles_state| {
-                            *articles_state = articles.clone();
-                        });
-                        available_articles.set(articles.articles);
-                    }
-                    Err(error) => {
-                        log_error("Error getting article titles", &error);
-                        alert_dispatch.reduce_mut(|alert_state| {
-                            *alert_state =
-                                AlertsStoreBuilder::new_error("Error getting article titles")
-                        });
+            if !*assigned_article_titles_loaded && *course_loaded && *article_titles_loaded {
+                let Some(course) = course_store.get_by_course_id(course_id) else {return result;};
+                let mut assigned_articles = *assigned_article_titles;
+                for article_id in course.article_ids {
+                    if let Some(article) = available_articles.get(&article_id) {
+                        assigned_articles.insert(article_id, article.clone());
                     }
                 }
+            }
 
-                loaded.set(true);
-            });
+            // if *loaded && !*really_loaded {
+            //     let course_article_ids = if let Some(store_course) = course_store
+            //         .courses
+            //         .iter()
+            //         .rfind(|course| course.id == course_id)
+            //     {
+            //         // remove articles from available and put into assigned
+            //         store_course.article_ids.clone()
+            //     } else {
+            //         alert_dispatch.clone().reduce_mut(|alert_state| {
+            //             *alert_state = AlertsStoreBuilder::new_error(
+            //                 "Could not find the course we are adding articles to",
+            //             )
+            //         });
+            //         return result;
+            //     };
+
+            //     let assigned_articles = available_articles
+            //         .iter()
+            //         .filter(move |available_article| {
+            //             course_article_ids.contains(&available_article.id)
+            //         })
+            //         .map(ToOwned::to_owned)
+            //         .collect::<Vec<Article>>();
+
+            //     assigned_article_titles.set(assigned_articles);
+
+            //     really_loaded.set(true);
+            //     return result;
+            // }
+
+            // if auth_state.clone().loading {
+            //     return result;
+            // }
+
+            // if !auth_state.is_author() {
+            //     alert_dispatch.clone().reduce_mut(|alert_state| {
+            //         *alert_state = AlertsStoreBuilder::new_error(
+            //             "You must be an author to assign articles to courses",
+            //         )
+            //     });
+            //     navigator.push(&Routes::Home);
+            //     return result;
+            // }
+
+            // let token = auth_state.access_token.clone().unwrap_or_default();
+            // let alert_dispatch = alert_dispatch.clone();
+            // let articles_dispatch = articles_dispatch.clone();
+            // let available_articles = available_articles.clone();
+            // let course_id = course_id.clone();
+            // let course_dispatch = course_dispatch.clone();
+            // let assigned_article_titles = assigned_article_titles.clone();
+
+            // wasm_bindgen_futures::spawn_local(async move {
+            //     match api::courses::get_by_id(course_id).await {
+            //         Ok(course) => {
+            //             course_dispatch.reduce_mut(|course_state| {
+            //                 if let Some((index, store_course)) = course_state
+            //                     .courses
+            //                     .iter()
+            //                     .enumerate()
+            //                     .find(|(index, store_course)| store_course.id == course.id)
+            //                 {
+            //                     course_state.courses.remove(index);
+            //                 }
+
+            //                 course_state.courses.push(course);
+            //             });
+            //         }
+            //         Err(error) => {
+            //             log_error("error getting course", &error);
+            //             alert_dispatch.clone().reduce_mut(|alert_state| {
+            //                 *alert_state = AlertsStoreBuilder::new_error(
+            //                     "There was a problem loading the course",
+            //                 )
+            //             });
+            //         }
+            //     }
+
+            //     match api::articles::get_article_titles(token).await {
+            //         Ok(articles) => {
+            //             articles_dispatch.reduce_mut(|articles_state| {
+            //                 *articles_state = articles.clone();
+            //             });
+            //             available_articles.set(articles.articles);
+            //         }
+            //         Err(error) => {
+            //             log_error("Error getting article titles", &error);
+            //             alert_dispatch.reduce_mut(|alert_state| {
+            //                 *alert_state =
+            //                     AlertsStoreBuilder::new_error("Error getting article titles")
+            //             });
+            //         }
+            //     }
+
+            //     loaded.set(true);
+            // });
 
             result
         });
@@ -170,19 +231,15 @@ pub fn component(props: &Props) -> Html {
 
         Callback::from(move |id: AttrValue| {
             let id = id.to_string().parse::<i64>().unwrap();
-            let article = articles_store.clone_by_id(id);
+            let article = articles_store.articles.get(&id);
             let mut assigned_articles = assigned_article_titles.deref().clone();
             if let Some(article) = article {
-                assigned_articles.push(article);
+                assigned_articles.insert(id, article.clone());
             }
             assigned_article_titles.set(assigned_articles);
 
-            let available_articles_clone = available_articles
-                .deref()
-                .clone()
-                .into_iter()
-                .filter(|article| article.id != id)
-                .collect::<Vec<Article>>();
+            let mut available_articles_clone = available_articles.deref().clone();
+            available_articles_clone.remove(&id);
             available_articles.set(available_articles_clone);
         })
     };

@@ -85,6 +85,8 @@ test("Author add articles to a course", async ({ page }) => {
     });
 
   await expect(howToLearnArticle).toBeVisible();
+
+  await expect(page.locator('.col').filter({ has: page.getByRole('heading', { name: "All Articles" }) }).filter({ has: page.getByRole('button', { name: "How to Learn" }) })).not.toBeVisible();
   // await page.getByText(articles[0]).click();
   // const firstArticleAddedToCourse = page
   //   .locator(".col")
@@ -112,4 +114,4 @@ test("Author add articles to a course", async ({ page }) => {
 
 test.skip("Articles should load when navigating directly to course articles page", async ({
   page,
-}) => {});
+}) => { });
