@@ -21,7 +21,6 @@ use yewdux::prelude::use_store;
 
 use crate::{
     api,
-    database_queries::get_lms_article_titles,
     logging::{self, log_data, log_error},
     router::Routes,
     stores::{
@@ -43,9 +42,9 @@ pub fn component(props: &Props) -> Html {
     let (articles_store, articles_dispatch) = use_store::<ArticlesStore>();
     let (_alert_store, alert_dispatch) = use_store::<AlertsStore>();
     let navigator = use_navigator().unwrap();
-    let available_articles = use_state(|| HashMap::<i64, Article>::new());
+    let available_articles = use_state(HashMap::<i64, Article>::new);
     let (course_store, course_dispatch) = use_store::<CourseStore>();
-    let assigned_article_titles = use_state(|| HashMap::<i64, Article>::new());
+    let assigned_article_titles = use_state(HashMap::<i64, Article>::new);
     let article_titles_loaded = use_state(|| BBLoadingState::Initialized);
     let course_loaded = use_state(|| BBLoadingState::Initialized);
     let assigned_article_titles_loaded = use_state(|| BBLoadingState::Initialized);
@@ -55,11 +54,25 @@ pub fn component(props: &Props) -> Html {
         let auth_state = auth_state.clone();
         let alert_dispatch = alert_dispatch.clone();
         let course_id = props.course_id;
-        let course_dispatch = course_dispatch.clone();
+        let course_dispatch = course_dispatch;
         let assigned_article_titles = assigned_article_titles.clone();
 
         use_effect(move || {
             let result = || {};
+            log_data("auth state loading", auth_state.loading);
+
+            if auth_state.loading {
+                return result;
+            }
+
+            if !auth_state.is_author() {
+                alert_dispatch.reduce_mut(|alert_state| {
+                    *alert_state =
+                        AlertsStoreBuilder::new_error("Only Authors can manage course articles")
+                });
+                navigator.push(&Routes::Home);
+                return result;
+            }
 
             if assigned_article_titles_loaded.is_loaded()
                 && article_titles_loaded.is_loaded()
@@ -134,8 +147,8 @@ pub fn component(props: &Props) -> Html {
                 let mut assigned_articles = assigned_article_titles.deref().clone();
                 let mut available_articles_clone = available_articles.deref().clone();
                 for article_id in course.article_ids.iter() {
-                    if let Some(article) = available_articles_clone.remove(&article_id) {
-                        assigned_articles.insert(*article_id, article);
+                    if let Some(article) = available_articles_clone.remove(article_id) {
+                        assigned_articles.insert(article.id, article);
                     }
                 }
                 assigned_article_titles.set(assigned_articles);
@@ -253,7 +266,7 @@ pub fn component(props: &Props) -> Html {
 
     let all_articles_onclick = {
         let assigned_article_titles = assigned_article_titles.clone();
-        let articles_store = articles_store.clone();
+        let articles_store = articles_store;
         let available_articles = available_articles.clone();
 
         Callback::from(move |id: AttrValue| {
@@ -295,11 +308,11 @@ pub fn component(props: &Props) -> Html {
     let save_onclick = {
         let assigned_article_titles = assigned_article_titles.clone();
         let course_id = props.course_id;
-        let auth_state = auth_state.clone();
-        let alert_dispatch = alert_dispatch.clone();
+        let auth_state = auth_state;
+        let alert_dispatch = alert_dispatch;
 
         Callback::from(move |_| {
-            let course_id = course_id.clone();
+            let course_id = course_id;
             let assigned_article_titles = assigned_article_titles.clone();
             let auth_state = auth_state.clone();
             let alert_dispatch = alert_dispatch.clone();
@@ -344,13 +357,13 @@ pub fn component(props: &Props) -> Html {
                     <BBTitle level={BBTitleLevel::Two} align={AlignText::Center}>
                         {"Assigned"}
                     </BBTitle>
-                    <BBButtonList items={extract_article_titles(&*assigned_article_titles)} onclick={assigned_articles_onclick} />
+                    <BBButtonList items={extract_article_titles(&assigned_article_titles)} onclick={assigned_articles_onclick} />
                 </BBCol>
                 <BBCol>
                     <BBTitle level={BBTitleLevel::Two} align={AlignText::Center}>
                         {"All Articles"}
                     </BBTitle>
-                    <BBButtonList items={extract_article_titles(&*available_articles)} onclick={all_articles_onclick} />
+                    <BBButtonList items={extract_article_titles(&available_articles)} onclick={all_articles_onclick} />
                 </BBCol>
             </BBRow>
             <BBRow>
@@ -363,14 +376,9 @@ pub fn component(props: &Props) -> Html {
 fn extract_article_titles(titles: &HashMap<i64, Article>) -> Vec<BBButtonListItem> {
     titles
         .iter()
-        .map(|(id, title)| BBButtonListItem {
+        .map(|(_id, title)| BBButtonListItem {
             label: AttrValue::from(title.title.clone()),
             id: AttrValue::from(title.id.to_string()),
         })
         .collect()
-}
-
-struct ArticleTitle {
-    pub id: i64,
-    pub title: String,
 }

@@ -88,7 +88,7 @@ test("Author add articles to a course", async ({ page }) => {
   await expect(howToLearnArticle).toBeVisible();
 
   await expect(
-    await page
+    page
       .locator(".col")
       .filter({ has: page.getByRole("heading", { name: "All Articles" }) })
       .filter({ has: page.getByRole("button", { name: "How to Learn" }) })
@@ -128,19 +128,31 @@ test("Author add articles to a course", async ({ page }) => {
   await expect(page.getByText("Articles saved to course")).toBeVisible();
 });
 
-test.only("Articles should load when navigating directly to course articles page", async ({
+test("Articles should load when navigating directly to course articles page", async ({
   page,
 }) => {
+  await interceptGraphql(page);
   await login(Role.Author, page, "/course_articles/1");
-  throw new Error("not implemented");
+  await expect(page.getByText("How to Learn")).toBeVisible();
+  await expect(page.getByText("Hello Rust")).toBeVisible();
 });
 
-test.only("Learners cannot visit the course articles page", ({ page }) => {
-  throw new Error("not implemented");
+test("Learners cannot visit the course articles page", async ({ page }) => {
+  await interceptGraphql(page);
+  await login(Role.Learner, page, "/course_articles/1");
+  expect(page.url()).not.toMatch(/course_articles/);
+  await expect(
+    page.getByText("Only Authors can manage course articles")
+  ).toBeVisible();
 });
 
-test.only("Visitors cannot navigate to the course articles page", ({
+test("Visitors cannot navigate to the course articles page", async ({
   page,
 }) => {
-  throw new Error("not implemented");
+  await interceptGraphql(page);
+  await login(Role.Learner, page, "/course_articles/1");
+  expect(page.url()).not.toMatch(/course_articles/);
+  await expect(
+    page.getByText("Only Authors can manage course articles")
+  ).toBeVisible();
 });
