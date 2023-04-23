@@ -1,0 +1,7 @@
+query ApiGetArticleTitlesByIds($article_ids: [Int!]!) {
+  lms_articles(where: {id: {_in: $article_ids}}) {
+    id
+    title
+  }
+}
+

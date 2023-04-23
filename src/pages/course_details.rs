@@ -5,7 +5,7 @@ use crate::{
     stores::{auth_store::AuthStore, courses_store::CourseStore},
 };
 use ycl::{
-    elements::{image::BBImage, youtube_video::BBYouTubeVideo},
+    elements::{image::BBImage, internal_link::BBInternalLink, youtube_video::BBYouTubeVideo},
     foundations::container::{BBContainer, BBContainerMargin},
     modules::{
         hero::{BBHero, BBHeroLeftMedia},
@@ -34,7 +34,7 @@ pub fn component(props: &Props) -> Html {
         use_async(async move { api::courses::get_by_id(id).await })
     };
 
-    let course = course_store.get_by_course_id(props.id);
+    let course = course_store.courses.get(&props.id);
 
     {
         let have_course = course.is_some();
@@ -67,7 +67,7 @@ pub fn component(props: &Props) -> Html {
 
             if let Some(course) = fetch_course.data.clone() {
                 course_store_dispatch.reduce_mut(|course_store| {
-                    course_store.courses.push(course);
+                    course_store.courses.insert(course.id, course);
                 });
             }
 
@@ -96,6 +96,7 @@ pub fn component(props: &Props) -> Html {
                     subtitle={course.name.clone()}
                     text={course.long_description.clone()}
                     media={hero_left_media(course.trailer_uri.clone(), course.name.clone())}
+                    main={hero_main(props.id)}
                 />
             </div>
         }
@@ -130,4 +131,15 @@ fn create_admin_nav_routes(course_id: i64) -> Vec<BBNavbarLink<Routes>> {
         .label("Course Articles")
         .build()
         .unwrap()]
+}
+
+fn hero_main(course_id: i64) -> Html {
+    html! {
+        <BBInternalLink<Routes>
+            to={Routes::CourseAccess { id: course_id }}
+            button={true}
+        >
+            {"Preview"}
+        </BBInternalLink<Routes>>
+    }
 }

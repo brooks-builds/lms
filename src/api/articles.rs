@@ -6,7 +6,7 @@ use crate::database_queries::{
     get_lms_article_titles, insert_lms_article, GetLmsArticleTitles, InsertLmsArticle,
 };
 use crate::errors::LmsError;
-use crate::stores::articles::ArticlesStore;
+use crate::stores::articles::{Article, ArticlesStore};
 
 pub async fn create_article(
     title: String,
@@ -35,3 +35,5 @@ pub async fn get_article_titles(token: String) -> Result<ArticlesStore, LmsError
 
     Ok(response.into())
 }
+
+pub async fn get_article_titles_by_ids() -> Result<Vec<Article>, LmsError> {}

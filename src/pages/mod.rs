@@ -1,4 +1,5 @@
 pub mod auth_redirect;
+pub mod course_access;
 pub mod course_articles;
 pub mod course_details;
 pub mod courses;

@@ -90,7 +90,7 @@ pub fn component(props: &Props) -> Html {
                     course_loaded.clone().set(BBLoadingState::Loading);
                     match api::courses::get_by_id(course_id).await {
                         Ok(course) => course_dispatch.reduce_mut(|courses_state| {
-                            courses_state.upsert_course(course.id, course);
+                            courses_state.courses.insert(course.id, course);
                             course_loaded.set(BBLoadingState::Loaded);
                         }),
                         Err(error) => {
@@ -142,7 +142,7 @@ pub fn component(props: &Props) -> Html {
                 && article_titles_loaded.is_loaded()
             {
                 logging::log("assigning article titles");
-                let Some(course) = course_store.get_by_course_id(course_id) else {return result;};
+                let Some(course) = course_store.courses.get(&course_id) else {return result;};
 
                 let mut assigned_articles = assigned_article_titles.deref().clone();
                 let mut available_articles_clone = available_articles.deref().clone();

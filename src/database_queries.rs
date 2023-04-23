@@ -80,3 +80,11 @@ pub struct GetLmsArticleTitles;
     response_derives = "Debug, Clone"
 )]
 pub struct SetLmsCourseArticles;
+
+#[derive(GraphQLQuery)]
+#[graphql(
+    schema_path = "database/schema.json",
+    query_path = "database/queries/get_article_titles_by_ids.graphql",
+    response_derives = "Debug, Clone"
+)]
+pub struct ApiGetArticleTitlesByIds;

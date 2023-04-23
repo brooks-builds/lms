@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::{api, logging::log_error, router::Routes, stores::courses_store::CourseStore};
 use ycl::{
     elements::title::BBTitleLevel,
@@ -18,18 +20,24 @@ pub fn component() -> Html {
     let courses = course_store
         .courses
         .iter()
-        .map(|store_course| {
+        .map(|(id, store_course)| {
             BBCardDataBuilder::<Routes>::new()
                 .title(store_course.name.clone())
                 .text(store_course.description.clone())
-                .link(Routes::CourseDetails {
-                    id: store_course.id,
-                })
+                .link(Routes::CourseDetails { id: *id })
                 .build()
         })
         .collect::<Vec<BBCardData<Routes>>>();
 
-    let load_courses_state = use_async(async { api::courses::get().await });
+    let load_courses_state = use_async(async {
+        api::courses::get().await.map(|courses| {
+            let mut courses_hash = HashMap::new();
+            for api_course in courses {
+                courses_hash.insert(api_course.id, api_course);
+            }
+            courses_hash
+        })
+    });
 
     {
         let load_courses_state = load_courses_state.clone();
