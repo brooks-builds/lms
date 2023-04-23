@@ -10,6 +10,22 @@ impl CourseStore {
     pub fn get_by_course_id(&self, id: i64) -> Option<&StoreCourse> {
         self.courses.iter().find(move |course| course.id == id)
     }
+
+    pub fn upsert_course(&mut self, id: i64, new_course: StoreCourse) {
+        let mut index = None;
+        for (courses_index, course) in self.courses.iter().enumerate() {
+            if course.id == id {
+                index = Some(courses_index);
+                break;
+            }
+        }
+        if let Some(index) = index {
+            self.courses.remove(index);
+            self.courses.insert(index, new_course);
+        } else {
+            self.courses.push(new_course);
+        }
+    }
 }
 
 #[derive(Clone, Default, PartialEq, Eq, Debug)]
@@ -21,6 +37,7 @@ pub struct StoreCourse {
     pub price: Option<u8>,
     pub long_description: String,
     pub trailer_uri: Option<String>,
+    pub article_ids: Vec<i64>,
 }
 
 #[derive(Clone, Default, PartialEq, Eq, Debug)]

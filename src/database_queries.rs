@@ -3,6 +3,12 @@ use graphql_client::GraphQLQuery;
 #[allow(non_camel_case_types)]
 pub type smallint = u8;
 
+#[allow(non_camel_case_types)]
+pub type timestamp = String;
+
+#[allow(non_camel_case_types)]
+pub type json = Vec<i64>;
+
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "database/schema.json",
@@ -58,3 +64,19 @@ pub struct CreateLmsCourse;
     response_derives = "Debug, Clone"
 )]
 pub struct InsertLmsArticle;
+
+#[derive(GraphQLQuery)]
+#[graphql(
+    schema_path = "database/schema.json",
+    query_path = "database/queries/get_article_titles.graphql",
+    response_derives = "Debug, Clone"
+)]
+pub struct GetLmsArticleTitles;
+
+#[derive(GraphQLQuery)]
+#[graphql(
+    schema_path = "database/schema.json",
+    query_path = "database/queries/set_course_articles.graphql",
+    response_derives = "Debug, Clone"
+)]
+pub struct SetLmsCourseArticles;
