@@ -113,7 +113,7 @@ pub async fn insert_course(
 
 pub async fn set_course_articles(
     course_id: i64,
-    articles: &[Article],
+    articles: &[&Article],
     token: String,
 ) -> Result<set_lms_course_articles::ResponseData, LmsError> {
     let variables = set_lms_course_articles::Variables {

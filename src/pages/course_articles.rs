@@ -1,3 +1,4 @@
+#![allow(non_camel_case_types)]
 use std::{collections::HashMap, ops::Deref};
 
 use ycl::{
@@ -10,6 +11,7 @@ use ycl::{
         column::BBCol,
         container::{BBContainer, BBContainerMargin},
         row::BBRow,
+        states::BBLoadingState,
     },
     modules::lists::button_list::{BBButtonList, BBButtonListItem},
 };
@@ -20,7 +22,7 @@ use yewdux::prelude::use_store;
 use crate::{
     api,
     database_queries::get_lms_article_titles,
-    logging::log_error,
+    logging::{self, log_data, log_error},
     router::Routes,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
@@ -44,9 +46,9 @@ pub fn component(props: &Props) -> Html {
     let available_articles = use_state(|| HashMap::<i64, Article>::new());
     let (course_store, course_dispatch) = use_store::<CourseStore>();
     let assigned_article_titles = use_state(|| HashMap::<i64, Article>::new());
-    let article_titles_loaded = use_state(|| false);
-    let course_loaded = use_state(|| false);
-    let assigned_article_titles_loaded = use_state(|| false);
+    let article_titles_loaded = use_state(|| BBLoadingState::Initialized);
+    let course_loaded = use_state(|| BBLoadingState::Initialized);
+    let assigned_article_titles_loaded = use_state(|| BBLoadingState::Initialized);
 
     {
         let available_articles = available_articles.clone();
@@ -59,18 +61,24 @@ pub fn component(props: &Props) -> Html {
         use_effect(move || {
             let result = || {};
 
-            if *article_titles_loaded && *course_loaded {
+            if assigned_article_titles_loaded.is_loaded()
+                && article_titles_loaded.is_loaded()
+                && course_loaded.is_loaded()
+            {
                 return result;
             }
 
-            if !*course_loaded {
+            if *course_loaded == BBLoadingState::Initialized {
                 let course_dispatch = course_dispatch.clone();
                 let alert_dispatch = alert_dispatch.clone();
+                let course_loaded = course_loaded.clone();
 
                 wasm_bindgen_futures::spawn_local(async move {
+                    course_loaded.clone().set(BBLoadingState::Loading);
                     match api::courses::get_by_id(course_id).await {
                         Ok(course) => course_dispatch.reduce_mut(|courses_state| {
                             courses_state.upsert_course(course.id, course);
+                            course_loaded.set(BBLoadingState::Loaded);
                         }),
                         Err(error) => {
                             log_error("error getting course", &error);
@@ -81,23 +89,29 @@ pub fn component(props: &Props) -> Html {
                             });
                         }
                     }
-
-                    course_loaded.set(true);
                 });
             }
 
-            if !*article_titles_loaded {
-                let assigned_article_titles = assigned_article_titles.clone();
+            if *article_titles_loaded == BBLoadingState::Initialized {
+                logging::log("loading article titles");
                 let alert_dispatch = alert_dispatch.clone();
                 let token = auth_state.access_token.clone().unwrap_or_default();
+                let article_titles_loaded = article_titles_loaded.clone();
+                let available_articles = available_articles.clone();
+                if token.is_empty() {
+                    return result;
+                }
+                logging::log("really loading article titles");
 
                 wasm_bindgen_futures::spawn_local(async move {
+                    article_titles_loaded.clone().set(BBLoadingState::Loading);
                     match api::articles::get_article_titles(token).await {
                         Ok(articles) => {
                             articles_dispatch.reduce_mut(|articles_state| {
                                 *articles_state = articles.clone();
                             });
                             available_articles.set(articles.articles);
+                            article_titles_loaded.set(BBLoadingState::Loaded);
                         }
                         Err(error) => {
                             log_error("Error getting article titles", &error);
@@ -107,19 +121,26 @@ pub fn component(props: &Props) -> Html {
                             });
                         }
                     }
-
-                    article_titles_loaded.set(true);
                 });
             }
 
-            if !*assigned_article_titles_loaded && *course_loaded && *article_titles_loaded {
+            if *assigned_article_titles_loaded == BBLoadingState::Initialized
+                && course_loaded.is_loaded()
+                && article_titles_loaded.is_loaded()
+            {
+                logging::log("assigning article titles");
                 let Some(course) = course_store.get_by_course_id(course_id) else {return result;};
-                let mut assigned_articles = *assigned_article_titles;
-                for article_id in course.article_ids {
-                    if let Some(article) = available_articles.get(&article_id) {
-                        assigned_articles.insert(article_id, article.clone());
+
+                let mut assigned_articles = assigned_article_titles.deref().clone();
+                let mut available_articles_clone = available_articles.deref().clone();
+                for article_id in course.article_ids.iter() {
+                    if let Some(article) = available_articles_clone.remove(&article_id) {
+                        assigned_articles.insert(*article_id, article);
                     }
                 }
+                assigned_article_titles.set(assigned_articles);
+                available_articles.set(available_articles_clone);
+                assigned_article_titles_loaded.set(BBLoadingState::Loaded);
             }
 
             // if *loaded && !*really_loaded {
@@ -220,6 +241,12 @@ pub fn component(props: &Props) -> Html {
             //     loaded.set(true);
             // });
 
+            log_data(
+                "assigned article data",
+                format!("{:?}", &*assigned_article_titles),
+            );
+            log_data("course loaded", &*course_loaded);
+            log_data("article titles loaded", &*article_titles_loaded);
             result
         });
     }
@@ -244,7 +271,26 @@ pub fn component(props: &Props) -> Html {
         })
     };
 
-    let assigned_articles_onclick = Callback::from(|id: AttrValue| {});
+    let assigned_articles_onclick = {
+        let assigned_article_titles = assigned_article_titles.clone();
+        let available_articles = available_articles.clone();
+
+        Callback::from(move |id: AttrValue| {
+            let id = id
+                .to_string()
+                .parse::<i64>()
+                .expect("assigned article id is not a number");
+            let mut assigned_articles = assigned_article_titles.deref().clone();
+            let mut available_articles_clone = available_articles.deref().clone();
+
+            if let Some(article) = assigned_articles.remove(&id) {
+                available_articles_clone.insert(id, article);
+            }
+
+            assigned_article_titles.set(assigned_articles);
+            available_articles.set(available_articles_clone);
+        })
+    };
 
     let save_onclick = {
         let assigned_article_titles = assigned_article_titles.clone();
@@ -254,17 +300,18 @@ pub fn component(props: &Props) -> Html {
 
         Callback::from(move |_| {
             let course_id = course_id.clone();
-            let articles = assigned_article_titles.clone();
+            let assigned_article_titles = assigned_article_titles.clone();
             let auth_state = auth_state.clone();
             let alert_dispatch = alert_dispatch.clone();
-            let assigned_article_titles = assigned_article_titles.clone();
 
             wasm_bindgen_futures::spawn_local(async move {
                 let assigned_article_titles = assigned_article_titles.clone();
                 let token = auth_state.access_token.clone().unwrap_or_default();
-                match api::courses::set_course_articles(course_id, &*assigned_article_titles, token)
-                    .await
-                {
+                let articles = assigned_article_titles
+                    .deref()
+                    .values()
+                    .collect::<Vec<&Article>>();
+                match api::courses::set_course_articles(course_id, &articles, token).await {
                     Ok(_result) => {
                         alert_dispatch.reduce_mut(|alert_state| {
                             *alert_state = AlertsStoreBuilder::new()
@@ -297,7 +344,7 @@ pub fn component(props: &Props) -> Html {
                     <BBTitle level={BBTitleLevel::Two} align={AlignText::Center}>
                         {"Assigned"}
                     </BBTitle>
-                    <BBButtonList items={extract_article_titles(&assigned_article_titles)} onclick={assigned_articles_onclick} />
+                    <BBButtonList items={extract_article_titles(&*assigned_article_titles)} onclick={assigned_articles_onclick} />
                 </BBCol>
                 <BBCol>
                     <BBTitle level={BBTitleLevel::Two} align={AlignText::Center}>
@@ -313,10 +360,10 @@ pub fn component(props: &Props) -> Html {
     }
 }
 
-fn extract_article_titles(titles: &[Article]) -> Vec<BBButtonListItem> {
+fn extract_article_titles(titles: &HashMap<i64, Article>) -> Vec<BBButtonListItem> {
     titles
         .iter()
-        .map(|title| BBButtonListItem {
+        .map(|(id, title)| BBButtonListItem {
             label: AttrValue::from(title.title.clone()),
             id: AttrValue::from(title.id.to_string()),
         })

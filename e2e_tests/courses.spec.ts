@@ -74,6 +74,7 @@ test("Author add articles to a course", async ({ page }) => {
   await page.goto("/courses", { waitUntil: "networkidle" });
   await page.getByText("Yew.rs").first().click();
   await page.getByRole("link", { name: "Course Articles" }).click();
+  await page.waitForTimeout(500);
 
   const howToLearnArticle = page
     .locator(".col")
@@ -86,32 +87,60 @@ test("Author add articles to a course", async ({ page }) => {
 
   await expect(howToLearnArticle).toBeVisible();
 
-  await expect(page.locator('.col').filter({ has: page.getByRole('heading', { name: "All Articles" }) }).filter({ has: page.getByRole('button', { name: "How to Learn" }) })).not.toBeVisible();
-  // await page.getByText(articles[0]).click();
-  // const firstArticleAddedToCourse = page
-  //   .locator(".col")
-  //   .filter({ has: page.getByRole("heading", { name: "Assigned" }) })
-  //   .getByRole("button", { name: articles[0] });
-  // await expect(firstArticleAddedToCourse).toBeVisible();
-  // await expect(page.getByText(articles[0])).toHaveCount(1);
+  await expect(
+    await page
+      .locator(".col")
+      .filter({ has: page.getByRole("heading", { name: "All Articles" }) })
+      .filter({ has: page.getByRole("button", { name: "How to Learn" }) })
+  ).not.toBeVisible();
 
-  // let submitted = false;
+  await page.getByText("Hello Rust").click();
+  await expect(
+    page
+      .locator(".col")
+      .filter({ has: page.getByRole("heading", { name: "Assigned" }) })
+      .filter({ hasText: "Hello Rust" })
+  ).toBeVisible();
 
-  // await page.route(GRAPHQL_URI, async (route) => {
-  //   const body: any = route.request().postData() || "";
+  await expect(
+    page
+      .locator(".col")
+      .filter({ has: page.getByRole("heading", { name: "All Articles" }) })
+      .filter({ hasText: "Hello Rust" })
+  ).not.toBeVisible();
 
-  //   expect(body).toContain(articlesMockData.data.lms_articles[0].id.toString());
-  //   submitted = true;
-  //   route.fulfill({ json: setCourseArticlesMockData() });
-  // });
+  await page.getByRole("button", { name: "How to Learn" }).click();
+  await expect(
+    page
+      .locator(".col")
+      .filter({ hasText: "Assigned" })
+      .filter({ hasText: "How to Learn" })
+  ).not.toBeVisible();
+  await expect(
+    page
+      .locator(".col")
+      .filter({ hasText: "All Articles" })
+      .filter({ hasText: "How to Learn" })
+  ).toBeVisible();
 
-  // await page.getByRole("button", { name: "Save" }).click();
+  await page.getByRole("button", { name: "Save" }).click();
 
-  // expect(submitted).toBeTruthy();
-
-  // await expect(await page.getByText("Articles saved to course")).toBeVisible();
+  await expect(page.getByText("Articles saved to course")).toBeVisible();
 });
 
-test.skip("Articles should load when navigating directly to course articles page", async ({
+test.only("Articles should load when navigating directly to course articles page", async ({
   page,
-}) => { });
+}) => {
+  await login(Role.Author, page, "/course_articles/1");
+  throw new Error("not implemented");
+});
+
+test.only("Learners cannot visit the course articles page", ({ page }) => {
+  throw new Error("not implemented");
+});
+
+test.only("Visitors cannot navigate to the course articles page", ({
+  page,
+}) => {
+  throw new Error("not implemented");
+});

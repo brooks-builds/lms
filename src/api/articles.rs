@@ -6,7 +6,7 @@ use crate::database_queries::{
     get_lms_article_titles, insert_lms_article, GetLmsArticleTitles, InsertLmsArticle,
 };
 use crate::errors::LmsError;
-use crate::stores::articles::{Article, ArticlesStore};
+use crate::stores::articles::ArticlesStore;
 
 pub async fn create_article(
     title: String,
