@@ -2,7 +2,10 @@ use std::collections::HashMap;
 
 use yewdux::store::Store;
 
-use crate::database_queries::get_lms_article_titles;
+use crate::database_queries::{
+    api_get_article_titles_by_ids::{self, ApiGetArticleTitlesByIdsLmsArticles},
+    get_lms_article_titles,
+};
 
 #[derive(Store, Default, PartialEq, Clone)]
 pub struct ArticlesStore {
@@ -32,4 +35,14 @@ pub struct Article {
     pub id: i64,
     pub created_at: String,
     pub title: String,
+}
+
+impl From<ApiGetArticleTitlesByIdsLmsArticles> for Article {
+    fn from(value: ApiGetArticleTitlesByIdsLmsArticles) -> Self {
+        Self {
+            id: value.id,
+            created_at: value.created_at,
+            title: value.title,
+        }
+    }
 }

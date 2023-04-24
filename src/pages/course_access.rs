@@ -10,6 +10,7 @@ use ycl::{
     modules::nav::course_nav::{BBCourseNav, BBCourseNavArticleBuilder},
 };
 use yew::{function_component, html, use_effect, use_state, Html, Properties};
+use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
 use crate::{
@@ -18,6 +19,7 @@ use crate::{
     router::Routes,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
+        articles::{Article, ArticlesStore},
         courses_store::{self, CourseStore},
     },
 };
@@ -33,17 +35,27 @@ pub fn component(props: &Props) -> Html {
     let (courses_store, courses_dispatch) = use_store::<CourseStore>();
     let course_id = props.id;
     let (_, alert_dispatch) = use_store::<AlertsStore>();
+    let article_titles_loading_state = use_state(|| BBLoadingState::Initialized);
+    let navigator = use_navigator().unwrap();
+    let (articles_store, articles_dispatch) = use_store::<ArticlesStore>();
 
     {
         let alert_dispatch = alert_dispatch.clone();
+        let courses_store = courses_store.clone();
 
         use_effect(move || {
             let result = || {};
             let alert_dispatch = alert_dispatch.clone();
             let courses_dispatch = courses_dispatch.clone();
+            let course_loading_state = course_loading_state.clone();
+            let courses_store = courses_store.clone();
 
             if *course_loading_state == BBLoadingState::Initialized {
+                let course_loading_state = course_loading_state.clone();
+                let alert_dispatch = alert_dispatch.clone();
+
                 wasm_bindgen_futures::spawn_local(async move {
+                    course_loading_state.clone().set(BBLoadingState::Loading);
                     match api::courses::get_by_id(course_id).await {
                         Err(error) => {
                             log_error("error getting course", &error);
@@ -57,6 +69,47 @@ pub fn component(props: &Props) -> Html {
                             courses_dispatch.reduce_mut(|courses_state| {
                                 courses_state.courses.insert(api_course.id, api_course);
                             });
+                            course_loading_state.set(BBLoadingState::Loaded);
+                        }
+                    }
+                });
+            }
+
+            if *article_titles_loading_state == BBLoadingState::Initialized
+                && *course_loading_state == BBLoadingState::Loaded
+            {
+                let article_titles_loading_state = article_titles_loading_state.clone();
+                let courses_store = courses_store.clone();
+                let Some(course) = courses_store.courses.get(&course_id) else {
+                    alert_dispatch.clone().reduce_mut(|alert_state| *alert_state = AlertsStoreBuilder::new_error("Could not find course"));
+                    navigator.push(&Routes::Courses);
+                    return result;
+                };
+                let article_ids = course.article_ids.clone();
+                let articles_dispatch = articles_dispatch.clone();
+
+                wasm_bindgen_futures::spawn_local(async move {
+                    article_titles_loading_state
+                        .clone()
+                        .set(BBLoadingState::Loading);
+                    match api::articles::get_article_titles_by_ids(article_ids).await {
+                        Ok(article_titles) => {
+                            articles_dispatch.reduce_mut(move |articles_state| {
+                                for article_title in article_titles {
+                                    articles_state
+                                        .articles
+                                        .insert(article_title.id, article_title);
+                                }
+                            });
+                            article_titles_loading_state.set(BBLoadingState::Loaded);
+                        }
+                        Err(error) => {
+                            log_error("Error getting article titles", &error);
+                            alert_dispatch.reduce_mut(|alert_state| {
+                                *alert_state =
+                                    AlertsStoreBuilder::new_error("Error getting articles")
+                            });
+                            navigator.push(&Routes::CourseDetails { id: course_id });
                         }
                     }
                 });
@@ -75,7 +128,11 @@ pub fn component(props: &Props) -> Html {
 
     };
 
-    let articles = vec![];
+    let articles = course.article_ids.iter().map(move |article_id| {
+        let Some(article) = articles_store.articles.get(article_id).unwrap_or_default();
+
+        todo!()
+    });
 
     html! {
         <BBContainer margin={BBContainerMargin::Normal}>
