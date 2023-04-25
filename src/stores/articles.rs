@@ -3,8 +3,7 @@ use std::collections::HashMap;
 use yewdux::store::Store;
 
 use crate::database_queries::{
-    api_get_article_titles_by_ids::{self, ApiGetArticleTitlesByIdsLmsArticles},
-    get_lms_article_titles,
+    api_get_article_titles_by_ids::ApiGetArticleTitlesByIdsLmsArticles, get_lms_article_titles,
 };
 
 #[derive(Store, Default, PartialEq, Clone)]

@@ -2,7 +2,7 @@ use ycl::{
     elements::title::{BBTitle, BBTitleLevel},
     foundations::{
         align_text::AlignText,
-        column::BBCol,
+        column::{BBCol, BBColWidth},
         container::{BBContainer, BBContainerMargin},
         row::BBRow,
         states::BBLoadingState,
@@ -19,8 +19,8 @@ use crate::{
     router::Routes,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
-        articles::{Article, ArticlesStore},
-        courses_store::{self, CourseStore},
+        articles::ArticlesStore,
+        courses_store::CourseStore,
     },
 };
 
@@ -40,7 +40,7 @@ pub fn component(props: &Props) -> Html {
     let (articles_store, articles_dispatch) = use_store::<ArticlesStore>();
 
     {
-        let alert_dispatch = alert_dispatch.clone();
+        let alert_dispatch = alert_dispatch;
         let courses_store = courses_store.clone();
 
         use_effect(move || {
@@ -79,9 +79,9 @@ pub fn component(props: &Props) -> Html {
                 && *course_loading_state == BBLoadingState::Loaded
             {
                 let article_titles_loading_state = article_titles_loading_state.clone();
-                let courses_store = courses_store.clone();
+                let courses_store = courses_store;
                 let Some(course) = courses_store.courses.get(&course_id) else {
-                    alert_dispatch.clone().reduce_mut(|alert_state| *alert_state = AlertsStoreBuilder::new_error("Could not find course"));
+                    alert_dispatch.reduce_mut(|alert_state| *alert_state = AlertsStoreBuilder::new_error("Could not find course"));
                     navigator.push(&Routes::Courses);
                     return result;
                 };
@@ -146,12 +146,12 @@ pub fn component(props: &Props) -> Html {
 
     html! {
         <BBContainer margin={BBContainerMargin::Normal}>
+                    <BBTitle align={AlignText::Center} level={BBTitleLevel::One}>{&course.name}</BBTitle>
             <BBRow>
-                <BBCol>
+                <BBCol width={BBColWidth::Three}>
                     <BBCourseNav<Routes> {articles} />
                 </BBCol>
                 <BBCol>
-                    <BBTitle align={AlignText::Center} level={BBTitleLevel::One}>{&course.name}</BBTitle>
                 </BBCol>
             </BBRow>
         </BBContainer>

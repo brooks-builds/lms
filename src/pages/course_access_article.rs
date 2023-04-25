@@ -1,3 +1,4 @@
+#![allow(non_camel_case_types)]
 use yew::prelude::*;
 
 #[derive(Properties, PartialEq)]
@@ -7,6 +8,6 @@ pub struct Props {
 }
 
 #[function_component(CourseAccessArticle)]
-pub fn component(props: &Props) -> Html {
+pub fn component(_props: &Props) -> Html {
     html! {}
 }
