@@ -7,7 +7,7 @@ use ycl::{
         row::BBRow,
         states::BBLoadingState,
     },
-    modules::nav::course_nav::{BBCourseNav, BBCourseNavArticleBuilder},
+    modules::nav::course_nav::{BBCourseNav, BBCourseNavArticle, BBCourseNavArticleBuilder},
 };
 use yew::{function_component, html, use_effect, use_state, Html, Properties};
 use yew_router::prelude::use_navigator;
@@ -128,11 +128,21 @@ pub fn component(props: &Props) -> Html {
 
     };
 
-    let articles = course.article_ids.iter().map(move |article_id| {
-        let Some(article) = articles_store.articles.get(article_id).unwrap_or_default();
-
-        todo!()
-    });
+    let articles = course
+        .article_ids
+        .iter()
+        .filter_map(move |article_id| articles_store.articles.get(article_id).map(Clone::clone))
+        .map(|article| {
+            BBCourseNavArticleBuilder::new()
+                .title(article.title)
+                .to(Routes::CourseAccessArticle {
+                    course_id,
+                    article_id: article.id,
+                })
+                .build()
+                .unwrap()
+        })
+        .collect::<Vec<BBCourseNavArticle<Routes>>>();
 
     html! {
         <BBContainer margin={BBContainerMargin::Normal}>

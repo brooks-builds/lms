@@ -3,6 +3,7 @@ import { courseListMockData } from "../mock_data";
 import lmsArticlesMockData from "./get_lms_article_titles.json";
 import lmsCourseByPk from "./lms_courses_by_pk.json";
 import setLmsCourseArticlesData from "./set_lms_course_articles.json";
+import apiGetArticleTitlesByIds from "./api_get_article_title_by_ids.json";
 
 const GRAPHQL_URI =
   process.env.GRAPHQL_URI || "http://localhost:8081/v1/graphql";
@@ -20,4 +21,5 @@ const mockData = {
   GetLmsArticleTitles: () => lmsArticlesMockData,
   CourseById: () => lmsCourseByPk,
   SetLmsCourseArticles: () => setLmsCourseArticlesData,
+  ApiGetArticleTitlesByIds: () => apiGetArticleTitlesByIds,
 };

@@ -2,7 +2,8 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::pages::{
-    auth_redirect::AuthRedirect, course_access::CourseAccess, course_articles::CourseArticles,
+    auth_redirect::AuthRedirect, course_access::CourseAccess,
+    course_access_article::CourseAccessArticle, course_articles::CourseArticles,
     course_details::CourseDetails, courses::Courses, create_account::CreateAccount,
     create_article::CreateArticle, create_course::CreateCourse, home::Home, login::Login,
     tags::Tags,
@@ -32,6 +33,8 @@ pub enum Routes {
     CourseArticles { id: i64 },
     #[at("/courses/:id/access")]
     CourseAccess { id: i64 },
+    #[at("/courses/:course_id/access/:article_id")]
+    CourseAccessArticle { course_id: i64, article_id: i64 },
 }
 
 pub fn switch(routes: Routes) -> Html {
@@ -47,5 +50,9 @@ pub fn switch(routes: Routes) -> Html {
         Routes::CreateArticle => html! { <CreateArticle />},
         Routes::CourseArticles { id } => html! { <CourseArticles course_id={id}/>},
         Routes::CourseAccess { id } => html! { <CourseAccess {id}/>},
+        Routes::CourseAccessArticle {
+            course_id,
+            article_id,
+        } => html! { <CourseAccessArticle {course_id} {article_id} />},
     }
 }
