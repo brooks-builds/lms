@@ -1,5 +1,8 @@
 use ycl::{
-    elements::title::{BBTitle, BBTitleLevel},
+    elements::{
+        text::BBText,
+        title::{BBTitle, BBTitleLevel},
+    },
     foundations::{
         align_text::AlignText,
         column::{BBCol, BBColWidth},
@@ -152,6 +155,15 @@ pub fn component(props: &Props) -> Html {
                     <BBCourseNav<Routes> {articles} />
                 </BBCol>
                 <BBCol>
+                    <BBTitle
+                        align={AlignText::Center}
+                        level={BBTitleLevel::Two}
+                    >
+                        {"Select an Article"}
+                    </BBTitle>
+                    <BBText>
+                        {"Click an article to the left to load it"}
+                    </BBText>
                 </BBCol>
             </BBRow>
         </BBContainer>

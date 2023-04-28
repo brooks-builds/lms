@@ -11,5 +11,10 @@ test("visitors should be able to preview a course", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "Introduction to Yew" })
   ).toBeVisible();
-  await expect(page.getByRole("link", { name: "How to Learn" })).toBeVisible();
+  const previewLinks = page.getByRole("link", { name: "preview" });
+  await expect(previewLinks).toBeVisible();
+  await previewLinks.first().click();
+  expect(page.url()).toMatch(/access\/2/);
+  await expect(page.getByRole('heading', { name: 'This is my course' })).toBeVisible();
+  await expect(page.getByText('Hello world')).toBeVisible();
 });
