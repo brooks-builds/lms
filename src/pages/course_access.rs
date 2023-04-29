@@ -18,6 +18,7 @@ use yewdux::prelude::use_store;
 
 use crate::{
     api,
+    components::course_nav::CourseNav,
     logging::log_error,
     router::Routes,
     stores::{
@@ -131,28 +132,12 @@ pub fn component(props: &Props) -> Html {
 
     };
 
-    let articles = course
-        .article_ids
-        .iter()
-        .filter_map(move |article_id| articles_store.articles.get(article_id).map(Clone::clone))
-        .map(|article| {
-            BBCourseNavArticleBuilder::new()
-                .title(article.title)
-                .to(Routes::CourseAccessArticle {
-                    course_id,
-                    article_id: article.id,
-                })
-                .build()
-                .unwrap()
-        })
-        .collect::<Vec<BBCourseNavArticle<Routes>>>();
-
     html! {
         <BBContainer margin={BBContainerMargin::Normal}>
                     <BBTitle align={AlignText::Center} level={BBTitleLevel::One}>{&course.name}</BBTitle>
             <BBRow>
                 <BBCol width={BBColWidth::Three}>
-                    <BBCourseNav<Routes> {articles} />
+                    <CourseNav {course_id} />
                 </BBCol>
                 <BBCol>
                     <BBTitle
