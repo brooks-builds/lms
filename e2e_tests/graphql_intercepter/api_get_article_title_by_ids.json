@@ -4,7 +4,7 @@
       "id": 2,
       "title": "How to Learn",
       "created_at": "2023-04-16T16:49:58.441962",
-      "content": "# This is my course\n\nHello world",
+      "content": {"content": "# This is my course\n\nHello world"},
       "preview": true
     }
   ]

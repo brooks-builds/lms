@@ -9,7 +9,7 @@ use crate::pages::{
     tags::Tags,
 };
 
-#[derive(Clone, Routable, PartialEq)]
+#[derive(Clone, Routable, PartialEq, Debug)]
 pub enum Routes {
     #[at("/")]
     Home,

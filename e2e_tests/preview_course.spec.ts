@@ -5,9 +5,12 @@ test("visitors should be able to preview a course", async ({ page }) => {
   await interceptGraphql(page);
   await page.goto("/");
   await page.getByRole("link", { name: "Courses" }).first().click();
+  await page.waitForLoadState('networkidle');
   await page.getByRole("link", { name: "Yew.rs" }).click();
+  await page.waitForLoadState('networkidle');
   await page.getByRole("link", { name: "Preview" }).click();
   expect(page.url()).toMatch(/access/);
+  await page.waitForLoadState('networkidle');
   await expect(
     page.getByRole("heading", { name: "Introduction to Yew" })
   ).toBeVisible();

@@ -36,7 +36,7 @@ pub fn component(props: &Props) -> Html {
             }
 
             if let Some(store_course) = course_store.courses.get(&course_id) {
-                log_data("loading course for nav", &store_course.name);
+                log_data("found the course", store_course);
                 course.set(Some(store_course.clone()));
             }
 
@@ -45,6 +45,7 @@ pub fn component(props: &Props) -> Html {
     }
 
     if let Some(course) = &*course {
+        log_data("course", course);
         let articles = course
             .article_ids
             .iter()
@@ -61,10 +62,13 @@ pub fn component(props: &Props) -> Html {
             })
             .collect::<Vec<BBCourseNavArticle<Routes>>>();
 
+        log_data("we are in the if then", &articles);
+
         html! {
             <BBCourseNav<Routes> {articles} />
         }
     } else {
+        log_data("we are in the if else", props.course_id);
         html! {}
     }
 }
