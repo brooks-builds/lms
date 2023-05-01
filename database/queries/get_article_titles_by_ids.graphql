@@ -4,6 +4,9 @@ query ApiGetArticleTitlesByIds($article_ids: [Int!]!) {
     title
     created_at
     preview
+    content {
+      content
+    }
   }
 }
 

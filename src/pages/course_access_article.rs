@@ -45,6 +45,7 @@ pub fn component(props: &Props) -> Html {
         let course_id = props.course_id;
         let course = course.clone();
         let article_id = props.article_id;
+        let article_state = article_state.clone();
 
         use_effect(move || {
             let result = || {};
@@ -68,11 +69,11 @@ pub fn component(props: &Props) -> Html {
                     match api::articles::get_article_titles_by_ids(article_ids).await {
                         Ok(articles) => {
                             articles_dispatch.reduce_mut(|articles_state| {
-                                for article in articles {
+                                for article in articles.clone() {
                                     articles_state.articles.insert(article.id, article.clone());
                                 }
                             });
-                            article_state.set(
+                            article_state.clone().set(
                                 articles
                                     .iter()
                                     .find(|article| article.id == article_id)
@@ -142,7 +143,7 @@ pub fn component(props: &Props) -> Html {
                         <BBCol>
                             <BBCourseContent
                                 have_access={false}
-                                course={article.content.clone()}
+                                course={article.content.clone().unwrap_or_default()}
                             />
                         </BBCol>
                     </BBRow>

@@ -47,6 +47,7 @@ impl From<ApiGetArticleTitlesByIdsLmsArticles> for Article {
             created_at: value.created_at,
             title: value.title,
             preview: value.preview,
+            content: value.content.map(|c| c.content),
         }
     }
 }
