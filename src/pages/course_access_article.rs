@@ -11,7 +11,6 @@ use ycl::{
     modules::course_content::BBCourseContent,
 };
 use yew::prelude::*;
-use yew_hooks::use_async;
 use yewdux::prelude::use_store;
 
 use crate::{

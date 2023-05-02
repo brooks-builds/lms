@@ -10,7 +10,6 @@ use ycl::{
         row::BBRow,
         states::BBLoadingState,
     },
-    modules::nav::course_nav::{BBCourseNav, BBCourseNavArticle, BBCourseNavArticleBuilder},
 };
 use yew::{function_component, html, use_effect, use_state, Html, Properties};
 use yew_router::prelude::use_navigator;
@@ -41,7 +40,7 @@ pub fn component(props: &Props) -> Html {
     let (_, alert_dispatch) = use_store::<AlertsStore>();
     let article_titles_loading_state = use_state(|| BBLoadingState::Initialized);
     let navigator = use_navigator().unwrap();
-    let (articles_store, articles_dispatch) = use_store::<ArticlesStore>();
+    let (_articles_store, articles_dispatch) = use_store::<ArticlesStore>();
 
     {
         let alert_dispatch = alert_dispatch;

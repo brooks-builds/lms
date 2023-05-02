@@ -17,7 +17,7 @@ test("visitors should be able to preview a course", async ({ page }) => {
   const previewLinks = page.getByRole("link", { name: "preview" });
   await expect(previewLinks).toBeVisible();
   await previewLinks.first().click();
-  await expect(page.url()).toMatch(/access\/2/);
+  expect(page.url()).toMatch(/access\/2/);
   await expect(page.getByRole('heading', { name: 'This is my course' })).toBeVisible();
   await expect(page.getByText('Hello world')).toBeVisible();
 });

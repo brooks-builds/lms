@@ -1,3 +1,4 @@
+#![allow(non_camel_case_types)]
 use ycl::modules::nav::course_nav::{BBCourseNav, BBCourseNavArticle, BBCourseNavArticleBuilder};
 use yew::prelude::*;
 use yewdux::prelude::use_store;
@@ -6,9 +7,8 @@ use crate::{
     logging::log_data,
     router::Routes,
     stores::{
-        alerts::{AlertsStore, AlertsStoreBuilder},
         articles::{Article, ArticlesStore},
-        courses_store::{CourseStore, StoreCourse},
+        courses_store::CourseStore,
     },
 };
 
@@ -20,7 +20,6 @@ pub struct Props {
 #[function_component(CourseNav)]
 pub fn component(props: &Props) -> Html {
     let (course_store, _) = use_store::<CourseStore>();
-    let (_, alert_dispatch) = use_store::<AlertsStore>();
     let (articles_store, _) = use_store::<ArticlesStore>();
     let course = use_state(|| None);
     let course_id = props.course_id;
