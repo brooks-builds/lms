@@ -10,7 +10,7 @@ export const courseListMockData = {
       title: "Yew.rs",
       long_description: "Yew.rs",
       trailer_uri: null,
-      article_ids: [],
+      article_ids: [2],
     },
     {
       id: 2,
@@ -20,7 +20,7 @@ export const courseListMockData = {
       title: "Axum",
       long_description: "Axum",
       trailer_uri: null,
-      article_ids: [],
+      article_ids: [2],
     },
   ],
 };

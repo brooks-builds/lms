@@ -7,7 +7,6 @@ use crate::{
         CourseById, CreateLmsCourse, ListLmsCourses, LmsTags, SetLmsCourseArticles,
     },
     errors::LmsError,
-    logging::log_data,
     stores::{
         articles::Article,
         courses_store::{StoreCourse, StoreTag},
@@ -27,18 +26,15 @@ pub async fn get() -> Result<Vec<StoreCourse>, LmsError> {
     Ok(response
         .lms_courses
         .into_iter()
-        .map(|api_course| {
-            log_data("api course", &api_course);
-            StoreCourse {
-                name: api_course.title,
-                id: api_course.id,
-                tag: api_course.lms_tag.name.into(),
-                description: api_course.short_description,
-                price: api_course.price,
-                long_description: api_course.long_description,
-                trailer_uri: api_course.trailer_uri,
-                article_ids: api_course.article_ids,
-            }
+        .map(|api_course| StoreCourse {
+            name: api_course.title,
+            id: api_course.id,
+            tag: api_course.lms_tag.name.into(),
+            description: api_course.short_description,
+            price: api_course.price,
+            long_description: api_course.long_description,
+            trailer_uri: api_course.trailer_uri,
+            article_ids: api_course.article_ids,
         })
         .collect::<Vec<StoreCourse>>())
 }

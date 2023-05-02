@@ -20,8 +20,8 @@ use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
 use crate::{
-    api,
-    logging::{self, log_data, log_error},
+    api, logging,
+    logging::log_error,
     router::Routes,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
@@ -59,7 +59,6 @@ pub fn component(props: &Props) -> Html {
 
         use_effect(move || {
             let result = || {};
-            log_data("auth state loading", auth_state.loading);
 
             if auth_state.loading {
                 return result;
@@ -90,7 +89,7 @@ pub fn component(props: &Props) -> Html {
                     course_loaded.clone().set(BBLoadingState::Loading);
                     match api::courses::get_by_id(course_id).await {
                         Ok(course) => course_dispatch.reduce_mut(|courses_state| {
-                            courses_state.upsert_course(course.id, course);
+                            courses_state.courses.insert(course.id, course);
                             course_loaded.set(BBLoadingState::Loaded);
                         }),
                         Err(error) => {
@@ -142,7 +141,7 @@ pub fn component(props: &Props) -> Html {
                 && article_titles_loaded.is_loaded()
             {
                 logging::log("assigning article titles");
-                let Some(course) = course_store.get_by_course_id(course_id) else {return result;};
+                let Some(course) = course_store.courses.get(&course_id) else {return result;};
 
                 let mut assigned_articles = assigned_article_titles.deref().clone();
                 let mut available_articles_clone = available_articles.deref().clone();
@@ -254,12 +253,6 @@ pub fn component(props: &Props) -> Html {
             //     loaded.set(true);
             // });
 
-            log_data(
-                "assigned article data",
-                format!("{:?}", &*assigned_article_titles),
-            );
-            log_data("course loaded", &*course_loaded);
-            log_data("article titles loaded", &*article_titles_loaded);
             result
         });
     }
