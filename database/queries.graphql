@@ -25,6 +25,12 @@ query CourseById($id: Int!) {
     title
   	long_description
   	trailer_uri
+    course_articles {
+      article {
+        id
+        title
+      }
+    }
   }
 }
 

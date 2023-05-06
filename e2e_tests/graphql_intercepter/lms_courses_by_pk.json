@@ -6,6 +6,12 @@
     "short_description": "Yew.rs",
     "title": "Introduction to Yew",
     "long_description": "Yew is a great tech",
-    "trailer_uri": null
+    "trailer_uri": null,
+    "course_articles": [
+      {
+        "id": 2,
+        "title": "How to Learn"
+      }
+    ]
   }
 }

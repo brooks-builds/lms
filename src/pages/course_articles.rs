@@ -105,7 +105,6 @@ pub fn component(props: &Props) -> Html {
             }
 
             if *article_titles_loaded == BBLoadingState::Initialized {
-                logging::log("loading article titles");
                 let alert_dispatch = alert_dispatch.clone();
                 let token = auth_state.access_token.clone().unwrap_or_default();
                 let article_titles_loaded = article_titles_loaded.clone();
@@ -113,7 +112,6 @@ pub fn component(props: &Props) -> Html {
                 if token.is_empty() {
                     return result;
                 }
-                logging::log("really loading article titles");
 
                 wasm_bindgen_futures::spawn_local(async move {
                     article_titles_loaded.clone().set(BBLoadingState::Loading);
@@ -140,8 +138,6 @@ pub fn component(props: &Props) -> Html {
                 && course_loaded.is_loaded()
                 && article_titles_loaded.is_loaded()
             {
-                logging::log("assigning article titles");
-
                 let assigned_articles = assigned_article_titles.deref().clone();
                 let available_articles_clone = available_articles.deref().clone();
                 assigned_article_titles.set(assigned_articles);
