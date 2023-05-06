@@ -59,10 +59,7 @@ pub fn component(props: &Props) -> Html {
                 && *course_loaded_flag == BBLoadingState::Loaded
             {
                 articles_loaded_flag.set(BBLoadingState::Loading);
-                let article_ids = course
-                    .as_ref()
-                    .map(|course| course.article_ids.clone())
-                    .unwrap();
+                let article_ids = vec![];
                 let alert_dispatch = alert_dispatch.clone();
                 wasm_bindgen_futures::spawn_local(async move {
                     match api::articles::get_article_titles_by_ids(article_ids).await {

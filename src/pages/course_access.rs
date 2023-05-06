@@ -83,12 +83,12 @@ pub fn component(props: &Props) -> Html {
             {
                 let article_titles_loading_state = article_titles_loading_state.clone();
                 let courses_store = courses_store;
-                let Some(course) = courses_store.courses.get(&course_id) else {
+                let Some(_course) = courses_store.courses.get(&course_id) else{
                     alert_dispatch.reduce_mut(|alert_state| *alert_state = AlertsStoreBuilder::new_error("Could not find course"));
                     navigator.push(&Routes::Courses);
                     return result;
                 };
-                let article_ids = course.article_ids.clone();
+                let article_ids = vec![];
                 let articles_dispatch = articles_dispatch.clone();
 
                 wasm_bindgen_futures::spawn_local(async move {

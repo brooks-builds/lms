@@ -10,7 +10,6 @@ query ListLmsCourses {
   	price
   	long_description
   	trailer_uri
-    article_ids
   }
 }
 
@@ -26,7 +25,6 @@ query CourseById($id: Int!) {
     title
   	long_description
   	trailer_uri
-    article_ids
   }
 }
 

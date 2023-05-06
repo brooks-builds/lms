@@ -6047,133 +6047,6 @@
           "possibleTypes": null
         },
         {
-          "description": null,
-          "enumValues": null,
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "kind": "SCALAR",
-          "name": "json",
-          "possibleTypes": null
-        },
-        {
-          "description": "Boolean expression to compare columns of type \"json\". All fields are combined with logical 'AND'.",
-          "enumValues": null,
-          "fields": null,
-          "inputFields": [
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "_eq",
-              "type": {
-                "kind": "SCALAR",
-                "name": "json",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "_gt",
-              "type": {
-                "kind": "SCALAR",
-                "name": "json",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "_gte",
-              "type": {
-                "kind": "SCALAR",
-                "name": "json",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "_in",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "json",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "_is_null",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "_lt",
-              "type": {
-                "kind": "SCALAR",
-                "name": "json",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "_lte",
-              "type": {
-                "kind": "SCALAR",
-                "name": "json",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "_neq",
-              "type": {
-                "kind": "SCALAR",
-                "name": "json",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "_nin",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "json",
-                    "ofType": null
-                  }
-                }
-              }
-            }
-          ],
-          "interfaces": null,
-          "kind": "INPUT_OBJECT",
-          "name": "json_comparison_exp",
-          "possibleTypes": null
-        },
-        {
           "description": "columns and relationships of \"lms_articles\"",
           "enumValues": null,
           "fields": [
@@ -6199,6 +6072,180 @@
                 "kind": "SCALAR",
                 "name": "Int",
                 "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": "distinct select on columns",
+                  "name": "distinct_on",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "lms_course_articles_select_column",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "limit the number of rows returned",
+                  "name": "limit",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "skip the first n rows. Use only with order_by",
+                  "name": "offset",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "sort the rows by one or more columns",
+                  "name": "order_by",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "lms_course_articles_order_by",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "filter the rows returned",
+                  "name": "where",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "lms_course_articles_bool_exp",
+                    "ofType": null
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "An array relationship",
+              "isDeprecated": false,
+              "name": "course_articles",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "lms_course_articles",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": "distinct select on columns",
+                  "name": "distinct_on",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "lms_course_articles_select_column",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "limit the number of rows returned",
+                  "name": "limit",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "skip the first n rows. Use only with order_by",
+                  "name": "offset",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "sort the rows by one or more columns",
+                  "name": "order_by",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "lms_course_articles_order_by",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "filter the rows returned",
+                  "name": "where",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "lms_course_articles_bool_exp",
+                    "ofType": null
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "An aggregate relationship",
+              "isDeprecated": false,
+              "name": "course_articles_aggregate",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "lms_course_articles_aggregate",
+                  "ofType": null
+                }
               }
             },
             {
@@ -6229,22 +6276,6 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "preview",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Boolean",
                   "ofType": null
                 }
               }
@@ -6327,26 +6358,6 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "bool_and",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "lms_articles_aggregate_bool_exp_bool_and",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "bool_or",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "lms_articles_aggregate_bool_exp_bool_or",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
               "name": "count",
               "type": {
                 "kind": "INPUT_OBJECT",
@@ -6358,124 +6369,6 @@
           "interfaces": null,
           "kind": "INPUT_OBJECT",
           "name": "lms_articles_aggregate_bool_exp",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": null,
-          "inputFields": [
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "arguments",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "ENUM",
-                  "name": "lms_articles_select_column_lms_articles_aggregate_bool_exp_bool_and_arguments_columns",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "distinct",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "filter",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "lms_articles_bool_exp",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "predicate",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "Boolean_comparison_exp",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "interfaces": null,
-          "kind": "INPUT_OBJECT",
-          "name": "lms_articles_aggregate_bool_exp_bool_and",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": null,
-          "inputFields": [
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "arguments",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "ENUM",
-                  "name": "lms_articles_select_column_lms_articles_aggregate_bool_exp_bool_or_arguments_columns",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "distinct",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "filter",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "lms_articles_bool_exp",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "predicate",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "Boolean_comparison_exp",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "interfaces": null,
-          "kind": "INPUT_OBJECT",
-          "name": "lms_articles_aggregate_bool_exp_bool_or",
           "possibleTypes": null
         },
         {
@@ -7021,6 +6914,26 @@
             {
               "defaultValue": null,
               "description": null,
+              "name": "course_articles",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_bool_exp",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course_articles_aggregate",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_aggregate_bool_exp",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
               "name": "created_at",
               "type": {
                 "kind": "INPUT_OBJECT",
@@ -7035,16 +6948,6 @@
               "type": {
                 "kind": "INPUT_OBJECT",
                 "name": "Int_comparison_exp",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "preview",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "Boolean_comparison_exp",
                 "ofType": null
               }
             },
@@ -7140,6 +7043,16 @@
             {
               "defaultValue": null,
               "description": null,
+              "name": "course_articles",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_arr_rel_insert_input",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
               "name": "created_at",
               "type": {
                 "kind": "SCALAR",
@@ -7154,16 +7067,6 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "preview",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
                 "ofType": null
               }
             },
@@ -7455,6 +7358,41 @@
           "possibleTypes": null
         },
         {
+          "description": "input type for inserting object relation for remote table \"lms_articles\"",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "data",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "lms_articles_insert_input",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "upsert condition",
+              "name": "on_conflict",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_articles_on_conflict",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_articles_obj_rel_insert_input",
+          "possibleTypes": null
+        },
+        {
           "description": "on_conflict condition type for table \"lms_articles\"",
           "enumValues": null,
           "fields": null,
@@ -7539,6 +7477,16 @@
             {
               "defaultValue": null,
               "description": null,
+              "name": "course_articles_aggregate",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_aggregate_order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
               "name": "created_at",
               "type": {
                 "kind": "ENUM",
@@ -7550,16 +7498,6 @@
               "defaultValue": null,
               "description": null,
               "name": "id",
-              "type": {
-                "kind": "ENUM",
-                "name": "order_by",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "preview",
               "type": {
                 "kind": "ENUM",
                 "name": "order_by",
@@ -7632,12 +7570,6 @@
               "deprecationReason": null,
               "description": "column name",
               "isDeprecated": false,
-              "name": "preview"
-            },
-            {
-              "deprecationReason": null,
-              "description": "column name",
-              "isDeprecated": false,
               "name": "title"
             }
           ],
@@ -7646,40 +7578,6 @@
           "interfaces": null,
           "kind": "ENUM",
           "name": "lms_articles_select_column",
-          "possibleTypes": null
-        },
-        {
-          "description": "select \"lms_articles_aggregate_bool_exp_bool_and_arguments_columns\" columns of table \"lms_articles\"",
-          "enumValues": [
-            {
-              "deprecationReason": null,
-              "description": "column name",
-              "isDeprecated": false,
-              "name": "preview"
-            }
-          ],
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "kind": "ENUM",
-          "name": "lms_articles_select_column_lms_articles_aggregate_bool_exp_bool_and_arguments_columns",
-          "possibleTypes": null
-        },
-        {
-          "description": "select \"lms_articles_aggregate_bool_exp_bool_or_arguments_columns\" columns of table \"lms_articles\"",
-          "enumValues": [
-            {
-              "deprecationReason": null,
-              "description": "column name",
-              "isDeprecated": false,
-              "name": "preview"
-            }
-          ],
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "kind": "ENUM",
-          "name": "lms_articles_select_column_lms_articles_aggregate_bool_exp_bool_or_arguments_columns",
           "possibleTypes": null
         },
         {
@@ -7714,16 +7612,6 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "preview",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
                 "ofType": null
               }
             },
@@ -8014,16 +7902,6 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "preview",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
               "name": "title",
               "type": {
                 "kind": "SCALAR",
@@ -8123,12 +8001,6 @@
               "description": "column name",
               "isDeprecated": false,
               "name": "id"
-            },
-            {
-              "deprecationReason": null,
-              "description": "column name",
-              "isDeprecated": false,
-              "name": "preview"
             },
             {
               "deprecationReason": null,
@@ -8388,18 +8260,416 @@
           "possibleTypes": null
         },
         {
-          "description": "columns and relationships of \"lms_courses\"",
+          "description": "columns and relationships of \"lms_course_articles\"",
           "enumValues": null,
           "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "An object relationship",
+              "isDeprecated": false,
+              "name": "article",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_articles",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "article_id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "An object relationship",
+              "isDeprecated": false,
+              "name": "course",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_courses",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "course_id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "order_by",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "preview",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "lms_course_articles",
+          "possibleTypes": null
+        },
+        {
+          "description": "aggregated selection of \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "aggregate",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_course_articles_aggregate_fields",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "nodes",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "lms_course_articles",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "lms_course_articles_aggregate",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "bool_and",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_aggregate_bool_exp_bool_and",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "bool_or",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_aggregate_bool_exp_bool_or",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "count",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_aggregate_bool_exp_count",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_aggregate_bool_exp",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "arguments",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "lms_course_articles_select_column_lms_course_articles_aggregate_bool_exp_bool_and_arguments_columns",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "distinct",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "filter",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_bool_exp",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "predicate",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "Boolean_comparison_exp",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_aggregate_bool_exp_bool_and",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "arguments",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "lms_course_articles_select_column_lms_course_articles_aggregate_bool_exp_bool_or_arguments_columns",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "distinct",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "filter",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_bool_exp",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "predicate",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "Boolean_comparison_exp",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_aggregate_bool_exp_bool_or",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "arguments",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "lms_course_articles_select_column",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "distinct",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "filter",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_bool_exp",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "predicate",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "Int_comparison_exp",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_aggregate_bool_exp_count",
+          "possibleTypes": null
+        },
+        {
+          "description": "aggregate fields of \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "avg",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_course_articles_avg_fields",
+                "ofType": null
+              }
+            },
             {
               "args": [
                 {
                   "defaultValue": null,
-                  "description": "JSON select path",
-                  "name": "path",
+                  "description": null,
+                  "name": "columns",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "lms_course_articles_select_column",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "distinct",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "String",
+                    "name": "Boolean",
                     "ofType": null
                   }
                 }
@@ -8407,13 +8677,2100 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "article_ids",
+              "name": "count",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "json",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "max",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_course_articles_max_fields",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "min",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_course_articles_min_fields",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "stddev",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_course_articles_stddev_fields",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "stddev_pop",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_course_articles_stddev_pop_fields",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "stddev_samp",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_course_articles_stddev_samp_fields",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "sum",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_course_articles_sum_fields",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "var_pop",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_course_articles_var_pop_fields",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "var_samp",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_course_articles_var_samp_fields",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "variance",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_course_articles_variance_fields",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "lms_course_articles_aggregate_fields",
+          "possibleTypes": null
+        },
+        {
+          "description": "order by aggregate values of table \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "avg",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_avg_order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "count",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "max",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_max_order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "min",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_min_order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "stddev",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_stddev_order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "stddev_pop",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_stddev_pop_order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "stddev_samp",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_stddev_samp_order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "sum",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_sum_order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "var_pop",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_var_pop_order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "var_samp",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_var_samp_order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "variance",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_variance_order_by",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_aggregate_order_by",
+          "possibleTypes": null
+        },
+        {
+          "description": "input type for inserting array relation for remote table \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "data",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "lms_course_articles_insert_input",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "upsert condition",
+              "name": "on_conflict",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_on_conflict",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_arr_rel_insert_input",
+          "possibleTypes": null
+        },
+        {
+          "description": "aggregate avg on columns",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "article_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "course_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "order_by",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "lms_course_articles_avg_fields",
+          "possibleTypes": null
+        },
+        {
+          "description": "order by avg() on columns of table \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "order_by",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_avg_order_by",
+          "possibleTypes": null
+        },
+        {
+          "description": "Boolean expression to filter rows from the table \"lms_course_articles\". All fields are combined with a logical 'AND'.",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "_and",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "lms_course_articles_bool_exp",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "_not",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_bool_exp",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "_or",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "lms_course_articles_bool_exp",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_articles_bool_exp",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article_id",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "Int_comparison_exp",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_courses_bool_exp",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course_id",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "Int_comparison_exp",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "order_by",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "Int_comparison_exp",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "preview",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "Boolean_comparison_exp",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_bool_exp",
+          "possibleTypes": null
+        },
+        {
+          "description": "unique or primary key constraints on table \"lms_course_articles\"",
+          "enumValues": [
+            {
+              "deprecationReason": null,
+              "description": "unique or primary key constraint on columns \"article_id\", \"course_id\"",
+              "isDeprecated": false,
+              "name": "lms_course_articles_pkey"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "lms_course_articles_constraint",
+          "possibleTypes": null
+        },
+        {
+          "description": "input type for incrementing numeric columns in table \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "order_by",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_inc_input",
+          "possibleTypes": null
+        },
+        {
+          "description": "input type for inserting data into table \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_articles_obj_rel_insert_input",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_courses_obj_rel_insert_input",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "order_by",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "preview",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_insert_input",
+          "possibleTypes": null
+        },
+        {
+          "description": "aggregate max on columns",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "article_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "course_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "order_by",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "lms_course_articles_max_fields",
+          "possibleTypes": null
+        },
+        {
+          "description": "order by max() on columns of table \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "order_by",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_max_order_by",
+          "possibleTypes": null
+        },
+        {
+          "description": "aggregate min on columns",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "article_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "course_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "order_by",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "lms_course_articles_min_fields",
+          "possibleTypes": null
+        },
+        {
+          "description": "order by min() on columns of table \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "order_by",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_min_order_by",
+          "possibleTypes": null
+        },
+        {
+          "description": "response of any mutation on the table \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "number of rows affected by the mutation",
+              "isDeprecated": false,
+              "name": "affected_rows",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "data from the rows affected by the mutation",
+              "isDeprecated": false,
+              "name": "returning",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "lms_course_articles",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "lms_course_articles_mutation_response",
+          "possibleTypes": null
+        },
+        {
+          "description": "on_conflict condition type for table \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "constraint",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "lms_course_articles_constraint",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": "[]",
+              "description": null,
+              "name": "update_columns",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "lms_course_articles_update_column",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "where",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_bool_exp",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_on_conflict",
+          "possibleTypes": null
+        },
+        {
+          "description": "Ordering options when selecting data from \"lms_course_articles\".",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_articles_order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_courses_order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "order_by",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "preview",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_order_by",
+          "possibleTypes": null
+        },
+        {
+          "description": "primary key columns input for table: lms_course_articles",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article_id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course_id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_pk_columns_input",
+          "possibleTypes": null
+        },
+        {
+          "description": "select columns of table \"lms_course_articles\"",
+          "enumValues": [
+            {
+              "deprecationReason": null,
+              "description": "column name",
+              "isDeprecated": false,
+              "name": "article_id"
+            },
+            {
+              "deprecationReason": null,
+              "description": "column name",
+              "isDeprecated": false,
+              "name": "course_id"
+            },
+            {
+              "deprecationReason": null,
+              "description": "column name",
+              "isDeprecated": false,
+              "name": "order_by"
+            },
+            {
+              "deprecationReason": null,
+              "description": "column name",
+              "isDeprecated": false,
+              "name": "preview"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "lms_course_articles_select_column",
+          "possibleTypes": null
+        },
+        {
+          "description": "select \"lms_course_articles_aggregate_bool_exp_bool_and_arguments_columns\" columns of table \"lms_course_articles\"",
+          "enumValues": [
+            {
+              "deprecationReason": null,
+              "description": "column name",
+              "isDeprecated": false,
+              "name": "preview"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "lms_course_articles_select_column_lms_course_articles_aggregate_bool_exp_bool_and_arguments_columns",
+          "possibleTypes": null
+        },
+        {
+          "description": "select \"lms_course_articles_aggregate_bool_exp_bool_or_arguments_columns\" columns of table \"lms_course_articles\"",
+          "enumValues": [
+            {
+              "deprecationReason": null,
+              "description": "column name",
+              "isDeprecated": false,
+              "name": "preview"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "lms_course_articles_select_column_lms_course_articles_aggregate_bool_exp_bool_or_arguments_columns",
+          "possibleTypes": null
+        },
+        {
+          "description": "input type for updating data in table \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "order_by",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "preview",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_set_input",
+          "possibleTypes": null
+        },
+        {
+          "description": "aggregate stddev on columns",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "article_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "course_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "order_by",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "lms_course_articles_stddev_fields",
+          "possibleTypes": null
+        },
+        {
+          "description": "order by stddev() on columns of table \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "order_by",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_stddev_order_by",
+          "possibleTypes": null
+        },
+        {
+          "description": "aggregate stddev_pop on columns",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "article_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "course_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "order_by",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "lms_course_articles_stddev_pop_fields",
+          "possibleTypes": null
+        },
+        {
+          "description": "order by stddev_pop() on columns of table \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "order_by",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_stddev_pop_order_by",
+          "possibleTypes": null
+        },
+        {
+          "description": "aggregate stddev_samp on columns",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "article_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "course_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "order_by",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "lms_course_articles_stddev_samp_fields",
+          "possibleTypes": null
+        },
+        {
+          "description": "order by stddev_samp() on columns of table \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "order_by",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_stddev_samp_order_by",
+          "possibleTypes": null
+        },
+        {
+          "description": "Streaming cursor of the table \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": "Stream column input with initial value",
+              "name": "initial_value",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "lms_course_articles_stream_cursor_value_input",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "cursor ordering",
+              "name": "ordering",
+              "type": {
+                "kind": "ENUM",
+                "name": "cursor_ordering",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_stream_cursor_input",
+          "possibleTypes": null
+        },
+        {
+          "description": "Initial value of the column from where the streaming should start",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "order_by",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "preview",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_stream_cursor_value_input",
+          "possibleTypes": null
+        },
+        {
+          "description": "aggregate sum on columns",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "article_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "course_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "order_by",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "lms_course_articles_sum_fields",
+          "possibleTypes": null
+        },
+        {
+          "description": "order by sum() on columns of table \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "order_by",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_sum_order_by",
+          "possibleTypes": null
+        },
+        {
+          "description": "update columns of table \"lms_course_articles\"",
+          "enumValues": [
+            {
+              "deprecationReason": null,
+              "description": "column name",
+              "isDeprecated": false,
+              "name": "article_id"
+            },
+            {
+              "deprecationReason": null,
+              "description": "column name",
+              "isDeprecated": false,
+              "name": "course_id"
+            },
+            {
+              "deprecationReason": null,
+              "description": "column name",
+              "isDeprecated": false,
+              "name": "order_by"
+            },
+            {
+              "deprecationReason": null,
+              "description": "column name",
+              "isDeprecated": false,
+              "name": "preview"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "lms_course_articles_update_column",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": "increments the numeric columns with given value of the filtered values",
+              "name": "_inc",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_inc_input",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "sets the columns of the filtered rows to the given values",
+              "name": "_set",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_set_input",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "filter the rows which have to be updated",
+              "name": "where",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "lms_course_articles_bool_exp",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_updates",
+          "possibleTypes": null
+        },
+        {
+          "description": "aggregate var_pop on columns",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "article_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "course_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "order_by",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "lms_course_articles_var_pop_fields",
+          "possibleTypes": null
+        },
+        {
+          "description": "order by var_pop() on columns of table \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "order_by",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_var_pop_order_by",
+          "possibleTypes": null
+        },
+        {
+          "description": "aggregate var_samp on columns",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "article_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "course_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "order_by",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "lms_course_articles_var_samp_fields",
+          "possibleTypes": null
+        },
+        {
+          "description": "order by var_samp() on columns of table \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "order_by",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_var_samp_order_by",
+          "possibleTypes": null
+        },
+        {
+          "description": "aggregate variance on columns",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "article_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "course_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "order_by",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "lms_course_articles_variance_fields",
+          "possibleTypes": null
+        },
+        {
+          "description": "order by variance() on columns of table \"lms_course_articles\"",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "article_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "order_by",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_course_articles_variance_order_by",
+          "possibleTypes": null
+        },
+        {
+          "description": "columns and relationships of \"lms_courses\"",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": "distinct select on columns",
+                  "name": "distinct_on",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "lms_course_articles_select_column",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "limit the number of rows returned",
+                  "name": "limit",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "skip the first n rows. Use only with order_by",
+                  "name": "offset",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "sort the rows by one or more columns",
+                  "name": "order_by",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "lms_course_articles_order_by",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "filter the rows returned",
+                  "name": "where",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "lms_course_articles_bool_exp",
+                    "ofType": null
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "An array relationship",
+              "isDeprecated": false,
+              "name": "course_articles",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "lms_course_articles",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": "distinct select on columns",
+                  "name": "distinct_on",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "lms_course_articles_select_column",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "limit the number of rows returned",
+                  "name": "limit",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "skip the first n rows. Use only with order_by",
+                  "name": "offset",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "sort the rows by one or more columns",
+                  "name": "order_by",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "lms_course_articles_order_by",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "filter the rows returned",
+                  "name": "where",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "lms_course_articles_bool_exp",
+                    "ofType": null
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "An aggregate relationship",
+              "isDeprecated": false,
+              "name": "course_articles_aggregate",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "lms_course_articles_aggregate",
                   "ofType": null
                 }
               }
@@ -9158,10 +11515,20 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "article_ids",
+              "name": "course_articles",
               "type": {
                 "kind": "INPUT_OBJECT",
-                "name": "json_comparison_exp",
+                "name": "lms_course_articles_bool_exp",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "course_articles_aggregate",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_aggregate_bool_exp",
                 "ofType": null
               }
             },
@@ -9317,10 +11684,10 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "article_ids",
+              "name": "course_articles",
               "type": {
-                "kind": "SCALAR",
-                "name": "json",
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_arr_rel_insert_input",
                 "ofType": null
               }
             },
@@ -9814,6 +12181,41 @@
           "possibleTypes": null
         },
         {
+          "description": "input type for inserting object relation for remote table \"lms_courses\"",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "data",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "lms_courses_insert_input",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "upsert condition",
+              "name": "on_conflict",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "lms_courses_on_conflict",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "lms_courses_obj_rel_insert_input",
+          "possibleTypes": null
+        },
+        {
           "description": "on_conflict condition type for table \"lms_courses\"",
           "enumValues": null,
           "fields": null,
@@ -9878,10 +12280,10 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "article_ids",
+              "name": "course_articles_aggregate",
               "type": {
-                "kind": "ENUM",
-                "name": "order_by",
+                "kind": "INPUT_OBJECT",
+                "name": "lms_course_articles_aggregate_order_by",
                 "ofType": null
               }
             },
@@ -10003,12 +12405,6 @@
               "deprecationReason": null,
               "description": "column name",
               "isDeprecated": false,
-              "name": "article_ids"
-            },
-            {
-              "deprecationReason": null,
-              "description": "column name",
-              "isDeprecated": false,
               "name": "id"
             },
             {
@@ -10060,16 +12456,6 @@
           "enumValues": null,
           "fields": null,
           "inputFields": [
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "article_ids",
-              "type": {
-                "kind": "SCALAR",
-                "name": "json",
-                "ofType": null
-              }
-            },
             {
               "defaultValue": null,
               "description": null,
@@ -10453,16 +12839,6 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "article_ids",
-              "type": {
-                "kind": "SCALAR",
-                "name": "json",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
               "name": "id",
               "type": {
                 "kind": "SCALAR",
@@ -10627,12 +13003,6 @@
         {
           "description": "update columns of table \"lms_courses\"",
           "enumValues": [
-            {
-              "deprecationReason": null,
-              "description": "column name",
-              "isDeprecated": false,
-              "name": "article_ids"
-            },
             {
               "deprecationReason": null,
               "description": "column name",
@@ -12494,6 +14864,74 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
+                      "name": "lms_course_articles_bool_exp",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "delete data from the table: \"lms_course_articles\"",
+              "isDeprecated": false,
+              "name": "delete_lms_course_articles",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_course_articles_mutation_response",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "article_id",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Int",
+                      "ofType": null
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "course_id",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Int",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "delete single row from the table: \"lms_course_articles\"",
+              "isDeprecated": false,
+              "name": "delete_lms_course_articles_by_pk",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_course_articles",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": "filter the rows which have to be deleted",
+                  "name": "where",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
                       "name": "lms_courses_bool_exp",
                       "ofType": null
                     }
@@ -12950,6 +15388,88 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "lms_articles",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": "the rows to be inserted",
+                  "name": "objects",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "LIST",
+                      "name": null,
+                      "ofType": {
+                        "kind": "NON_NULL",
+                        "name": null,
+                        "ofType": {
+                          "kind": "INPUT_OBJECT",
+                          "name": "lms_course_articles_insert_input",
+                          "ofType": null
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "upsert condition",
+                  "name": "on_conflict",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "lms_course_articles_on_conflict",
+                    "ofType": null
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "insert data into the table: \"lms_course_articles\"",
+              "isDeprecated": false,
+              "name": "insert_lms_course_articles",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_course_articles_mutation_response",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": "the row to be inserted",
+                  "name": "object",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "lms_course_articles_insert_input",
+                      "ofType": null
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "upsert condition",
+                  "name": "on_conflict",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "lms_course_articles_on_conflict",
+                    "ofType": null
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "insert a single row into the table: \"lms_course_articles\"",
+              "isDeprecated": false,
+              "name": "insert_lms_course_articles_one",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_course_articles",
                 "ofType": null
               }
             },
@@ -13680,6 +16200,139 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "lms_articles_mutation_response",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": "increments the numeric columns with given value of the filtered values",
+                  "name": "_inc",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "lms_course_articles_inc_input",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "sets the columns of the filtered rows to the given values",
+                  "name": "_set",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "lms_course_articles_set_input",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "filter the rows which have to be updated",
+                  "name": "where",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "lms_course_articles_bool_exp",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "update data of the table: \"lms_course_articles\"",
+              "isDeprecated": false,
+              "name": "update_lms_course_articles",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_course_articles_mutation_response",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": "increments the numeric columns with given value of the filtered values",
+                  "name": "_inc",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "lms_course_articles_inc_input",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "sets the columns of the filtered rows to the given values",
+                  "name": "_set",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "lms_course_articles_set_input",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "pk_columns",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "lms_course_articles_pk_columns_input",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "update single row of the table: \"lms_course_articles\"",
+              "isDeprecated": false,
+              "name": "update_lms_course_articles_by_pk",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_course_articles",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": "updates to execute, in order",
+                  "name": "updates",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "LIST",
+                      "name": null,
+                      "ofType": {
+                        "kind": "NON_NULL",
+                        "name": null,
+                        "ofType": {
+                          "kind": "INPUT_OBJECT",
+                          "name": "lms_course_articles_updates",
+                          "ofType": null
+                        }
+                      }
+                    }
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "update multiples rows of table: \"lms_course_articles\"",
+              "isDeprecated": false,
+              "name": "update_lms_course_articles_many",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "lms_course_articles_mutation_response",
                   "ofType": null
                 }
               }
@@ -14946,6 +17599,221 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "lms_articles",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": "distinct select on columns",
+                  "name": "distinct_on",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "lms_course_articles_select_column",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "limit the number of rows returned",
+                  "name": "limit",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "skip the first n rows. Use only with order_by",
+                  "name": "offset",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "sort the rows by one or more columns",
+                  "name": "order_by",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "lms_course_articles_order_by",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "filter the rows returned",
+                  "name": "where",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "lms_course_articles_bool_exp",
+                    "ofType": null
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "fetch data from the table: \"lms_course_articles\"",
+              "isDeprecated": false,
+              "name": "lms_course_articles",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "lms_course_articles",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": "distinct select on columns",
+                  "name": "distinct_on",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "lms_course_articles_select_column",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "limit the number of rows returned",
+                  "name": "limit",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "skip the first n rows. Use only with order_by",
+                  "name": "offset",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "sort the rows by one or more columns",
+                  "name": "order_by",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "lms_course_articles_order_by",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "filter the rows returned",
+                  "name": "where",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "lms_course_articles_bool_exp",
+                    "ofType": null
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "fetch aggregated fields from the table: \"lms_course_articles\"",
+              "isDeprecated": false,
+              "name": "lms_course_articles_aggregate",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "lms_course_articles_aggregate",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "article_id",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Int",
+                      "ofType": null
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "course_id",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Int",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "fetch data from the table: \"lms_course_articles\" using primary key columns",
+              "isDeprecated": false,
+              "name": "lms_course_articles_by_pk",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_course_articles",
                 "ofType": null
               }
             },
@@ -16729,6 +19597,288 @@
                     "ofType": {
                       "kind": "OBJECT",
                       "name": "lms_articles",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": "distinct select on columns",
+                  "name": "distinct_on",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "lms_course_articles_select_column",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "limit the number of rows returned",
+                  "name": "limit",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "skip the first n rows. Use only with order_by",
+                  "name": "offset",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "sort the rows by one or more columns",
+                  "name": "order_by",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "lms_course_articles_order_by",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "filter the rows returned",
+                  "name": "where",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "lms_course_articles_bool_exp",
+                    "ofType": null
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "fetch data from the table: \"lms_course_articles\"",
+              "isDeprecated": false,
+              "name": "lms_course_articles",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "lms_course_articles",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": "distinct select on columns",
+                  "name": "distinct_on",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "lms_course_articles_select_column",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "limit the number of rows returned",
+                  "name": "limit",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "skip the first n rows. Use only with order_by",
+                  "name": "offset",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "sort the rows by one or more columns",
+                  "name": "order_by",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "lms_course_articles_order_by",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "filter the rows returned",
+                  "name": "where",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "lms_course_articles_bool_exp",
+                    "ofType": null
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "fetch aggregated fields from the table: \"lms_course_articles\"",
+              "isDeprecated": false,
+              "name": "lms_course_articles_aggregate",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "lms_course_articles_aggregate",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "article_id",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Int",
+                      "ofType": null
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "course_id",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Int",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "fetch data from the table: \"lms_course_articles\" using primary key columns",
+              "isDeprecated": false,
+              "name": "lms_course_articles_by_pk",
+              "type": {
+                "kind": "OBJECT",
+                "name": "lms_course_articles",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": "maximum number of rows returned in a single batch",
+                  "name": "batch_size",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Int",
+                      "ofType": null
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "cursor to stream the results returned by the query",
+                  "name": "cursor",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "LIST",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "lms_course_articles_stream_cursor_input",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "filter the rows returned",
+                  "name": "where",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "lms_course_articles_bool_exp",
+                    "ofType": null
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "fetch data from the table in a streaming manner: \"lms_course_articles\"",
+              "isDeprecated": false,
+              "name": "lms_course_articles_stream",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "lms_course_articles",
                       "ofType": null
                     }
                   }

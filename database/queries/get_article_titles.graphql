@@ -3,6 +3,5 @@ query GetLmsArticleTitles {
     created_at
     id
     title
-    preview
   }
 }

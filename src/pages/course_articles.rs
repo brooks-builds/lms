@@ -43,7 +43,7 @@ pub fn component(props: &Props) -> Html {
     let (_alert_store, alert_dispatch) = use_store::<AlertsStore>();
     let navigator = use_navigator().unwrap();
     let available_articles = use_state(HashMap::<i64, Article>::new);
-    let (course_store, course_dispatch) = use_store::<CourseStore>();
+    let (_course_store, course_dispatch) = use_store::<CourseStore>();
     let assigned_article_titles = use_state(HashMap::<i64, Article>::new);
     let article_titles_loaded = use_state(|| BBLoadingState::Initialized);
     let course_loaded = use_state(|| BBLoadingState::Initialized);
@@ -51,8 +51,8 @@ pub fn component(props: &Props) -> Html {
 
     {
         let available_articles = available_articles.clone();
-        let auth_state = auth_state.clone();
-        let alert_dispatch = alert_dispatch.clone();
+        let auth_state = auth_state;
+        let alert_dispatch = alert_dispatch;
         let course_id = props.course_id;
         let course_dispatch = course_dispatch;
         let assigned_article_titles = assigned_article_titles.clone();
@@ -141,15 +141,9 @@ pub fn component(props: &Props) -> Html {
                 && article_titles_loaded.is_loaded()
             {
                 logging::log("assigning article titles");
-                let Some(course) = course_store.courses.get(&course_id) else {return result;};
 
-                let mut assigned_articles = assigned_article_titles.deref().clone();
-                let mut available_articles_clone = available_articles.deref().clone();
-                for article_id in course.article_ids.iter() {
-                    if let Some(article) = available_articles_clone.remove(article_id) {
-                        assigned_articles.insert(article.id, article);
-                    }
-                }
+                let assigned_articles = assigned_article_titles.deref().clone();
+                let available_articles_clone = available_articles.deref().clone();
                 assigned_article_titles.set(assigned_articles);
                 available_articles.set(available_articles_clone);
                 assigned_article_titles_loaded.set(BBLoadingState::Loaded);
@@ -298,47 +292,7 @@ pub fn component(props: &Props) -> Html {
         })
     };
 
-    let save_onclick = {
-        let assigned_article_titles = assigned_article_titles.clone();
-        let course_id = props.course_id;
-        let auth_state = auth_state;
-        let alert_dispatch = alert_dispatch;
-
-        Callback::from(move |_| {
-            let course_id = course_id;
-            let assigned_article_titles = assigned_article_titles.clone();
-            let auth_state = auth_state.clone();
-            let alert_dispatch = alert_dispatch.clone();
-
-            wasm_bindgen_futures::spawn_local(async move {
-                let assigned_article_titles = assigned_article_titles.clone();
-                let token = auth_state.access_token.clone().unwrap_or_default();
-                let articles = assigned_article_titles
-                    .deref()
-                    .values()
-                    .collect::<Vec<&Article>>();
-                match api::courses::set_course_articles(course_id, &articles, token).await {
-                    Ok(_result) => {
-                        alert_dispatch.reduce_mut(|alert_state| {
-                            *alert_state = AlertsStoreBuilder::new()
-                                .message("Articles saved to course")
-                                .icon(ycl::elements::icon::BBIconType::Star)
-                                .alert_type(ycl::modules::banner::BBBannerType::Success)
-                                .build()
-                                .unwrap()
-                        });
-                    }
-                    Err(error) => {
-                        log_error("Erro saving articles to course", &error);
-                        alert_dispatch.reduce_mut(|alert_state| {
-                            *alert_state =
-                                AlertsStoreBuilder::new_error("Error saving articles to course")
-                        });
-                    }
-                }
-            });
-        })
-    };
+    let save_onclick = { Callback::from(move |_| {}) };
 
     html! {
         <BBContainer margin={BBContainerMargin::Normal}>

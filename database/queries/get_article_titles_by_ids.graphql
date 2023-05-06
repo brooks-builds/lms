@@ -3,7 +3,6 @@ query ApiGetArticleTitlesByIds($article_ids: [Int!]!) {
     id
     title
     created_at
-    preview
     content {
       content
     }

@@ -21,7 +21,6 @@ impl From<get_lms_article_titles::ResponseData> for ArticlesStore {
                     id: db_article.id,
                     created_at: db_article.created_at,
                     title: db_article.title,
-                    preview: db_article.preview,
                     content: None,
                 },
             );
@@ -36,7 +35,6 @@ pub struct Article {
     pub id: i64,
     pub created_at: String,
     pub title: String,
-    pub preview: bool,
     pub content: Option<String>,
 }
 
@@ -46,7 +44,6 @@ impl From<ApiGetArticleTitlesByIdsLmsArticles> for Article {
             id: value.id,
             created_at: value.created_at,
             title: value.title,
-            preview: value.preview,
             content: value.content.map(|c| c.content),
         }
     }
