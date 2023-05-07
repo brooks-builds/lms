@@ -9,71 +9,7 @@ pub type timestamp = String;
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "database/schema.json",
-    query_path = "database/queries.graphql",
+    query_path = "database/queries/get_all_courses.graphql",
     response_derives = "Debug"
 )]
-pub struct ListLmsCourses;
-
-#[derive(GraphQLQuery)]
-#[graphql(
-    schema_path = "database/schema.json",
-    query_path = "database/queries.graphql",
-    response_derives = "Debug"
-)]
-pub struct CourseById;
-
-#[derive(GraphQLQuery)]
-#[graphql(
-    schema_path = "database/schema.json",
-    query_path = "database/queries/create_lms_account.graphql",
-    response_derives = "Debug, Clone"
-)]
-pub struct CreateLmsAccount;
-
-#[derive(GraphQLQuery)]
-#[graphql(
-    schema_path = "database/schema.json",
-    query_path = "database/queries/get_tags.graphql",
-    response_derives = "Debug, Clone"
-)]
-pub struct LmsTags;
-
-#[derive(GraphQLQuery)]
-#[graphql(
-    schema_path = "database/schema.json",
-    query_path = "database/queries/create_tag.graphql",
-    response_derives = "Debug, Clone"
-)]
-pub struct CreateTag;
-
-#[derive(GraphQLQuery)]
-#[graphql(
-    schema_path = "database/schema.json",
-    query_path = "database/queries/create_course.graphql",
-    response_derives = "Debug, Clone"
-)]
-pub struct CreateLmsCourse;
-
-#[derive(GraphQLQuery)]
-#[graphql(
-    schema_path = "database/schema.json",
-    query_path = "database/queries/create_lms_article.graphql",
-    response_derives = "Debug, Clone"
-)]
-pub struct InsertLmsArticle;
-
-#[derive(GraphQLQuery)]
-#[graphql(
-    schema_path = "database/schema.json",
-    query_path = "database/queries/get_article_titles.graphql",
-    response_derives = "Debug, Clone"
-)]
-pub struct GetLmsArticleTitles;
-
-#[derive(GraphQLQuery)]
-#[graphql(
-    schema_path = "database/schema.json",
-    query_path = "database/queries/get_article_titles_by_ids.graphql",
-    response_derives = "Debug, Clone"
-)]
-pub struct ApiGetArticleTitlesByIds;
+pub struct ApiGetAllCourses;

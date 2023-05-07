@@ -1,0 +1,22 @@
+query ApiGetAllCourses {
+  lms_courses {
+    id
+    lms_tag {
+      name
+    }
+    long_description
+    price
+    short_description
+    title
+    trailer_uri
+    course_articles {
+      article {
+        title
+        id
+        content {
+          content
+        }
+      }
+    }
+  }
+}
