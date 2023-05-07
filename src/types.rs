@@ -1,4 +1,5 @@
 use eyre::bail;
+use serde::{Deserialize, Serialize};
 use ycl::foundations::roles::BBRole;
 use yew::AttrValue;
 
@@ -73,6 +74,30 @@ impl From<api_get_all_courses::ApiGetAllCoursesLmsCoursesCourseArticlesArticle> 
 pub struct User {
     pub role: BBRole,
     pub token: Option<AttrValue>,
+    pub id: Option<AttrValue>,
+    pub nickname: Option<AttrValue>,
+    pub name: Option<AttrValue>,
+    pub picture: Option<AttrValue>,
+    pub email: Option<AttrValue>,
+    pub email_verified: Option<bool>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Auth0User {
+    pub sub: String,
+    pub nickname: String,
+    pub name: String,
+    pub picture: String,
+    pub updated_at: String,
+    pub email: String,
+    pub email_verified: bool,
+    #[serde(rename = "https://brooksbuilds.com")]
+    pub metadata: Auth0UserMetadata,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Auth0UserMetadata {
+    pub role: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Default)]

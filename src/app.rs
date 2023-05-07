@@ -79,14 +79,14 @@ pub fn component() -> Html {
             <Alert />
             <BBNavbar<Routes>
                 create_account_route={Routes::CreateAccount}
-                is_authenticated={auth_store.logged_in}
+                is_authenticated={store.logged_in}
                 links={create_routes(store.user.role)}
                 login_route={Routes::Login}
                 show_brand={true}
-                username={auth_store.nickname.clone()}
+                username={store.user.nickname.clone()}
                 logout_url={logout_url()}
                 {logout_onclick}
-                roles={auth_store.roles.clone()}
+                role={store.user.role}
             />
             <main>
                 <Switch<Routes> render={switch} />
