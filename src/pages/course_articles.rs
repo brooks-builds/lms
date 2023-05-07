@@ -20,8 +20,6 @@ use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
 use crate::{
-    api, logging,
-    logging::log_error,
     router::Routes,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
@@ -87,20 +85,6 @@ pub fn component(props: &Props) -> Html {
 
                 wasm_bindgen_futures::spawn_local(async move {
                     course_loaded.clone().set(BBLoadingState::Loading);
-                    match api::courses::get_by_id(course_id).await {
-                        Ok(course) => course_dispatch.reduce_mut(|courses_state| {
-                            courses_state.courses.insert(course.id, course);
-                            course_loaded.set(BBLoadingState::Loaded);
-                        }),
-                        Err(error) => {
-                            log_error("error getting course", &error);
-                            alert_dispatch.clone().reduce_mut(|alert_state| {
-                                *alert_state = AlertsStoreBuilder::new_error(
-                                    "There was a problem loading the course",
-                                )
-                            });
-                        }
-                    }
                 });
             }
 
@@ -115,22 +99,6 @@ pub fn component(props: &Props) -> Html {
 
                 wasm_bindgen_futures::spawn_local(async move {
                     article_titles_loaded.clone().set(BBLoadingState::Loading);
-                    match api::articles::get_article_titles(token).await {
-                        Ok(articles) => {
-                            articles_dispatch.reduce_mut(|articles_state| {
-                                *articles_state = articles.clone();
-                            });
-                            available_articles.set(articles.articles);
-                            article_titles_loaded.set(BBLoadingState::Loaded);
-                        }
-                        Err(error) => {
-                            log_error("Error getting article titles", &error);
-                            alert_dispatch.reduce_mut(|alert_state| {
-                                *alert_state =
-                                    AlertsStoreBuilder::new_error("Error getting article titles")
-                            });
-                        }
-                    }
                 });
             }
 

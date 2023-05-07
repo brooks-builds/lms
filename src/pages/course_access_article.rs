@@ -14,11 +14,9 @@ use yew::prelude::*;
 use yewdux::prelude::use_store;
 
 use crate::{
-    api,
     components::course_nav::CourseNav,
-    logging::log_error,
     stores::{
-        alerts::{AlertsStore, AlertsStoreBuilder},
+        alerts::AlertsStore,
         articles::{Article, ArticlesStore},
         courses_store::{CourseStore, StoreCourse},
     },
@@ -59,32 +57,8 @@ pub fn component(props: &Props) -> Html {
                 && *course_loaded_flag == BBLoadingState::Loaded
             {
                 articles_loaded_flag.set(BBLoadingState::Loading);
-                let article_ids = vec![];
                 let alert_dispatch = alert_dispatch.clone();
-                wasm_bindgen_futures::spawn_local(async move {
-                    match api::articles::get_article_titles_by_ids(article_ids).await {
-                        Ok(articles) => {
-                            articles_dispatch.reduce_mut(|articles_state| {
-                                for article in articles.clone() {
-                                    articles_state.articles.insert(article.id, article.clone());
-                                }
-                            });
-                            article_state.clone().set(
-                                articles
-                                    .iter()
-                                    .find(|article| article.id == article_id)
-                                    .cloned(),
-                            );
-                            articles_loaded_flag.set(BBLoadingState::Loaded);
-                        }
-                        Err(error) => {
-                            log_error("Error getting articles for access course article", &error);
-                            alert_dispatch.reduce(|_| {
-                                AlertsStoreBuilder::new_error("Error loading article nav").into()
-                            });
-                        }
-                    }
-                });
+                wasm_bindgen_futures::spawn_local(async move {});
             }
 
             if *course_loaded_flag == BBLoadingState::Initialized {
@@ -99,26 +73,7 @@ pub fn component(props: &Props) -> Html {
                 let store_dispatch = store_dispatch.clone();
                 let alert_dispatch = alert_dispatch.clone();
 
-                wasm_bindgen_futures::spawn_local(async move {
-                    match api::courses::get_by_id(course_id).await {
-                        Ok(db_course) => {
-                            store_dispatch.reduce_mut(|store_state| {
-                                store_state.courses.insert(db_course.id, db_course.clone());
-                            });
-                            course.set(Some(db_course));
-                            course_loaded_flag.set(BBLoadingState::Loaded);
-                        }
-                        Err(error) => {
-                            log_error(
-                                "Error getting course by id for course access article",
-                                &error,
-                            );
-                            alert_dispatch.reduce(|_| {
-                                AlertsStoreBuilder::new_error("Error getting course").into()
-                            });
-                        }
-                    }
-                });
+                wasm_bindgen_futures::spawn_local(async move {});
             }
 
             result

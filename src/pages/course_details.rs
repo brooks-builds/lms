@@ -1,6 +1,4 @@
 use crate::{
-    api,
-    logging::log_error,
     router::Routes,
     stores::{auth_store::AuthStore, courses_store::CourseStore},
 };
@@ -16,7 +14,7 @@ use ycl::{
     },
 };
 use yew::prelude::*;
-use yew_hooks::{use_async, use_effect_once};
+use yew_hooks::use_effect_once;
 use yewdux::prelude::use_store;
 
 #[derive(Properties, PartialEq)]
@@ -31,7 +29,6 @@ pub fn component(props: &Props) -> Html {
 
     let fetch_course = {
         let id = props.id;
-        use_async(async move { api::courses::get_by_id(id).await })
     };
 
     let course = course_store.courses.get(&props.id);
@@ -40,9 +37,7 @@ pub fn component(props: &Props) -> Html {
         let have_course = course.is_some();
         let fetch_course = fetch_course.clone();
         use_effect_once(move || {
-            if !have_course {
-                fetch_course.run();
-            }
+            if !have_course {}
 
             || {}
         });
@@ -55,20 +50,6 @@ pub fn component(props: &Props) -> Html {
 
             if !fetching_course {
                 return return_closure;
-            }
-
-            if fetch_course.loading {
-                return return_closure;
-            }
-
-            if let Some(error) = &fetch_course.error {
-                log_error("error fetching one course", error);
-            }
-
-            if let Some(course) = fetch_course.data.clone() {
-                course_store_dispatch.reduce_mut(|course_store| {
-                    course_store.courses.insert(course.id, course);
-                });
             }
 
             return_closure

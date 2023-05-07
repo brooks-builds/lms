@@ -6,7 +6,6 @@ use ycl::{
     elements::{
         button::{BBButton, BBButtonStyle, BBButtonType},
         form::BBForm,
-        icon::BBIconType,
         input::{BBInput, BBInputType},
         text::BBText,
         title::{BBTitle, BBTitleLevel},
@@ -15,19 +14,12 @@ use ycl::{
         align_text::AlignText,
         container::{BBContainer, BBContainerMargin},
     },
-    modules::banner::BBBannerType,
 };
 use yew::prelude::*;
-use yew_hooks::use_async;
 use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
-use crate::{
-    api,
-    logging::log_error,
-    router::Routes,
-    stores::alerts::{AlertsStore, AlertsStoreBuilder},
-};
+use crate::stores::alerts::AlertsStore;
 
 #[styled_component(CreateAccount)]
 pub fn component() -> Html {
@@ -37,11 +29,6 @@ pub fn component() -> Html {
 
     let create_account_state = {
         let account_state = account_state.clone();
-        use_async(async move {
-            let email = account_state.email.clone().unwrap();
-            let password = account_state.password.clone().unwrap();
-            api::auth::create_account(email, password).await
-        })
     };
 
     let onsubmit = {
@@ -55,34 +42,8 @@ pub fn component() -> Html {
                 email: Some(email),
                 password: Some(password),
             });
-            create_account_state.run();
         })
     };
-
-    use_effect(move || {
-        if !create_account_state.loading {
-            if let Some(_data) = &create_account_state.data {
-                let alert = AlertsStoreBuilder::new()
-                    .message("Account Created")
-                    .icon(BBIconType::Heart)
-                    .build()
-                    .unwrap();
-                alert_dispatch.reduce_mut(move |store| *store = alert);
-                navigator.push(&Routes::Login);
-            } else if let Some(error) = &create_account_state.error {
-                let alert = AlertsStoreBuilder::new()
-                    .message("Error creating account, please try again")
-                    .icon(BBIconType::Warning)
-                    .alert_type(BBBannerType::Error)
-                    .build()
-                    .unwrap();
-                alert_dispatch.reduce_mut(|store| *store = alert);
-                log_error("error creating account", error);
-            }
-        }
-
-        || {}
-    });
 
     let username_onchange = {
         let account_state = account_state.clone();

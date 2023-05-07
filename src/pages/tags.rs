@@ -20,8 +20,6 @@ use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
 use crate::{
-    api,
-    logging::log_error,
     router::Routes,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
@@ -51,24 +49,7 @@ pub fn component() -> Html {
         use_effect_once(move || {
             let courses_dispatch = courses_dispatch.clone();
 
-            wasm_bindgen_futures::spawn_local(async move {
-                match api::courses::get_tags().await {
-                    Ok(store_tags) => courses_dispatch.reduce_mut(|course_store| {
-                        course_store.tags = store_tags;
-                    }),
-                    Err(error) => {
-                        log_error("Error getting tags", &error);
-                        alert_dispatch.reduce_mut(|alert_store| {
-                            *alert_store = AlertsStoreBuilder::new()
-                                .icon(ycl::elements::icon::BBIconType::Warning)
-                                .message("Error getting tags")
-                                .alert_type(ycl::modules::banner::BBBannerType::Error)
-                                .build()
-                                .unwrap();
-                        })
-                    }
-                }
-            });
+            wasm_bindgen_futures::spawn_local(async move {});
 
             || ()
         });
@@ -133,41 +114,6 @@ pub fn component() -> Html {
             };
 
             wasm_bindgen_futures::spawn_local(async move {
-                match api::tags::insert_tag(tag_name, &token).await {
-                    Ok(tag) => courses_dispatch.reduce_mut(move |courses_store| {
-                        let tag = if let Some(tag) = tag.insert_lms_tags_one {
-                            tag
-                        } else {
-                            alert_dispatch.reduce_mut(move |alert_store| {
-                                *alert_store = AlertsStoreBuilder::new()
-                                    .icon(ycl::elements::icon::BBIconType::Warning)
-                                    .message("Error creating new tag")
-                                    .alert_type(ycl::modules::banner::BBBannerType::Error)
-                                    .build()
-                                    .unwrap();
-                            });
-                            return;
-                        };
-
-                        courses_store
-                            .tags
-                            .push(crate::stores::courses_store::StoreTag {
-                                id: tag.id,
-                                name: tag.name,
-                            })
-                    }),
-                    Err(error) => {
-                        log_error("error creating new tag", &error);
-                        alert_dispatch.reduce_mut(move |alert_store| {
-                            *alert_store = AlertsStoreBuilder::new()
-                                .icon(ycl::elements::icon::BBIconType::Warning)
-                                .message("Error creating new tag")
-                                .alert_type(ycl::modules::banner::BBBannerType::Error)
-                                .build()
-                                .unwrap();
-                        });
-                    }
-                }
                 new_tag_state.set(AttrValue::from(""));
             });
         })

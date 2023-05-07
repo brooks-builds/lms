@@ -13,15 +13,12 @@ use ycl::{
         align_text::AlignText,
         container::{BBContainer, BBContainerMargin},
     },
-    modules::banner::BBBannerType,
 };
 use yew::prelude::*;
 use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
 use crate::{
-    api,
-    logging::log_error,
     router::Routes,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
@@ -83,30 +80,6 @@ pub fn component() -> Html {
             let token = auth.access_token.clone().unwrap_or_default();
             let alert_dispatch = alert_dispatch.clone();
             let title_state = title_state.clone();
-
-            wasm_bindgen_futures::spawn_local(async move {
-                match api::articles::create_article(title, content, token).await {
-                    Ok(_article) => {
-                        alert_dispatch.reduce_mut(|alert_state| {
-                            *alert_state = AlertsStoreBuilder::new()
-                                .message("Created Article")
-                                .icon(ycl::elements::icon::BBIconType::Star)
-                                .alert_type(BBBannerType::Success)
-                                .build()
-                                .unwrap()
-                        });
-                        title_state.set(AttrValue::default());
-                    }
-                    Err(error) => {
-                        log_error("error creating article", &error);
-                        alert_dispatch.reduce_mut(|alert_state| {
-                            *alert_state = AlertsStoreBuilder::new_error(
-                                "There was an error trying to create the article",
-                            )
-                        });
-                    }
-                }
-            });
         })
     };
 

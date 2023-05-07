@@ -1,9 +1,10 @@
 use eyre::bail;
+use ycl::foundations::roles::BBRole;
 use yew::AttrValue;
 
 use crate::database_queries::{api_get_all_courses, ApiGetAllCourses};
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Course {
     pub id: i64,
     pub tag: Tag,
@@ -34,7 +35,7 @@ impl From<api_get_all_courses::ApiGetAllCoursesLmsCourses> for Course {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Tag {
     pub name: AttrValue,
 }
@@ -47,7 +48,7 @@ impl From<api_get_all_courses::ApiGetAllCoursesLmsCoursesLmsTag> for Tag {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Article {
     pub title: AttrValue,
     pub id: i64,
@@ -66,4 +67,15 @@ impl From<api_get_all_courses::ApiGetAllCoursesLmsCoursesCourseArticlesArticle> 
                 .map(|api_content| api_content.content.into()),
         }
     }
+}
+
+#[derive(Debug, Clone, Eq, PartialEq, Default)]
+pub struct User {
+    pub role: BBRole,
+    pub token: Option<AttrValue>,
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub struct Alert {
+    pub message: AttrValue,
 }

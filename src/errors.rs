@@ -4,8 +4,6 @@ use thiserror::Error;
 pub enum LmsError {
     #[error("console.log exists")]
     LeftInLog,
-    #[error("could not find course")]
-    CourseNotFound,
     #[error("error saving cookie")]
     SavingCookie,
     #[error("error getting cookie: {0}")]

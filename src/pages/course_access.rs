@@ -16,9 +16,7 @@ use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
 use crate::{
-    api,
     components::course_nav::CourseNav,
-    logging::log_error,
     router::Routes,
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
@@ -59,22 +57,6 @@ pub fn component(props: &Props) -> Html {
 
                 wasm_bindgen_futures::spawn_local(async move {
                     course_loading_state.clone().set(BBLoadingState::Loading);
-                    match api::courses::get_by_id(course_id).await {
-                        Err(error) => {
-                            log_error("error getting course", &error);
-                            alert_dispatch.reduce_mut(|alert_state| {
-                                *alert_state = AlertsStoreBuilder::new_error(
-                                    "There was an error getting the course, please try again later",
-                                )
-                            });
-                        }
-                        Ok(api_course) => {
-                            courses_dispatch.reduce_mut(|courses_state| {
-                                courses_state.courses.insert(api_course.id, api_course);
-                            });
-                            course_loading_state.set(BBLoadingState::Loaded);
-                        }
-                    }
                 });
             }
 
@@ -88,33 +70,12 @@ pub fn component(props: &Props) -> Html {
                     navigator.push(&Routes::Courses);
                     return result;
                 };
-                let article_ids = vec![];
                 let articles_dispatch = articles_dispatch.clone();
 
                 wasm_bindgen_futures::spawn_local(async move {
                     article_titles_loading_state
                         .clone()
                         .set(BBLoadingState::Loading);
-                    match api::articles::get_article_titles_by_ids(article_ids).await {
-                        Ok(article_titles) => {
-                            articles_dispatch.reduce_mut(move |articles_state| {
-                                for article_title in article_titles {
-                                    articles_state
-                                        .articles
-                                        .insert(article_title.id, article_title);
-                                }
-                            });
-                            article_titles_loading_state.set(BBLoadingState::Loaded);
-                        }
-                        Err(error) => {
-                            log_error("Error getting article titles", &error);
-                            alert_dispatch.reduce_mut(|alert_state| {
-                                *alert_state =
-                                    AlertsStoreBuilder::new_error("Error getting articles")
-                            });
-                            navigator.push(&Routes::CourseDetails { id: course_id });
-                        }
-                    }
                 });
             }
 
