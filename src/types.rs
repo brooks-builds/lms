@@ -1,9 +1,8 @@
+use crate::database_queries::{api_get_all_data, ApiGetAllData};
 use eyre::bail;
 use serde::{Deserialize, Serialize};
 use ycl::foundations::roles::BBRole;
 use yew::AttrValue;
-
-use crate::database_queries::{api_get_all_courses, ApiGetAllCourses};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Course {
@@ -17,8 +16,8 @@ pub struct Course {
     pub articles: Vec<Article>,
 }
 
-impl From<api_get_all_courses::ApiGetAllCoursesLmsCourses> for Course {
-    fn from(api_course: api_get_all_courses::ApiGetAllCoursesLmsCourses) -> Self {
+impl From<api_get_all_data::ApiGetAllDataLmsCourses> for Course {
+    fn from(api_course: api_get_all_data::ApiGetAllDataLmsCourses) -> Self {
         Self {
             id: api_course.id,
             tag: api_course.lms_tag.into(),
@@ -38,13 +37,24 @@ impl From<api_get_all_courses::ApiGetAllCoursesLmsCourses> for Course {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Tag {
+    pub id: i64,
     pub name: AttrValue,
 }
 
-impl From<api_get_all_courses::ApiGetAllCoursesLmsCoursesLmsTag> for Tag {
-    fn from(value: api_get_all_courses::ApiGetAllCoursesLmsCoursesLmsTag) -> Self {
+impl From<api_get_all_data::ApiGetAllDataLmsCoursesLmsTag> for Tag {
+    fn from(value: api_get_all_data::ApiGetAllDataLmsCoursesLmsTag) -> Self {
         Self {
             name: value.name.into(),
+            id: value.id,
+        }
+    }
+}
+
+impl From<api_get_all_data::ApiGetAllDataLmsTags> for Tag {
+    fn from(lms_tag: api_get_all_data::ApiGetAllDataLmsTags) -> Self {
+        Self {
+            id: lms_tag.id,
+            name: lms_tag.name.into(),
         }
     }
 }
@@ -56,10 +66,8 @@ pub struct Article {
     pub content: Option<AttrValue>,
 }
 
-impl From<api_get_all_courses::ApiGetAllCoursesLmsCoursesCourseArticlesArticle> for Article {
-    fn from(
-        api_article: api_get_all_courses::ApiGetAllCoursesLmsCoursesCourseArticlesArticle,
-    ) -> Self {
+impl From<api_get_all_data::ApiGetAllDataLmsCoursesCourseArticlesArticle> for Article {
+    fn from(api_article: api_get_all_data::ApiGetAllDataLmsCoursesCourseArticlesArticle) -> Self {
         Self {
             title: api_article.title.into(),
             id: api_article.id,
@@ -103,4 +111,9 @@ pub struct Auth0UserMetadata {
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct Alert {
     pub message: AttrValue,
+}
+
+pub struct ApiAllData {
+    pub courses: Vec<Course>,
+    pub tags: Vec<Tag>,
 }

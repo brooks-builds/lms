@@ -1,8 +1,9 @@
-query ApiGetAllCourses {
+query ApiGetAllData {
   lms_courses {
     id
     lms_tag {
       name
+      id
     }
     long_description
     price
@@ -18,5 +19,9 @@ query ApiGetAllCourses {
         }
       }
     }
+  }
+  lms_tags {
+    id
+    name
   }
 }

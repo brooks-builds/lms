@@ -1,7 +1,7 @@
 use crate::{
     api,
-    logging::log_error,
-    types::{Alert, Auth0User, Course, User},
+    logging::{self, log_data, log_error},
+    types::{Alert, Auth0User, Course, Tag, User},
     utils::cookies::{load_cookie, save_cookie},
 };
 use eyre::Result;
@@ -20,21 +20,27 @@ pub struct MainStore {
     pub user: User,
     pub alert: Alert,
     pub logged_in: bool,
+    pub auth_loaded: BBLoadingState,
+    pub tags: HashMap<i64, Tag>,
 }
 
-pub async fn load_all_courses(dispatch: Dispatch<MainStore>) {
+pub async fn load_all_data(dispatch: Dispatch<MainStore>) {
     dispatch
         .reduce_mut_future(|store| {
             Box::pin(async move {
                 store.courses_loaded = BBLoadingState::Loading;
 
-                match api::courses::get_all_courses(store.user.token.clone(), store.user.role).await
-                {
-                    Ok(courses) => {
-                        for course in courses {
+                match api::get_all_data(store.user.token.clone(), store.user.role).await {
+                    Ok(data) => {
+                        for course in data.courses {
                             store.courses.insert(course.id, course);
-                            store.courses_loaded = BBLoadingState::Loaded
                         }
+
+                        for tag in data.tags {
+                            store.tags.insert(tag.id, tag);
+                        }
+
+                        store.courses_loaded = BBLoadingState::Loaded
                     }
                     Err(error) => {
                         gloo::console::error!("Error getting courses:", error.to_string());
@@ -50,6 +56,7 @@ pub async fn login_from_redirect(dispatch: Dispatch<MainStore>) {
     dispatch
         .reduce_mut_future(|store| {
             Box::pin(async move {
+                store.auth_loaded = BBLoadingState::Loading;
                 let Ok(url) = gloo::utils::window().location().href() else { return;};
                 let Ok(Some(saved_state)) = load_cookie(STATE_COOKIE_KEY) else {return;};
                 let Ok(parsed_url) = url::Url::parse(&url)  else {return;};
@@ -100,6 +107,25 @@ pub async fn login_from_redirect(dispatch: Dispatch<MainStore>) {
                 };
 
                 store.logged_in = true;
+                store.auth_loaded = BBLoadingState::Loaded;
+            })
+        })
+        .await
+}
+
+pub async fn login_from_refresh(dispatch: Dispatch<MainStore>) {
+    dispatch
+        .reduce_mut_future(|store| {
+            Box::pin(async move {
+                store.auth_loaded = BBLoadingState::Loading;
+                let Ok(Some(token)) = load_cookie(TOKEN_COOKIE_KEY) else {return;};
+                let Ok(Auth0User { sub, nickname, name, picture, updated_at: _updated_at, email, email_verified, metadata }) = api::auth::get_user_info(&token).await else {
+                    return};
+
+                store.user = User { role: metadata.role.into(), token: Some(token.into()), id: Some(sub.into()), nickname: Some(nickname.into()), name: Some(name.into()), picture: Some(picture.into()), email: Some(email.into()), email_verified: Some(email_verified) };
+
+                store.logged_in = true;
+                store.auth_loaded = BBLoadingState::Loaded;
             })
         })
         .await

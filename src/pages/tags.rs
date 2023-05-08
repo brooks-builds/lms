@@ -25,6 +25,7 @@ use crate::{
         alerts::{AlertsStore, AlertsStoreBuilder},
         auth_store::AuthStore,
         courses_store::CourseStore,
+        main_store::MainStore,
     },
 };
 
@@ -33,6 +34,7 @@ pub fn component() -> Html {
     let (_, alert_dispatch) = use_store::<AlertsStore>();
     let (auth_store, _) = use_store::<AuthStore>();
     let navigator = use_navigator().unwrap();
+    let (store, dispatch) = use_store::<MainStore>();
 
     if !auth_store.loading && !auth_store.is_author() {
         alert_dispatch.reduce_mut(|alert_state| {
@@ -57,12 +59,12 @@ pub fn component() -> Html {
 
     let tag_titles = vec!["Tag Name".into()];
 
-    let tag_values = courses_store
+    let tag_values = store
         .tags
         .iter()
-        .map(|store_tag| {
+        .map(|(id, tag)| {
             let mut row = HashMap::new();
-            row.insert("Tag Name".into(), store_tag.name.clone().into());
+            row.insert("Tag Name".into(), tag.name.clone().into());
             row
         })
         .collect::<Vec<HashMap<AttrValue, AttrValue>>>();

@@ -9,4 +9,4 @@ pub type smallint = u8;
     query_path = "database/queries/get_all_courses.graphql",
     response_derives = "Debug"
 )]
-pub struct ApiGetAllCourses;
+pub struct ApiGetAllData;

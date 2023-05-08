@@ -37,10 +37,21 @@ pub fn component() -> Html {
         use_effect(move || {
             let returning = || {};
 
-            if store.courses_loaded == BBLoadingState::Initialized {
-                wasm_bindgen_futures::spawn_local(async move {
-                    main_store::load_all_courses(dispatch).await;
-                });
+            match store.auth_loaded {
+                BBLoadingState::Initialized => {
+                    let dispatch = dispatch.clone();
+                    wasm_bindgen_futures::spawn_local(async move {
+                        main_store::login_from_refresh(dispatch.clone()).await;
+                    });
+                }
+                BBLoadingState::Loading => {}
+                BBLoadingState::Loaded => {
+                    if store.courses_loaded == BBLoadingState::Initialized {
+                        wasm_bindgen_futures::spawn_local(async move {
+                            main_store::load_all_data(dispatch).await;
+                        });
+                    }
+                }
             }
 
             returning
