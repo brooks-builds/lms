@@ -4,6 +4,7 @@ pub mod courses;
 pub mod tags;
 
 use dotenvy_macro::dotenv;
+use eyre::Result;
 use gloo::net::http::Request;
 use graphql_client::GraphQLQuery;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
@@ -11,9 +12,9 @@ use ycl::foundations::roles::BBRole;
 use yew::AttrValue;
 
 use crate::{
-    database_queries::{api_get_all_data, ApiGetAllData},
+    database_queries::{api_get_all_data, api_insert_tag, ApiGetAllData, ApiInsertTag},
     errors::LmsError,
-    types::ApiAllData,
+    types::{ApiAllData, Tag},
 };
 
 static GRAPHQL_URI: &str = dotenv!("GRAPHQL_URI");
@@ -92,4 +93,17 @@ pub async fn get_all_data(token: Option<AttrValue>, role: BBRole) -> eyre::Resul
     Ok(all_data)
 }
 
-pub async fn insert_tag(token: Att)
+pub async fn insert_tag(token: AttrValue, name: AttrValue) -> Result<Tag> {
+    let variables = api_insert_tag::Variables {
+        name: name.to_string(),
+    };
+    let mutation = ApiInsertTag::build_query(variables);
+    let result = SendToGraphql::new()
+        .authorization(token.as_str())
+        .role(BBRole::Author)
+        .json(mutation)?
+        .send::<api_insert_tag::ResponseData>()
+        .await?;
+
+    Ok(result.into())
+}

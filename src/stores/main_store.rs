@@ -7,6 +7,7 @@ use crate::{
 use eyre::Result;
 use std::collections::HashMap;
 use ycl::foundations::states::BBLoadingState;
+use yew::AttrValue;
 use yewdux::prelude::*;
 
 static STATE_COOKIE_KEY: &str = "auth_state";
@@ -126,6 +127,31 @@ pub async fn login_from_refresh(dispatch: Dispatch<MainStore>) {
 
                 store.logged_in = true;
                 store.auth_loaded = BBLoadingState::Loaded;
+            })
+        })
+        .await
+}
+
+pub async fn insert_tag(dispatch: Dispatch<MainStore>, name: AttrValue) {
+    dispatch
+        .reduce_mut_future(|store| {
+            Box::pin(async move {
+                let Some(token) = store.user.token else {
+                store.alert.message = "Could not create token".into();
+                gloo::console::error!("Token missing when trying to create tag");
+                return;
+            };
+
+                match api::insert_tag(token, name).await {
+                    Ok(tag) => {
+                        store.alert.message = "Tag created".into();
+                        store.tags.insert(tag.id, tag);
+                    }
+                    Err(error) => {
+                        store.alert.message = "There was an error creating the tag".into();
+                        gloo::console::error!(error.to_string());
+                    }
+                }
             })
         })
         .await

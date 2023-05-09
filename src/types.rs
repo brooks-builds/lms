@@ -1,4 +1,4 @@
-use crate::database_queries::{api_get_all_data, ApiGetAllData};
+use crate::database_queries::{api_get_all_data, api_insert_tag, ApiGetAllData};
 use eyre::bail;
 use serde::{Deserialize, Serialize};
 use ycl::foundations::roles::BBRole;
@@ -55,6 +55,18 @@ impl From<api_get_all_data::ApiGetAllDataLmsTags> for Tag {
         Self {
             id: lms_tag.id,
             name: lms_tag.name.into(),
+        }
+    }
+}
+
+impl From<api_insert_tag::ResponseData> for Tag {
+    fn from(value: api_insert_tag::ResponseData) -> Self {
+        let api_insert_tag::ApiInsertTagInsertTagsOne { id, name } = value
+            .insert_tags_one
+            .expect("id and name missing from tag response data");
+        Self {
+            id,
+            name: name.into(),
         }
     }
 }

@@ -10,3 +10,11 @@ pub type smallint = u8;
     response_derives = "Debug"
 )]
 pub struct ApiGetAllData;
+
+#[derive(GraphQLQuery)]
+#[graphql(
+    schema_path = "database/schema.json",
+    query_path = "database/mutations/api_insert_tag.graphql",
+    response_derives = "Debug"
+)]
+pub struct ApiInsertTag;
