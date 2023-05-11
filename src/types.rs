@@ -61,8 +61,8 @@ impl From<api_get_all_data::ApiGetAllDataLmsTags> for Tag {
 
 impl From<api_insert_tag::ResponseData> for Tag {
     fn from(value: api_insert_tag::ResponseData) -> Self {
-        let api_insert_tag::ApiInsertTagInsertTagsOne { id, name } = value
-            .insert_tags_one
+        let api_insert_tag::ApiInsertTagInsertLmsTagsOne { id, name } = value
+            .insert_lms_tags_one
             .expect("id and name missing from tag response data");
         Self {
             id,

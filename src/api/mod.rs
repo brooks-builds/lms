@@ -93,14 +93,14 @@ pub async fn get_all_data(token: Option<AttrValue>, role: BBRole) -> eyre::Resul
     Ok(all_data)
 }
 
-pub async fn insert_tag(token: AttrValue, name: AttrValue) -> Result<Tag> {
+pub async fn insert_tag(token: &str, name: AttrValue) -> Result<Tag> {
     let variables = api_insert_tag::Variables {
         name: name.to_string(),
     };
     let mutation = ApiInsertTag::build_query(variables);
     let result = SendToGraphql::new()
-        .authorization(token.as_str())
         .role(BBRole::Author)
+        .authorization(token)
         .json(mutation)?
         .send::<api_insert_tag::ResponseData>()
         .await?;

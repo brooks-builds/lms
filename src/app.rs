@@ -90,7 +90,7 @@ pub fn component() -> Html {
             <Alert />
             <BBNavbar<Routes>
                 create_account_route={Routes::CreateAccount}
-                is_authenticated={store.logged_in}
+                is_authenticated={store.logged_in()}
                 links={create_routes(store.user.role)}
                 login_route={Routes::Login}
                 show_brand={true}

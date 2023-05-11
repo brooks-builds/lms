@@ -20,9 +20,14 @@ pub struct MainStore {
     pub courses_loaded: BBLoadingState,
     pub user: User,
     pub alert: Alert,
-    pub logged_in: bool,
     pub auth_loaded: BBLoadingState,
     pub tags: HashMap<i64, Tag>,
+}
+
+impl MainStore {
+    pub fn logged_in(&self) -> bool {
+        self.user.token.is_some()
+    }
 }
 
 pub async fn load_all_data(dispatch: Dispatch<MainStore>) {
@@ -67,7 +72,10 @@ pub async fn login_from_redirect(dispatch: Dispatch<MainStore>) {
                 let Some(access_token )= url_encoded
                     .get("access_token")
                     .map(ToString::to_string)
-                     else { return ;};
+                     else { 
+                        gloo::console::error!("missing access token in redirect uri");
+                        return;
+                    };
                 let Some(url_state )= url_encoded
                     .get("state")
                     .map(ToString::to_string)
@@ -82,8 +90,6 @@ pub async fn login_from_redirect(dispatch: Dispatch<MainStore>) {
                 {
                     log_error("Error saving token to cookie", &error);
                 }
-
-                store.user.token = Some(access_token.clone().into());
 
                 let Auth0User {
                     sub,
@@ -104,10 +110,9 @@ pub async fn login_from_redirect(dispatch: Dispatch<MainStore>) {
                     picture: Some(picture.into()),
                     email: Some(email.into()),
                     email_verified: Some(email_verified),
-                    ..store.user.clone()
+                    token: Some(access_token.into()),
                 };
 
-                store.logged_in = true;
                 store.auth_loaded = BBLoadingState::Loaded;
             })
         })
@@ -125,7 +130,6 @@ pub async fn login_from_refresh(dispatch: Dispatch<MainStore>) {
 
                 store.user = User { role: metadata.role.into(), token: Some(token.into()), id: Some(sub.into()), nickname: Some(nickname.into()), name: Some(name.into()), picture: Some(picture.into()), email: Some(email.into()), email_verified: Some(email_verified) };
 
-                store.logged_in = true;
                 store.auth_loaded = BBLoadingState::Loaded;
             })
         })
@@ -136,13 +140,14 @@ pub async fn insert_tag(dispatch: Dispatch<MainStore>, name: AttrValue) {
     dispatch
         .reduce_mut_future(|store| {
             Box::pin(async move {
-                let Some(token) = store.user.token else {
-                store.alert.message = "Could not create token".into();
-                gloo::console::error!("Token missing when trying to create tag");
-                return;
-            };
+                let Some(token) = store.user.token.clone() else {
+                    store.alert.message = "Could not create token".into();
+                    gloo::console::error!("Token missing when trying to create tag");
 
-                match api::insert_tag(token, name).await {
+                    return;
+                };
+
+                match api::insert_tag(&token, name).await {
                     Ok(tag) => {
                         store.alert.message = "Tag created".into();
                         store.tags.insert(tag.id, tag);
@@ -155,4 +160,8 @@ pub async fn insert_tag(dispatch: Dispatch<MainStore>, name: AttrValue) {
             })
         })
         .await
+}
+
+pub fn set_alert(dispatch: Dispatch<MainStore>, message: AttrValue) {
+    dispatch.reduce_mut(move |store| store.alert.message = message);
 }

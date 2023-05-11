@@ -25,7 +25,7 @@ use crate::{
         alerts::{AlertsStore, AlertsStoreBuilder},
         auth_store::AuthStore,
         courses_store::CourseStore,
-        main_store::MainStore,
+        main_store::{self, MainStore},
     },
 };
 
@@ -71,55 +71,18 @@ pub fn component() -> Html {
 
     let new_tag_state = use_state(|| AttrValue::from(""));
 
-    let new_tag_onsubmit = {
-        let new_tag_state = new_tag_state.clone();
-        let alert_dispatch = alert_dispatch;
-        let courses_dispatch = courses_dispatch;
-        let auth_store = auth_store;
+    let new_tag_onsubmit = Callback::from(move |event: FormData| {
+        let dispatch = dispatch.clone();
+        let Some(tag_name) = event.get("tag_name").as_string() else {
+                main_store::set_alert(dispatch, "Missing tag name".into());
 
-        Callback::from(move |event: FormData| {
-            let tag_name = if let Some(name) = event.get("tag_name").as_string() {
-                if name.is_empty() {
-                    alert_dispatch.clone().reduce_mut(|alert_store| {
-                        *alert_store = AlertsStoreBuilder::new()
-                            .icon(ycl::elements::icon::BBIconType::Warning)
-                            .message("Cannot create a tag without a name")
-                            .alert_type(ycl::modules::banner::BBBannerType::Error)
-                            .build()
-                            .unwrap();
-                    });
-                    return;
-                }
-                name
-            } else {
-                alert_dispatch.clone().reduce_mut(|alert_store| {
-                    *alert_store = AlertsStoreBuilder::new()
-                        .icon(ycl::elements::icon::BBIconType::Warning)
-                        .message("Error creating new tag")
-                        .alert_type(ycl::modules::banner::BBBannerType::Error)
-                        .build()
-                        .unwrap();
-                });
-                return;
-            };
-            let new_tag_state = new_tag_state.clone();
-            let alert_dispatch = alert_dispatch.clone();
-            let courses_dispatch = courses_dispatch.clone();
-            let token = if let Some(token) = &auth_store.access_token {
-                token.clone()
-            } else {
-                alert_dispatch.reduce_mut(|alert_state| {
-                    *alert_state =
-                        AlertsStoreBuilder::new_error("Must be logged in to create a tag");
-                });
                 return;
             };
 
-            wasm_bindgen_futures::spawn_local(async move {
-                new_tag_state.set(AttrValue::from(""));
-            });
-        })
-    };
+        wasm_bindgen_futures::spawn_local(async move {
+            main_store::insert_tag(dispatch, tag_name.into()).await;
+        });
+    });
 
     let new_tag_onchange = {
         let new_tag_state = new_tag_state.clone();
