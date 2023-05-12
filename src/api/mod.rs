@@ -4,7 +4,7 @@ pub mod courses;
 pub mod tags;
 
 use dotenvy_macro::dotenv;
-use eyre::Result;
+use eyre::{bail, Result};
 use gloo::net::http::Request;
 use graphql_client::GraphQLQuery;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
@@ -12,9 +12,12 @@ use ycl::foundations::roles::BBRole;
 use yew::AttrValue;
 
 use crate::{
-    database_queries::{api_get_all_data, api_insert_tag, ApiGetAllData, ApiInsertTag},
+    database_queries::{
+        api_get_all_data, api_insert_course, api_insert_tag, ApiGetAllData, ApiInsertCourse,
+        ApiInsertTag,
+    },
     errors::LmsError,
-    types::{ApiAllData, Tag},
+    types::{ApiAllData, Course, Tag},
 };
 
 static GRAPHQL_URI: &str = dotenv!("GRAPHQL_URI");
@@ -105,5 +108,30 @@ pub async fn insert_tag(token: &str, name: AttrValue) -> Result<Tag> {
         .send::<api_insert_tag::ResponseData>()
         .await?;
 
+    Ok(result.into())
+}
+
+pub async fn insert_course(
+    token: AttrValue,
+    long_description: AttrValue,
+    title: AttrValue,
+    tag_id: i64,
+    short_description: AttrValue,
+) -> Result<Course> {
+    let variables = api_insert_course::Variables {
+        long_description: long_description.to_string(),
+        title: title.to_string(),
+        tag_id,
+        short_description: short_description.to_string(),
+    };
+    let mutation = ApiInsertCourse::build_query(variables);
+    let result = SendToGraphql::new()
+        .role(BBRole::Author)
+        .authorization(token.as_str())
+        .json(mutation)?
+        .send::<api_insert_course::ResponseData>()
+        .await?
+        .insert_lms_courses_one
+        .ok_or_else(|| eyre::eyre!("Course not returned when created"))?;
     Ok(result.into())
 }

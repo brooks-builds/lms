@@ -1,0 +1,12 @@
+mutation ApiInsertCourse($long_description: String!, $title: String!, $tag_id: Int!, $short_description: String!) {
+  insert_lms_courses_one(object: {long_description: $long_description, title: $title, tag_id: $tag_id, short_description: $short_description}) {
+    id
+    long_description
+    short_description
+    title
+    lms_tag {
+      id
+      name
+    }
+  }
+}

@@ -1,4 +1,4 @@
-use std::ops::Deref;
+use std::{collections::HashMap, ops::Deref};
 
 use wasm_bindgen::JsValue;
 use web_sys::FormData;
@@ -28,7 +28,9 @@ use crate::{
         alerts::{AlertsStore, AlertsStoreBuilder},
         auth_store::AuthStore,
         courses_store::CourseStore,
+        main_store::{self, MainStore},
     },
+    types::Tag,
 };
 
 #[function_component(CreateCourse)]
@@ -39,6 +41,7 @@ pub fn component() -> Html {
     let (courses_store, courses_dispatch) = use_store::<CourseStore>();
     let title = use_state(|| AttrValue::from(""));
     let short_description = use_state(|| AttrValue::from(""));
+    let (store, dispatch) = use_store::<MainStore>();
 
     {
         let alert_dispatch = alert_dispatch.clone();
@@ -68,24 +71,24 @@ pub fn component() -> Html {
     }
 
     let onsubmit = Callback::from(move |event: FormData| {
-        let title = event.get("title");
-        let tag = event.get("tag");
-        let long_description = event.get("long_description");
-        let short_description = event.get("short_description");
-        let alert_dispatch = alert_dispatch.clone();
-        let token = auth_store.access_token.clone().unwrap_or_default();
+        let Some(tag) = event.get("tag").as_f64() else {return};
+        let Some(title)= event.get("title").as_string() else {return};
+        let Some(long_description)= event.get("long_description").as_string() else {return};
+        let Some(short_description)= event.get("short_description").as_string() else {return};
         let navigator = navigator.clone();
+        let tag_id = tag as i64;
+        let dispatch = dispatch.clone();
 
-        match validate_create_course(title, short_description, long_description, tag) {
-            Ok(course_data) => {
-                wasm_bindgen_futures::spawn_local(async move {});
-            }
-            Err(error) => {
-                alert_dispatch.reduce_mut(|alert_state| {
-                    *alert_state = AlertsStoreBuilder::new_error(error.to_string())
-                });
-            }
-        }
+        wasm_bindgen_futures::spawn_local(async move {
+            main_store::insert_course(
+                dispatch,
+                long_description.into(),
+                title.into(),
+                tag_id,
+                short_description.into(),
+            )
+            .await;
+        });
     });
 
     let title_onchange = {
@@ -118,7 +121,7 @@ pub fn component() -> Html {
                 <BBSelect
                     id="tag"
                     label="Tag"
-                    options={courses_store.tags.iter().map(|tag| BBOption {value: tag.id.to_string().into(), label: tag.name.clone().into()}).collect::<Vec<BBOption>>()}
+                    options={create_tag_options(&store.tags)}
                     name="tag"
                  />
                 <BBTextArea
@@ -235,4 +238,16 @@ fn require_i64(value: Option<String>, error_messages: &mut Vec<String>, name: &s
             None
         }
     }
+}
+
+fn create_tag_options(tags: &HashMap<i64, Tag>) -> Vec<BBOption> {
+    let mut tag_options = tags
+        .iter()
+        .map(|(id, tag)| BBOption {
+            value: id.to_string().into(),
+            label: tag.name.clone(),
+        })
+        .collect::<Vec<BBOption>>();
+    tag_options.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    tag_options
 }

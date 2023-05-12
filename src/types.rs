@@ -1,4 +1,4 @@
-use crate::database_queries::{api_get_all_data, api_insert_tag, ApiGetAllData};
+use crate::database_queries::{api_get_all_data, api_insert_course, api_insert_tag, ApiGetAllData};
 use eyre::bail;
 use serde::{Deserialize, Serialize};
 use ycl::foundations::roles::BBRole;
@@ -31,6 +31,24 @@ impl From<api_get_all_data::ApiGetAllDataLmsCourses> for Course {
                 .into_iter()
                 .filter_map(|api_course_articles| api_course_articles.article.map(Into::into))
                 .collect(),
+        }
+    }
+}
+
+impl From<api_insert_course::ApiInsertCourseInsertLmsCoursesOne> for Course {
+    fn from(value: api_insert_course::ApiInsertCourseInsertLmsCoursesOne) -> Self {
+        Self {
+            id: value.id,
+            tag: Tag {
+                id: value.lms_tag.id,
+                name: value.lms_tag.name.into(),
+            },
+            long_description: value.long_description.into(),
+            price: None,
+            short_description: value.short_description.into(),
+            title: value.title.into(),
+            trailer_uri: None,
+            articles: vec![],
         }
     }
 }

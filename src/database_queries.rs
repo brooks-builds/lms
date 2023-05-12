@@ -18,3 +18,11 @@ pub struct ApiGetAllData;
     response_derives = "Debug"
 )]
 pub struct ApiInsertTag;
+
+#[derive(GraphQLQuery)]
+#[graphql(
+    schema_path = "database/schema.json",
+    query_path = "database/mutations/api_insert_course.graphql",
+    response_derives = "Debug"
+)]
+pub struct ApiInsertCourse;

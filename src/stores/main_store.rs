@@ -165,3 +165,22 @@ pub async fn insert_tag(dispatch: Dispatch<MainStore>, name: AttrValue) {
 pub fn set_alert(dispatch: Dispatch<MainStore>, message: AttrValue) {
     dispatch.reduce_mut(move |store| store.alert.message = message);
 }
+
+pub async fn insert_course(dispatch: Dispatch<MainStore>,
+    long_description: AttrValue,
+    title: AttrValue,
+    tag_id: i64,
+    short_description: AttrValue,) {
+    dispatch.reduce_mut_future(|store| {
+        Box::pin(async move {
+            let Some(token) = store.user.token.clone() else {return};
+            match api::insert_course(token, long_description, title, tag_id, short_description).await {
+                Ok(course) => {store.courses.insert(course.id, course);},
+                Err(error) => {
+                    store.alert.message = "There was an error creating the course".into();
+                    gloo::console::error!("Error creating course:", error.to_string());
+                },
+            }
+        })
+    }).await
+}
