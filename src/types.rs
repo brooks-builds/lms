@@ -120,6 +120,12 @@ pub struct User {
     pub email_verified: Option<bool>,
 }
 
+impl User {
+    pub fn is_author(&self) -> bool {
+        self.role == BBRole::Author
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Auth0User {
     pub sub: String,

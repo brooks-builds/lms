@@ -1,6 +1,6 @@
 use crate::{
     router::Routes,
-    stores::{auth_store::AuthStore, courses_store::CourseStore},
+    stores::{auth_store::AuthStore, courses_store::CourseStore, main_store::MainStore},
 };
 use ycl::{
     elements::{image::BBImage, internal_link::BBInternalLink, youtube_video::BBYouTubeVideo},
@@ -24,43 +24,13 @@ pub struct Props {
 
 #[function_component(CourseDetails)]
 pub fn component(props: &Props) -> Html {
-    let (course_store, course_store_dispatch) = use_store::<CourseStore>();
-    let (auth_store, _) = use_store::<AuthStore>();
+    let (store, dispatch) = use_store::<MainStore>();
 
-    let fetch_course = {
-        let id = props.id;
-    };
-
-    let course = course_store.courses.get(&props.id);
-
-    {
-        let have_course = course.is_some();
-        let fetch_course = fetch_course.clone();
-        use_effect_once(move || {
-            if !have_course {}
-
-            || {}
-        });
-    }
-
-    {
-        let fetching_course = course.is_none();
-        use_effect(move || {
-            let return_closure = || {};
-
-            if !fetching_course {
-                return return_closure;
-            }
-
-            return_closure
-        });
-    };
-
-    if let Some(course) = course {
+    if let Some(course) = store.courses.get(&props.id) {
         html! {
             <div>
                 {
-                    if auth_store.is_author() {
+                    if store.user.is_author() {
                         html! {
                             <BBContainer margin={BBContainerMargin::Normal}>
                                 <BBAdminNav<Routes>
@@ -74,9 +44,9 @@ pub fn component(props: &Props) -> Html {
                 }
                 <BBHero
                     title={format!("${}", course.price.unwrap_or(0))}
-                    subtitle={course.name.clone()}
+                    subtitle={course.title.clone()}
                     text={course.long_description.clone()}
-                    media={hero_left_media(course.trailer_uri.clone(), course.name.clone())}
+                    media={hero_left_media(course.trailer_uri.clone().map(|uri| uri.to_string()), course.title.to_string())}
                     main={hero_main(props.id)}
                 />
             </div>
