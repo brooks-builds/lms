@@ -1,7 +1,7 @@
 use crate::{
     api,
     logging::{self, log_data, log_error},
-    types::{Alert, Auth0User, Course, Tag, User},
+    types::{Alert, Auth0User, Course, Tag, User, Article},
     utils::cookies::{load_cookie, save_cookie},
 };
 use eyre::Result;
@@ -22,6 +22,7 @@ pub struct MainStore {
     pub alert: Alert,
     pub auth_loaded: BBLoadingState,
     pub tags: HashMap<i64, Tag>,
+    pub articles: HashMap<i64, Article>,
 }
 
 impl MainStore {
@@ -44,6 +45,10 @@ pub async fn load_all_data(dispatch: Dispatch<MainStore>) {
 
                         for tag in data.tags {
                             store.tags.insert(tag.id, tag);
+                        }
+
+                        for article in data.articles {
+                            store.articles.insert(article.id, article);
                         }
 
                         store.courses_loaded = BBLoadingState::Loaded
@@ -176,6 +181,10 @@ pub fn reset_alert(dispatch: Dispatch<MainStore>) {
     dispatch.reduce_mut(|store| store.alert.message = None);
 }
 
+pub fn error_alert(dispatch: Dispatch<MainStore>, message: impl Into<AttrValue>) {
+    dispatch.reduce_mut(|store| store.alert.error(message.into()));
+}
+
 pub async fn insert_course(dispatch: Dispatch<MainStore>,
     long_description: AttrValue,
     title: AttrValue,
@@ -196,4 +205,24 @@ pub async fn insert_course(dispatch: Dispatch<MainStore>,
             }
         })
     }).await
+}
+
+pub async fn insert_article(dispatch: Dispatch<MainStore>, title: AttrValue, content: AttrValue) {
+    dispatch.clone().reduce_mut_future(|store| Box::pin(async move {
+        let Some(token) = store.user.token.clone() else {
+            store.alert.error("Error: missing token, please log in and try again");
+            return
+        };
+
+        match api::insert_article(token, title, content).await {
+            Ok(article) => {
+                store.articles.insert(article.id, article);
+                store.alert.success("Article created");
+            }
+            Err(error) => {
+                store.alert.error("Error Creating article");
+                gloo::console::error!("Error creating article:", error.to_string());
+            },
+        }
+    })).await
 }

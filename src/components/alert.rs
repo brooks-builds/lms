@@ -24,8 +24,8 @@ pub fn component(_props: &Props) -> Html {
         html! {
             <BBBanner
                 text={message}
-                banner_type={BBBannerType::Error}
-                icon={BBIconType::Star}
+                banner_type={store.alert.alert_type}
+                icon={store.alert.icon}
                 close_onclick={onclick}
             />
         }

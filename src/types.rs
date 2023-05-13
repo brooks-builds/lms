@@ -1,4 +1,6 @@
-use crate::database_queries::{api_get_all_data, api_insert_course, api_insert_tag, ApiGetAllData};
+use crate::database_queries::{
+    api_get_all_data, api_insert_article, api_insert_course, api_insert_tag, ApiGetAllData,
+};
 use eyre::bail;
 use serde::{Deserialize, Serialize};
 use ycl::{elements::icon::BBIconType, foundations::roles::BBRole, modules::banner::BBBannerType};
@@ -108,6 +110,28 @@ impl From<api_get_all_data::ApiGetAllDataLmsCoursesCourseArticlesArticle> for Ar
     }
 }
 
+impl From<api_insert_article::ApiInsertArticleInsertLmsArticlesOne> for Article {
+    fn from(api_article: api_insert_article::ApiInsertArticleInsertLmsArticlesOne) -> Self {
+        Self {
+            title: api_article.title.into(),
+            id: api_article.id,
+            content: api_article
+                .content
+                .map(|api_content| api_content.content.into()),
+        }
+    }
+}
+
+impl From<api_get_all_data::ApiGetAllDataLmsArticles> for Article {
+    fn from(value: api_get_all_data::ApiGetAllDataLmsArticles) -> Self {
+        Self {
+            title: value.title.into(),
+            id: value.id,
+            content: None,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Eq, PartialEq, Default)]
 pub struct User {
     pub role: BBRole,
@@ -151,7 +175,22 @@ pub struct Alert {
     pub icon: BBIconType,
 }
 
+impl Alert {
+    pub fn error(&mut self, message: impl Into<AttrValue>) {
+        self.message = Some(message.into());
+        self.alert_type = BBBannerType::Error;
+        self.icon = BBIconType::Warning;
+    }
+
+    pub fn success(&mut self, message: impl Into<AttrValue>) {
+        self.message = Some(message.into());
+        self.alert_type = BBBannerType::Success;
+        self.icon = BBIconType::Star;
+    }
+}
+
 pub struct ApiAllData {
     pub courses: Vec<Course>,
     pub tags: Vec<Tag>,
+    pub articles: Vec<Article>,
 }

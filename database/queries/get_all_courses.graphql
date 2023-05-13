@@ -24,4 +24,9 @@ query ApiGetAllData {
     id
     name
   }
+  lms_articles {
+    created_at
+    id
+    title
+  }
 }
