@@ -71,12 +71,18 @@ pub fn component() -> Html {
     }
 
     let onsubmit = Callback::from(move |event: FormData| {
-        let Some(tag) = event.get("tag").as_f64() else {return};
+        let Some(tag) = event.get("tag").as_string() else {
+            main_store::set_alert(dispatch.clone(), "missing tag id".into());
+            return
+        };
+        let Ok(tag_id) = tag.parse::<i64>() else {
+            main_store::set_alert(dispatch.clone(), "tag id is not a number".into());
+            return
+        };
         let Some(title)= event.get("title").as_string() else {return};
         let Some(long_description)= event.get("long_description").as_string() else {return};
         let Some(short_description)= event.get("short_description").as_string() else {return};
         let navigator = navigator.clone();
-        let tag_id = tag as i64;
         let dispatch = dispatch.clone();
 
         wasm_bindgen_futures::spawn_local(async move {

@@ -1,7 +1,7 @@
 use crate::database_queries::{api_get_all_data, api_insert_course, api_insert_tag, ApiGetAllData};
 use eyre::bail;
 use serde::{Deserialize, Serialize};
-use ycl::foundations::roles::BBRole;
+use ycl::{elements::icon::BBIconType, foundations::roles::BBRole, modules::banner::BBBannerType};
 use yew::AttrValue;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -140,7 +140,9 @@ pub struct Auth0UserMetadata {
 
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct Alert {
-    pub message: AttrValue,
+    pub message: Option<AttrValue>,
+    pub alert_type: BBBannerType,
+    pub icon: BBIconType,
 }
 
 pub struct ApiAllData {

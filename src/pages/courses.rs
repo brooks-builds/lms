@@ -1,4 +1,7 @@
-use crate::{router::Routes, stores::courses_store::CourseStore};
+use crate::{
+    router::Routes,
+    stores::{courses_store::CourseStore, main_store::MainStore},
+};
 use ycl::{
     elements::title::BBTitleLevel,
     foundations::container::BBContainer,
@@ -12,15 +15,14 @@ use yewdux::prelude::use_store;
 
 #[function_component(Courses)]
 pub fn component() -> Html {
-    let (course_store, course_store_dispatch) = use_store::<CourseStore>();
-
-    let courses = course_store
+    let (store, _dispatch) = use_store::<MainStore>();
+    let courses = store
         .courses
         .iter()
         .map(|(id, store_course)| {
             BBCardDataBuilder::<Routes>::new()
-                .title(store_course.name.clone())
-                .text(store_course.description.clone())
+                .title(store_course.title.as_str())
+                .text(store_course.short_description.as_str())
                 .link(Routes::CourseDetails { id: *id })
                 .build()
         })

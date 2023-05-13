@@ -50,7 +50,7 @@ pub async fn load_all_data(dispatch: Dispatch<MainStore>) {
                     }
                     Err(error) => {
                         gloo::console::error!("Error getting courses:", error.to_string());
-                        store.alert.message = "There was an error getting courses".into();
+                        store.alert.message = Some("There was an error getting courses".into());
                     }
                 }
             })
@@ -124,9 +124,15 @@ pub async fn login_from_refresh(dispatch: Dispatch<MainStore>) {
         .reduce_mut_future(|store| {
             Box::pin(async move {
                 store.auth_loaded = BBLoadingState::Loading;
-                let Ok(Some(token)) = load_cookie(TOKEN_COOKIE_KEY) else {return;};
+                let Ok(Some(token)) = load_cookie(TOKEN_COOKIE_KEY) else {
+                    store.auth_loaded = BBLoadingState::Loaded;
+
+                    return;
+                };
                 let Ok(Auth0User { sub, nickname, name, picture, updated_at: _updated_at, email, email_verified, metadata }) = api::auth::get_user_info(&token).await else {
-                    return};
+                    store.auth_loaded = BBLoadingState::Loaded;
+                    return
+                };
 
                 store.user = User { role: metadata.role.into(), token: Some(token.into()), id: Some(sub.into()), nickname: Some(nickname.into()), name: Some(name.into()), picture: Some(picture.into()), email: Some(email.into()), email_verified: Some(email_verified) };
 
@@ -141,7 +147,7 @@ pub async fn insert_tag(dispatch: Dispatch<MainStore>, name: AttrValue) {
         .reduce_mut_future(|store| {
             Box::pin(async move {
                 let Some(token) = store.user.token.clone() else {
-                    store.alert.message = "Could not create token".into();
+                    store.alert.message = Some("Could not create token".into());
                     gloo::console::error!("Token missing when trying to create tag");
 
                     return;
@@ -149,11 +155,11 @@ pub async fn insert_tag(dispatch: Dispatch<MainStore>, name: AttrValue) {
 
                 match api::insert_tag(&token, name).await {
                     Ok(tag) => {
-                        store.alert.message = "Tag created".into();
+                        store.alert.message = Some("Tag created".into());
                         store.tags.insert(tag.id, tag);
                     }
                     Err(error) => {
-                        store.alert.message = "There was an error creating the tag".into();
+                        store.alert.message = Some("There was an error creating the tag".into());
                         gloo::console::error!(error.to_string());
                     }
                 }
@@ -163,7 +169,11 @@ pub async fn insert_tag(dispatch: Dispatch<MainStore>, name: AttrValue) {
 }
 
 pub fn set_alert(dispatch: Dispatch<MainStore>, message: AttrValue) {
-    dispatch.reduce_mut(move |store| store.alert.message = message);
+    dispatch.reduce_mut(move |store| store.alert.message = Some(message));
+}
+
+pub fn reset_alert(dispatch: Dispatch<MainStore>) {
+    dispatch.reduce_mut(|store| store.alert.message = None);
 }
 
 pub async fn insert_course(dispatch: Dispatch<MainStore>,
@@ -171,13 +181,16 @@ pub async fn insert_course(dispatch: Dispatch<MainStore>,
     title: AttrValue,
     tag_id: i64,
     short_description: AttrValue,) {
-    dispatch.reduce_mut_future(|store| {
+    dispatch.clone().reduce_mut_future(move |store| {
         Box::pin(async move {
             let Some(token) = store.user.token.clone() else {return};
             match api::insert_course(token, long_description, title, tag_id, short_description).await {
-                Ok(course) => {store.courses.insert(course.id, course);},
+                Ok(course) => {
+                    store.courses.insert(course.id, course);
+                    store.alert.message = Some("course created".into());
+                },
                 Err(error) => {
-                    store.alert.message = "There was an error creating the course".into();
+                    store.alert.message = Some("There was an error creating the course".into());
                     gloo::console::error!("Error creating course:", error.to_string());
                 },
             }
