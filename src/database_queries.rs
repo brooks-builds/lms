@@ -3,6 +3,9 @@ use graphql_client::GraphQLQuery;
 #[allow(non_camel_case_types)]
 pub type smallint = u8;
 
+#[allow(non_camel_case_types)]
+pub type timestamp = String;
+
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "database/schema.json",
@@ -26,3 +29,11 @@ pub struct ApiInsertTag;
     response_derives = "Debug"
 )]
 pub struct ApiInsertCourse;
+
+#[derive(GraphQLQuery)]
+#[graphql(
+    schema_path = "database/schema.json",
+    query_path = "database/mutations/api_insert_article.graphql",
+    response_derives = "Debug"
+)]
+pub struct ApiInsertArticle;

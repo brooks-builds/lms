@@ -29,7 +29,6 @@ use crate::{
 #[function_component(App)]
 pub fn component() -> Html {
     let (store, dispatch) = use_store::<MainStore>();
-    let (auth_store, _auth_dispatch) = use_store::<AuthStore>();
     let (_, alert_dispatch) = use_store::<AlertsStore>();
 
     {
