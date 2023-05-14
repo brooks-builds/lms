@@ -1,10 +1,9 @@
 pub mod articles;
 pub mod auth;
-pub mod courses;
 pub mod tags;
 
 use dotenvy_macro::dotenv;
-use eyre::{bail, Result};
+use eyre::Result;
 use gloo::net::http::Request;
 use graphql_client::GraphQLQuery;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};

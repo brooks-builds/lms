@@ -1,4 +1,4 @@
-use crate::types::{Auth0User, User};
+use crate::types::Auth0User;
 use dotenvy_macro::dotenv;
 use eyre::Result;
 

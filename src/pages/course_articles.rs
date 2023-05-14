@@ -26,6 +26,7 @@ use crate::{
         articles::{Article, ArticlesStore},
         auth_store::AuthStore,
         courses_store::CourseStore,
+        main_store::{self, MainStore},
     },
 };
 
@@ -36,37 +37,29 @@ pub struct Props {
 
 #[function_component(CourseArticles)]
 pub fn component(props: &Props) -> Html {
-    let (auth_state, _) = use_store::<AuthStore>();
-    let (articles_store, articles_dispatch) = use_store::<ArticlesStore>();
-    let (_alert_store, alert_dispatch) = use_store::<AlertsStore>();
+    let (store, dispatch) = use_store::<MainStore>();
     let navigator = use_navigator().unwrap();
     let available_articles = use_state(HashMap::<i64, Article>::new);
-    let (_course_store, course_dispatch) = use_store::<CourseStore>();
     let assigned_article_titles = use_state(HashMap::<i64, Article>::new);
-    let article_titles_loaded = use_state(|| BBLoadingState::Initialized);
-    let course_loaded = use_state(|| BBLoadingState::Initialized);
-    let assigned_article_titles_loaded = use_state(|| BBLoadingState::Initialized);
 
     {
         let available_articles = available_articles.clone();
-        let auth_state = auth_state;
-        let alert_dispatch = alert_dispatch;
         let course_id = props.course_id;
-        let course_dispatch = course_dispatch;
         let assigned_article_titles = assigned_article_titles.clone();
+        let dispatch = dispatch.clone();
 
         use_effect(move || {
             let result = || {};
 
-            if auth_state.loading {
+            if store.auth_loaded != BBLoadingState::Loaded {
                 return result;
             }
 
-            if !auth_state.is_author() {
-                alert_dispatch.reduce_mut(|alert_state| {
-                    *alert_state =
-                        AlertsStoreBuilder::new_error("Only Authors can manage course articles")
-                });
+            if !store.user.is_author() {
+                main_store::error_alert(
+                    dispatch.clone(),
+                    "Only Authors can manage course articles",
+                );
                 navigator.push(&Routes::Home);
                 return result;
             }

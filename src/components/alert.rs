@@ -1,14 +1,8 @@
-use ycl::{
-    elements::icon::{BBIcon, BBIconType},
-    modules::banner::{BBBanner, BBBannerType},
-};
+use ycl::modules::banner::BBBanner;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
-use crate::stores::{
-    alerts::AlertsStore,
-    main_store::{self, MainStore},
-};
+use crate::stores::main_store::{self, MainStore};
 
 #[derive(Properties, PartialEq)]
 pub struct Props {}
