@@ -141,6 +141,7 @@ pub fn component(props: &Props) -> Html {
                         {"Assigned"}
                     </BBTitle>
                     <BBButtonList items={create_article_titles(&course.articles)} onclick={assigned_articles_onclick} />
+                    <BBButtonList items={create_preview_buttons(&course.articles)} onclick={Callback::from(|_| {})} />
                 </BBCol>
                 <BBCol>
                     <BBTitle level={BBTitleLevel::Two} align={AlignText::Center}>
@@ -171,6 +172,16 @@ fn create_article_titles(articles: &[crate::types::Article]) -> Vec<BBButtonList
         .iter()
         .map(|article| BBButtonListItem {
             label: article.title.clone(),
+            id: article.id.to_string().into(),
+        })
+        .collect()
+}
+
+fn create_preview_buttons(articles: &[crate::types::Article]) -> Vec<BBButtonListItem> {
+    articles
+        .iter()
+        .map(|article| BBButtonListItem {
+            label: "Preview".into(),
             id: article.id.to_string().into(),
         })
         .collect()
