@@ -12,8 +12,9 @@ use yew::AttrValue;
 
 use crate::{
     database_queries::{
-        api_get_all_data, api_insert_article, api_insert_course, api_insert_tag, ApiGetAllData,
-        ApiInsertArticle, ApiInsertCourse, ApiInsertTag,
+        api_get_all_data, api_insert_article, api_insert_course, api_insert_course_articles,
+        api_insert_tag, ApiGetAllData, ApiInsertArticle, ApiInsertCourse, ApiInsertCourseArticles,
+        ApiInsertTag,
     },
     errors::LmsError,
     types::{ApiAllData, Article, Course, Tag},
@@ -156,4 +157,36 @@ pub async fn insert_article(
         .ok_or_else(|| eyre::eyre!("Missing article after inserting"))?;
 
     Ok(result.into())
+}
+
+pub async fn set_course_articles(
+    token: AttrValue,
+    course_id: i64,
+    articles: &[Article],
+) -> Result<()> {
+    let variables = api_insert_course_articles::Variables {
+        course_id,
+        course_articles: articles
+            .iter()
+            .enumerate()
+            .map(
+                |(id, article)| api_insert_course_articles::lms_course_articles_insert_input {
+                    article_id: Some(article.id),
+                    course_id: Some(course_id),
+                    order_by: Some(id as i64),
+                    article: None,
+                    course: None,
+                    preview: Some(true),
+                },
+            )
+            .collect(),
+    };
+    let mutation = ApiInsertCourseArticles::build_query(variables);
+    SendToGraphql::new()
+        .role(BBRole::Author)
+        .authorization(token.as_str())
+        .json(mutation)?
+        .send::<api_insert_course_articles::ResponseData>()
+        .await?;
+    Ok(())
 }

@@ -37,3 +37,11 @@ pub struct ApiInsertCourse;
     response_derives = "Debug"
 )]
 pub struct ApiInsertArticle;
+
+#[derive(GraphQLQuery)]
+#[graphql(
+    schema_path = "database/schema.json",
+    query_path = "database/mutations/api_insert_course_articles.graphql",
+    response_derives = "Debug"
+)]
+pub struct ApiInsertCourseArticles;

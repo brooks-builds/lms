@@ -226,3 +226,57 @@ pub async fn insert_article(dispatch: Dispatch<MainStore>, title: AttrValue, con
         }
     })).await
 }
+
+pub fn add_article_to_course(dispatch: Dispatch<MainStore>, article: Article, course_id: i64) {
+    dispatch.reduce_mut(|store| {
+        let Some(course) = store.courses.get_mut(&course_id) else {
+            store.alert.error("Could not find store to add article to");
+            return;
+        };
+
+        course.articles.push(article);
+        course.articles_dirty = true;
+        store.alert.success("Article added to course");
+    });
+}
+
+pub fn remove_article_from_course(dispatch: Dispatch<MainStore>, article_id: i64, course_id: i64) {
+    dispatch.reduce_mut(|store| {
+        let Some(course) = store.courses.get_mut(&course_id) else {
+            store.alert.error("Could not find course to remove article from");
+            return;
+        };
+
+        course.articles.retain(|article| article.id != article_id);
+        course.articles_dirty = true;
+        store.alert.success("Article removed from course");
+    });
+}
+
+pub async fn save_course_articles(dispatch: Dispatch<MainStore>, course_id: i64) {
+    dispatch.reduce_mut_future(|store| Box::pin(async move {
+        let Some(course) = store.courses.get_mut(&course_id) else {
+            store.alert.error("Could not find course to save articles");
+            return;
+        };
+
+        if !course.articles_dirty {
+            store.alert.error("Articles not changed, not saving");
+            return;
+        }
+
+        let Some(token) = store.user.token.clone() else {
+            store.alert.error("Must be logged in to save course articles");
+            return;
+        };
+
+        if let Err(error) = api::set_course_articles(token, course_id, &course.articles).await {
+            store.alert.error("Error saving course articles");
+            gloo::console::error!("Error saving course articles:", error.to_string());
+            return;
+        }
+
+        store.alert.success("Course articles saved");
+        course.articles_dirty = false;
+    })).await
+}

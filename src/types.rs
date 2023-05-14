@@ -1,7 +1,6 @@
 use crate::database_queries::{
-    api_get_all_data, api_insert_article, api_insert_course, api_insert_tag, ApiGetAllData,
+    api_get_all_data, api_insert_article, api_insert_course, api_insert_tag,
 };
-use eyre::bail;
 use serde::{Deserialize, Serialize};
 use ycl::{elements::icon::BBIconType, foundations::roles::BBRole, modules::banner::BBBannerType};
 use yew::AttrValue;
@@ -16,6 +15,7 @@ pub struct Course {
     pub title: AttrValue,
     pub trailer_uri: Option<AttrValue>,
     pub articles: Vec<Article>,
+    pub articles_dirty: bool,
 }
 
 impl From<api_get_all_data::ApiGetAllDataLmsCourses> for Course {
@@ -33,6 +33,7 @@ impl From<api_get_all_data::ApiGetAllDataLmsCourses> for Course {
                 .into_iter()
                 .filter_map(|api_course_articles| api_course_articles.article.map(Into::into))
                 .collect(),
+            articles_dirty: false,
         }
     }
 }
@@ -51,6 +52,7 @@ impl From<api_insert_course::ApiInsertCourseInsertLmsCoursesOne> for Course {
             title: value.title.into(),
             trailer_uri: None,
             articles: vec![],
+            articles_dirty: false,
         }
     }
 }
