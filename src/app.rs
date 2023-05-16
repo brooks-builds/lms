@@ -18,18 +18,13 @@ use crate::{
     components::alert::Alert,
     logging::log_error,
     router::{switch, Routes},
-    stores::{
-        alerts::{AlertsStore, AlertsStoreBuilder},
-        auth_store::{logout_url, AuthStore},
-        main_store::{self, MainStore},
-    },
+    stores::main_store::{self, MainStore},
     utils::cookies::delete_cookie,
 };
 
 #[function_component(App)]
 pub fn component() -> Html {
     let (store, dispatch) = use_store::<MainStore>();
-    let (_, alert_dispatch) = use_store::<AlertsStore>();
 
     {
         let store = store.clone();
@@ -60,26 +55,13 @@ pub fn component() -> Html {
     let logout_onclick = {
         Callback::from(move |_event: ()| {
             if let Err(error) = delete_cookie("auth_token") {
-                alert_dispatch.reduce_mut(|alert_store| {
-                    *alert_store = AlertsStoreBuilder::new()
-                        .icon(BBIconType::Warning)
-                        .message("Error logging out, please try again")
-                        .alert_type(BBBannerType::Error)
-                        .build()
-                        .unwrap()
-                });
+                main_store::error_alert(dispatch, "Error logging out");
                 log_error("error deleting token cookie", &error);
             }
 
-            if let Err(_error) = gloo::utils::window().location().set_href(&logout_url()) {
-                alert_dispatch.reduce_mut(|alert_store| {
-                    *alert_store = AlertsStoreBuilder::new()
-                        .icon(BBIconType::Warning)
-                        .message("Error logging out, please try again")
-                        .alert_type(BBBannerType::Error)
-                        .build()
-                        .unwrap()
-                });
+            if let Err(error) = gloo::utils::window().location().set_href(&logout_url()) {
+                main_store::error_alert(dispatch, "Error logging out");
+                gloo::console::error!("Error navigating to logout uri:", error);
             }
         })
     };

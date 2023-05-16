@@ -1,5 +1,4 @@
 #![allow(non_camel_case_types)]
-use std::{collections::HashMap, ops::Deref, rc::Rc};
 
 use ycl::{
     elements::{
@@ -21,13 +20,7 @@ use yewdux::prelude::use_store;
 
 use crate::{
     router::Routes,
-    stores::{
-        alerts::{AlertsStore, AlertsStoreBuilder},
-        articles::{Article, ArticlesStore},
-        auth_store::AuthStore,
-        courses_store::CourseStore,
-        main_store::{self, MainStore},
-    },
+    stores::main_store::{self, MainStore},
 };
 
 #[derive(Properties, PartialEq)]
@@ -39,11 +32,8 @@ pub struct Props {
 pub fn component(props: &Props) -> Html {
     let (store, dispatch) = use_store::<MainStore>();
     let navigator = use_navigator().unwrap();
-    let assigned_article_titles = use_state(HashMap::<i64, Article>::new);
 
     {
-        let course_id = props.course_id;
-        let assigned_article_titles = assigned_article_titles.clone();
         let dispatch = dispatch.clone();
         let store = store.clone();
 
@@ -68,7 +58,6 @@ pub fn component(props: &Props) -> Html {
     }
 
     let all_articles_onclick = {
-        let assigned_article_titles = assigned_article_titles.clone();
         let store = store.clone();
         let dispatch = dispatch.clone();
         let course_id = props.course_id;
@@ -84,7 +73,6 @@ pub fn component(props: &Props) -> Html {
     };
 
     let assigned_articles_onclick = {
-        let assigned_article_titles = assigned_article_titles.clone();
         let dispatch = dispatch.clone();
         let course_id = props.course_id;
 
@@ -154,16 +142,6 @@ pub fn component(props: &Props) -> Html {
             </BBRow>
         </BBContainer>
     }
-}
-
-fn extract_article_titles(titles: &HashMap<i64, Article>) -> Vec<BBButtonListItem> {
-    titles
-        .iter()
-        .map(|(_id, title)| BBButtonListItem {
-            label: AttrValue::from(title.title.clone()),
-            id: AttrValue::from(title.id.to_string()),
-        })
-        .collect()
 }
 
 fn create_article_titles(articles: &[crate::types::Article]) -> Vec<BBButtonListItem> {

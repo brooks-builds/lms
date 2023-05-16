@@ -1,7 +1,4 @@
-use crate::{
-    router::Routes,
-    stores::{courses_store::CourseStore, main_store::MainStore},
-};
+use crate::{router::Routes, stores::main_store::MainStore};
 use ycl::{
     elements::title::BBTitleLevel,
     foundations::container::BBContainer,

@@ -16,24 +16,12 @@ use ycl::{
     },
 };
 use yew::prelude::*;
-use yew_router::prelude::use_navigator;
-use yewdux::prelude::use_store;
-
-use crate::stores::alerts::AlertsStore;
 
 #[styled_component(CreateAccount)]
 pub fn component() -> Html {
     let account_state = use_state(NewUser::default);
-    let navigator = use_navigator().unwrap();
-    let (_, alert_dispatch) = use_store::<AlertsStore>();
-
-    let create_account_state = {
-        let account_state = account_state.clone();
-    };
-
     let onsubmit = {
         let account_state = account_state.clone();
-        let create_account_state = create_account_state.clone();
 
         Callback::from(move |form_data: FormData| {
             let email = form_data.get("email").as_string().unwrap();

@@ -3,11 +3,7 @@ use ycl::modules::nav::course_nav::{BBCourseNav, BBCourseNavArticle, BBCourseNav
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
-use crate::{
-    logging::log_data,
-    router::Routes,
-    stores::{courses_store::CourseStore, main_store::MainStore},
-};
+use crate::{router::Routes, stores::main_store::MainStore};
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
@@ -16,7 +12,7 @@ pub struct Props {
 
 #[function_component(CourseNav)]
 pub fn component(props: &Props) -> Html {
-    let (store, dispatch) = use_store::<MainStore>();
+    let (store, _dispatch) = use_store::<MainStore>();
 
     if let Some(course) = store.courses.get(&props.course_id) {
         let articles = course

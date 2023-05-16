@@ -15,7 +15,6 @@ use ycl::{
     },
 };
 use yew::{function_component, html, use_state, AttrValue, Callback, Html};
-use yew_hooks::use_effect_once;
 use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
@@ -24,7 +23,6 @@ use crate::{
     stores::{
         alerts::{AlertsStore, AlertsStoreBuilder},
         auth_store::AuthStore,
-        courses_store::CourseStore,
         main_store::{self, MainStore},
     },
 };
@@ -43,26 +41,12 @@ pub fn component() -> Html {
         navigator.push(&Routes::Home);
     }
 
-    let (courses_store, courses_dispatch) = use_store::<CourseStore>();
-
-    {
-        let alert_dispatch = alert_dispatch.clone();
-        let courses_dispatch = courses_dispatch.clone();
-        use_effect_once(move || {
-            let courses_dispatch = courses_dispatch.clone();
-
-            wasm_bindgen_futures::spawn_local(async move {});
-
-            || ()
-        });
-    }
-
     let tag_titles = vec!["Tag Name".into()];
 
     let tag_values = store
         .tags
         .iter()
-        .map(|(id, tag)| {
+        .map(|(_id, tag)| {
             let mut row = HashMap::new();
             row.insert("Tag Name".into(), tag.name.clone().into());
             row

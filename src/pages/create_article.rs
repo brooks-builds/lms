@@ -21,7 +21,6 @@ use yewdux::prelude::use_store;
 use crate::{
     router::Routes,
     stores::{
-        alerts::{AlertsStore, AlertsStoreBuilder},
         auth_store::AuthStore,
         main_store::{self, MainStore},
     },
@@ -29,7 +28,7 @@ use crate::{
 
 #[function_component(CreateArticle)]
 pub fn component() -> Html {
-    let (store, dispatch) = use_store::<MainStore>();
+    let (_store, dispatch) = use_store::<MainStore>();
     let title = use_state(|| AttrValue::from(""));
     let title_onchange = {
         let title = title.clone();
@@ -37,10 +36,7 @@ pub fn component() -> Html {
             title.set(new_title);
         })
     };
-
     let (auth, _) = use_store::<AuthStore>();
-    let (_, alert_dispatch) = use_store::<AlertsStore>();
-
     let navigator = use_navigator().unwrap();
 
     {
@@ -58,8 +54,6 @@ pub fn component() -> Html {
     }
 
     let onsubmit = {
-        let title_state = title.clone();
-
         Callback::from(move |form: FormData| {
             let Some(title )= form.get("title").as_string() else {
                 main_store::error_alert(dispatch.clone(), "missing title");

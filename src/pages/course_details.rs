@@ -1,7 +1,4 @@
-use crate::{
-    router::Routes,
-    stores::{auth_store::AuthStore, courses_store::CourseStore, main_store::MainStore},
-};
+use crate::{router::Routes, stores::main_store::MainStore};
 use ycl::{
     elements::{image::BBImage, internal_link::BBInternalLink, youtube_video::BBYouTubeVideo},
     foundations::container::{BBContainer, BBContainerMargin},
@@ -14,7 +11,6 @@ use ycl::{
     },
 };
 use yew::prelude::*;
-use yew_hooks::use_effect_once;
 use yewdux::prelude::use_store;
 
 #[derive(Properties, PartialEq)]
@@ -24,7 +20,7 @@ pub struct Props {
 
 #[function_component(CourseDetails)]
 pub fn component(props: &Props) -> Html {
-    let (store, dispatch) = use_store::<MainStore>();
+    let (store, _dispatch) = use_store::<MainStore>();
 
     if let Some(course) = store.courses.get(&props.id) {
         html! {
