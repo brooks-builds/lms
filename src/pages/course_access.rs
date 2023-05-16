@@ -22,6 +22,7 @@ use crate::{
         alerts::{AlertsStore, AlertsStoreBuilder},
         articles::ArticlesStore,
         courses_store::CourseStore,
+        main_store::MainStore,
     },
 };
 
@@ -32,6 +33,7 @@ pub struct Props {
 
 #[function_component(CourseAccess)]
 pub fn component(props: &Props) -> Html {
+    let (store, dispatch) = use_store::<MainStore>();
     let course_loading_state = use_state(|| BBLoadingState::Initialized);
     let (courses_store, courses_dispatch) = use_store::<CourseStore>();
     let course_id = props.id;
@@ -43,9 +45,15 @@ pub fn component(props: &Props) -> Html {
     {
         let alert_dispatch = alert_dispatch;
         let courses_store = courses_store.clone();
+        let store = store.clone();
 
         use_effect(move || {
             let result = || {};
+
+            if store.courses_loaded != BBLoadingState::Loaded {
+                return result;
+            }
+
             let alert_dispatch = alert_dispatch.clone();
             let courses_dispatch = courses_dispatch.clone();
             let course_loading_state = course_loading_state.clone();
@@ -83,18 +91,17 @@ pub fn component(props: &Props) -> Html {
         });
     }
 
-    let Some(course) = courses_store.courses.get(&props.id) else {
+    let Some(course) = store.courses.get(&props.id) else {
         return html! {
         <BBContainer margin={BBContainerMargin::Normal}>
             <BBTitle align={AlignText::Center} level={BBTitleLevel::One}>{"Loading course"}</BBTitle>
         </BBContainer>
         };
-
     };
 
     html! {
         <BBContainer margin={BBContainerMargin::Normal}>
-                    <BBTitle align={AlignText::Center} level={BBTitleLevel::One}>{&course.name}</BBTitle>
+                    <BBTitle align={AlignText::Center} level={BBTitleLevel::One}>{course.title.clone()}</BBTitle>
             <BBRow>
                 <BBCol width={BBColWidth::Three}>
                     <CourseNav {course_id} />
