@@ -4,6 +4,7 @@ use crate::{
     types::{Alert, Auth0User, Course, Tag, User, Article},
     utils::cookies::{load_cookie, save_cookie},
 };
+use dotenvy_macro::dotenv;
 use eyre::Result;
 use std::collections::HashMap;
 use ycl::foundations::states::BBLoadingState;
@@ -13,6 +14,10 @@ use yewdux::prelude::*;
 static STATE_COOKIE_KEY: &str = "auth_state";
 static TOKEN_COOKIE_KEY: &str = "auth_token";
 static STATE_COOKIE_MAX_LIFE: u32 = 60 * 5;
+static AUTH0_DOMAIN: &str = dotenv!("AUTH0_DOMAIN");
+static AUTH0_LOGOUT_REDIRECT: &str = dotenv!("LOGOUT_REDIRECT");
+static AUTH0_CLIENT_ID: &str = dotenv!("AUTH0_CLIENT_ID");
+static AUTH_REDIRECT_URI: &str = dotenv!("AUTH_REDIRECT_URI");
 
 #[derive(Store, Default, Clone, PartialEq)]
 pub struct MainStore {
@@ -28,6 +33,15 @@ pub struct MainStore {
 impl MainStore {
     pub fn logged_in(&self) -> bool {
         self.user.token.is_some()
+    }
+
+    pub fn logout_url(&self) -> AttrValue {
+        AttrValue::from(format!("{AUTH0_DOMAIN}/v2/logout?returnTo={AUTH0_LOGOUT_REDIRECT}&client_id={AUTH0_CLIENT_ID}"))
+    }
+
+    pub fn login_uri(&self) -> AttrValue {
+        // dont' like this, move to a new module
+        AttrValue::from(format!("{AUTH0_DOMAIN}/authorize?response_type=token&client_id={AUTH0_CLIENT_ID}&redirect_uri={AUTH0_REDIRECT_URI}"))
     }
 }
 

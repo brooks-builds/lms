@@ -12,15 +12,11 @@ use ycl::{
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
-use crate::stores::{
-    alerts::{AlertsStore, AlertsStoreBuilder},
-    auth_store::AuthStore,
-};
+use crate::stores::main_store::MainStore;
 
 #[function_component(Login)]
 pub fn component() -> Html {
-    let (auth_store, _) = use_store::<AuthStore>();
-    let (_, alert_dispatch) = use_store::<AlertsStore>();
+    let (store, dispatch) = use_store::<MainStore>();
 
     let login_uri = match auth_store.login() {
         Ok(uri) => uri,

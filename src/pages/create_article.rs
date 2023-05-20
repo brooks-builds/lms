@@ -12,6 +12,7 @@ use ycl::{
     foundations::{
         align_text::AlignText,
         container::{BBContainer, BBContainerMargin},
+        states::BBLoadingState,
     },
 };
 use yew::prelude::*;
@@ -20,15 +21,12 @@ use yewdux::prelude::use_store;
 
 use crate::{
     router::Routes,
-    stores::{
-        auth_store::AuthStore,
-        main_store::{self, MainStore},
-    },
+    stores::main_store::{self, MainStore},
 };
 
 #[function_component(CreateArticle)]
 pub fn component() -> Html {
-    let (_store, dispatch) = use_store::<MainStore>();
+    let (store, dispatch) = use_store::<MainStore>();
     let title = use_state(|| AttrValue::from(""));
     let title_onchange = {
         let title = title.clone();
@@ -36,15 +34,14 @@ pub fn component() -> Html {
             title.set(new_title);
         })
     };
-    let (auth, _) = use_store::<AuthStore>();
     let navigator = use_navigator().unwrap();
 
     {
-        let auth = auth.clone();
         let dispatch = dispatch.clone();
+        let store = store.clone();
 
         use_effect(move || {
-            if !auth.loading && !auth.is_author() {
+            if store.auth_loaded == BBLoadingState::Loaded && !store.user.is_author() {
                 main_store::error_alert(dispatch, "Only Authors can create articles");
                 navigator.push(&Routes::Home);
             }

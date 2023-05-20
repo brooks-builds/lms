@@ -1,8 +1,6 @@
 use ycl::{
-    elements::icon::BBIconType,
     foundations::{roles::BBRole, states::BBLoadingState},
     modules::{
-        banner::BBBannerType,
         nav::{
             navbar::BBNavbar,
             navbar_link::{BBNavbarLink, BBNavbarLinkBuilder},
@@ -28,6 +26,8 @@ pub fn component() -> Html {
 
     {
         let store = store.clone();
+        let dispatch = dispatch.clone();
+
         use_effect(move || {
             let returning = || {};
 
@@ -53,14 +53,19 @@ pub fn component() -> Html {
     }
 
     let logout_onclick = {
+        let dispatch = dispatch.clone();
+
         Callback::from(move |_event: ()| {
             if let Err(error) = delete_cookie("auth_token") {
-                main_store::error_alert(dispatch, "Error logging out");
+                main_store::error_alert(dispatch.clone(), "Error logging out");
                 log_error("error deleting token cookie", &error);
             }
 
-            if let Err(error) = gloo::utils::window().location().set_href(&logout_url()) {
-                main_store::error_alert(dispatch, "Error logging out");
+            if let Err(error) = gloo::utils::window()
+                .location()
+                .set_href(store.logout_url().as_str())
+            {
+                main_store::error_alert(dispatch.clone(), "Error logging out");
                 gloo::console::error!("Error navigating to logout uri:", error);
             }
         })
@@ -76,7 +81,7 @@ pub fn component() -> Html {
                 login_route={Routes::Login}
                 show_brand={true}
                 username={store.user.nickname.clone()}
-                logout_url={logout_url()}
+                logout_url={store.logout_url().clone()}
                 {logout_onclick}
                 role={store.user.role}
             />
