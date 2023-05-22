@@ -54,6 +54,7 @@ pub fn component() -> Html {
 
     let logout_onclick = {
         let dispatch = dispatch.clone();
+        let store = store.clone();
 
         Callback::from(move |_event: ()| {
             if let Err(error) = delete_cookie("auth_token") {

@@ -20,24 +20,16 @@ use yewdux::prelude::use_store;
 
 use crate::{
     router::Routes,
-    stores::{
-        alerts::{AlertsStore, AlertsStoreBuilder},
-        auth_store::AuthStore,
-        main_store::{self, MainStore},
-    },
+    stores::main_store::{self, MainStore},
 };
 
 #[function_component(Tags)]
 pub fn component() -> Html {
-    let (_, alert_dispatch) = use_store::<AlertsStore>();
-    let (auth_store, _) = use_store::<AuthStore>();
     let navigator = use_navigator().unwrap();
     let (store, dispatch) = use_store::<MainStore>();
 
-    if !auth_store.loading && !auth_store.is_author() {
-        alert_dispatch.reduce_mut(|alert_state| {
-            *alert_state = AlertsStoreBuilder::new_error("Only Authors can manage tags")
-        });
+    if store.logged_in() && !store.user.is_author() {
+        main_store::error_alert(dispatch.clone(), "Only Authors can manage tags");
         navigator.push(&Routes::Home);
     }
 

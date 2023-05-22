@@ -39,10 +39,6 @@ impl MainStore {
         AttrValue::from(format!("{AUTH0_DOMAIN}/v2/logout?returnTo={AUTH0_LOGOUT_REDIRECT}&client_id={AUTH0_CLIENT_ID}"))
     }
 
-    pub fn login_uri(&self) -> AttrValue {
-        // dont' like this, move to a new module
-        AttrValue::from(format!("{AUTH0_DOMAIN}/authorize?response_type=token&client_id={AUTH0_CLIENT_ID}&redirect_uri={AUTH0_REDIRECT_URI}"))
-    }
 }
 
 pub async fn load_all_data(dispatch: Dispatch<MainStore>) {
