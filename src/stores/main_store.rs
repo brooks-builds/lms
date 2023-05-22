@@ -1,11 +1,10 @@
 use crate::{
     api,
-    logging::{self, log_data, log_error},
+    logging::log_error,
     types::{Alert, Auth0User, Course, Tag, User, Article},
     utils::cookies::{load_cookie, save_cookie},
 };
 use dotenvy_macro::dotenv;
-use eyre::Result;
 use std::collections::HashMap;
 use ycl::foundations::states::BBLoadingState;
 use yew::AttrValue;
@@ -17,7 +16,6 @@ static STATE_COOKIE_MAX_LIFE: u32 = 60 * 5;
 static AUTH0_DOMAIN: &str = dotenv!("AUTH0_DOMAIN");
 static AUTH0_LOGOUT_REDIRECT: &str = dotenv!("LOGOUT_REDIRECT");
 static AUTH0_CLIENT_ID: &str = dotenv!("AUTH0_CLIENT_ID");
-static AUTH_REDIRECT_URI: &str = dotenv!("AUTH_REDIRECT_URI");
 
 #[derive(Store, Default, Clone, PartialEq)]
 pub struct MainStore {

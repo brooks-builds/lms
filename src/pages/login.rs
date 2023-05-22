@@ -19,7 +19,7 @@ use crate::{
 
 #[function_component(Login)]
 pub fn component() -> Html {
-    let (store, dispatch) = use_store::<MainStore>();
+    let (_store, dispatch) = use_store::<MainStore>();
 
     let login_uri = match auth_login_uri() {
         Ok(uri) => uri,
