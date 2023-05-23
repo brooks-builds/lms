@@ -53,7 +53,6 @@ pub fn component() -> Html {
     }
 
     let logout_onclick = {
-        let dispatch = dispatch.clone();
         let store = store.clone();
 
         Callback::from(move |_event: ()| {
@@ -82,7 +81,7 @@ pub fn component() -> Html {
                 login_route={Routes::Login}
                 show_brand={true}
                 username={store.user.nickname.clone()}
-                logout_url={store.logout_url().clone()}
+                logout_url={store.logout_url()}
                 {logout_onclick}
                 role={store.user.role}
             />

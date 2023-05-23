@@ -108,8 +108,7 @@ pub fn component(props: &Props) -> Html {
             if course
                 .articles
                 .iter()
-                .find(|course_article| course_article.id == *article_id)
-                .is_some()
+                .any(|course_article| course_article.id == *article_id)
             {
                 None
             } else {

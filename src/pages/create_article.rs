@@ -38,7 +38,6 @@ pub fn component() -> Html {
 
     {
         let dispatch = dispatch.clone();
-        let store = store.clone();
 
         use_effect(move || {
             if store.auth_loaded == BBLoadingState::Loaded && !store.user.is_author() {

@@ -37,10 +37,10 @@ pub fn component() -> Html {
 
     let tag_values = store
         .tags
-        .iter()
-        .map(|(_id, tag)| {
+        .values()
+        .map(|tag| {
             let mut row = HashMap::new();
-            row.insert("Tag Name".into(), tag.name.clone().into());
+            row.insert("Tag Name".into(), tag.name.clone());
             row
         })
         .collect::<Vec<HashMap<AttrValue, AttrValue>>>();

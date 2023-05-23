@@ -34,7 +34,6 @@ pub fn component() -> Html {
     let (store, dispatch) = use_store::<MainStore>();
 
     {
-        let navigator = navigator.clone();
         let store = store.clone();
         let dispatch = dispatch.clone();
 
