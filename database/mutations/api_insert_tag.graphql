@@ -1,7 +1,6 @@
-mutation CreateTag($name: String!) {
+mutation ApiInsertTag($name: String!) {
   insert_lms_tags_one(object: {name: $name}) {
     id
     name
   }
 }
-

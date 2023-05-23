@@ -2,24 +2,24 @@ use ycl::modules::banner::BBBanner;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
-use crate::stores::alerts::AlertsStore;
+use crate::stores::main_store::{self, MainStore};
 
 #[derive(Properties, PartialEq)]
 pub struct Props {}
 
 #[function_component(Alert)]
 pub fn component(_props: &Props) -> Html {
-    let (alert_store, alert_dispatch) = use_store::<AlertsStore>();
+    let (store, dispatch) = use_store::<MainStore>();
     let onclick = Callback::from(move |_| {
-        alert_dispatch.reduce_mut(|store| *store = AlertsStore::default());
+        main_store::reset_alert(dispatch.clone());
     });
 
-    if let Some(message) = &alert_store.message {
+    if let Some(message) = store.alert.message.clone() {
         html! {
             <BBBanner
-                text={message.clone()}
-                banner_type={alert_store.alert_type}
-                icon={alert_store.icon.unwrap()}
+                text={message}
+                banner_type={store.alert.alert_type}
+                icon={store.alert.icon}
                 close_onclick={onclick}
             />
         }

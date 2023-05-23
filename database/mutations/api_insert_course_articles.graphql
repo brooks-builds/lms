@@ -1,0 +1,19 @@
+mutation ApiInsertCourseArticles($course_id: Int!, $course_articles: [lms_course_articles_insert_input!]!) {
+  delete_lms_course_articles(where: {course_id: {_eq: $course_id}}) {
+    affected_rows
+  }
+  insert_lms_course_articles(objects: $course_articles) {
+    returning {
+      course_id
+      article {
+        created_at
+        id
+        title
+        content {
+          content
+          id
+        }
+      }
+    }
+  }
+}

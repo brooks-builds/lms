@@ -15,163 +15,50 @@ use ycl::{
     },
 };
 use yew::{function_component, html, use_state, AttrValue, Callback, Html};
-use yew_hooks::use_effect_once;
 use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
 use crate::{
-    api,
-    logging::log_error,
     router::Routes,
-    stores::{
-        alerts::{AlertsStore, AlertsStoreBuilder},
-        auth_store::AuthStore,
-        courses_store::CourseStore,
-    },
+    stores::main_store::{self, MainStore},
 };
 
 #[function_component(Tags)]
 pub fn component() -> Html {
-    let (_, alert_dispatch) = use_store::<AlertsStore>();
-    let (auth_store, _) = use_store::<AuthStore>();
     let navigator = use_navigator().unwrap();
+    let (store, dispatch) = use_store::<MainStore>();
 
-    if !auth_store.loading && !auth_store.is_author() {
-        alert_dispatch.reduce_mut(|alert_state| {
-            *alert_state = AlertsStoreBuilder::new_error("Only Authors can manage tags")
-        });
+    if store.logged_in() && !store.user.is_author() {
+        main_store::error_alert(dispatch.clone(), "Only Authors can manage tags");
         navigator.push(&Routes::Home);
-    }
-
-    let (courses_store, courses_dispatch) = use_store::<CourseStore>();
-
-    {
-        let alert_dispatch = alert_dispatch.clone();
-        let courses_dispatch = courses_dispatch.clone();
-        use_effect_once(move || {
-            let courses_dispatch = courses_dispatch.clone();
-
-            wasm_bindgen_futures::spawn_local(async move {
-                match api::courses::get_tags().await {
-                    Ok(store_tags) => courses_dispatch.reduce_mut(|course_store| {
-                        course_store.tags = store_tags;
-                    }),
-                    Err(error) => {
-                        log_error("Error getting tags", &error);
-                        alert_dispatch.reduce_mut(|alert_store| {
-                            *alert_store = AlertsStoreBuilder::new()
-                                .icon(ycl::elements::icon::BBIconType::Warning)
-                                .message("Error getting tags")
-                                .alert_type(ycl::modules::banner::BBBannerType::Error)
-                                .build()
-                                .unwrap();
-                        })
-                    }
-                }
-            });
-
-            || ()
-        });
     }
 
     let tag_titles = vec!["Tag Name".into()];
 
-    let tag_values = courses_store
+    let tag_values = store
         .tags
-        .iter()
-        .map(|store_tag| {
+        .values()
+        .map(|tag| {
             let mut row = HashMap::new();
-            row.insert("Tag Name".into(), store_tag.name.clone().into());
+            row.insert("Tag Name".into(), tag.name.clone());
             row
         })
         .collect::<Vec<HashMap<AttrValue, AttrValue>>>();
 
     let new_tag_state = use_state(|| AttrValue::from(""));
 
-    let new_tag_onsubmit = {
-        let new_tag_state = new_tag_state.clone();
-        let alert_dispatch = alert_dispatch;
-        let courses_dispatch = courses_dispatch;
-        let auth_store = auth_store;
+    let new_tag_onsubmit = Callback::from(move |event: FormData| {
+        let dispatch = dispatch.clone();
+        let Some(tag_name) = event.get("tag_name").as_string() else {
+                main_store::set_alert(dispatch, "Missing tag name".into());
 
-        Callback::from(move |event: FormData| {
-            let tag_name = if let Some(name) = event.get("tag_name").as_string() {
-                if name.is_empty() {
-                    alert_dispatch.clone().reduce_mut(|alert_store| {
-                        *alert_store = AlertsStoreBuilder::new()
-                            .icon(ycl::elements::icon::BBIconType::Warning)
-                            .message("Cannot create a tag without a name")
-                            .alert_type(ycl::modules::banner::BBBannerType::Error)
-                            .build()
-                            .unwrap();
-                    });
-                    return;
-                }
-                name
-            } else {
-                alert_dispatch.clone().reduce_mut(|alert_store| {
-                    *alert_store = AlertsStoreBuilder::new()
-                        .icon(ycl::elements::icon::BBIconType::Warning)
-                        .message("Error creating new tag")
-                        .alert_type(ycl::modules::banner::BBBannerType::Error)
-                        .build()
-                        .unwrap();
-                });
-                return;
-            };
-            let new_tag_state = new_tag_state.clone();
-            let alert_dispatch = alert_dispatch.clone();
-            let courses_dispatch = courses_dispatch.clone();
-            let token = if let Some(token) = &auth_store.access_token {
-                token.clone()
-            } else {
-                alert_dispatch.reduce_mut(|alert_state| {
-                    *alert_state =
-                        AlertsStoreBuilder::new_error("Must be logged in to create a tag");
-                });
                 return;
             };
 
-            wasm_bindgen_futures::spawn_local(async move {
-                match api::tags::insert_tag(tag_name, &token).await {
-                    Ok(tag) => courses_dispatch.reduce_mut(move |courses_store| {
-                        let tag = if let Some(tag) = tag.insert_lms_tags_one {
-                            tag
-                        } else {
-                            alert_dispatch.reduce_mut(move |alert_store| {
-                                *alert_store = AlertsStoreBuilder::new()
-                                    .icon(ycl::elements::icon::BBIconType::Warning)
-                                    .message("Error creating new tag")
-                                    .alert_type(ycl::modules::banner::BBBannerType::Error)
-                                    .build()
-                                    .unwrap();
-                            });
-                            return;
-                        };
-
-                        courses_store
-                            .tags
-                            .push(crate::stores::courses_store::StoreTag {
-                                id: tag.id,
-                                name: tag.name,
-                            })
-                    }),
-                    Err(error) => {
-                        log_error("error creating new tag", &error);
-                        alert_dispatch.reduce_mut(move |alert_store| {
-                            *alert_store = AlertsStoreBuilder::new()
-                                .icon(ycl::elements::icon::BBIconType::Warning)
-                                .message("Error creating new tag")
-                                .alert_type(ycl::modules::banner::BBBannerType::Error)
-                                .build()
-                                .unwrap();
-                        });
-                    }
-                }
-                new_tag_state.set(AttrValue::from(""));
-            });
-        })
-    };
+        wasm_bindgen_futures::spawn_local(async move {
+            main_store::insert_tag(dispatch, tag_name.into()).await;
+        });
+    });
 
     let new_tag_onchange = {
         let new_tag_state = new_tag_state.clone();

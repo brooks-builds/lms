@@ -1,8 +1,0 @@
-query GetLmsArticleTitles {
-  lms_articles {
-    created_at
-    id
-    title
-    preview
-  }
-}

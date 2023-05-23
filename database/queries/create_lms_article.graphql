@@ -1,5 +1,0 @@
-mutation InsertLmsArticle($content: String!, $title: String!) {
-  insert_lms_articles_one(object: {title: $title, content: {data: {content: $content}}}) {
-    id
-  }
-}

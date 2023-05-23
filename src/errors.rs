@@ -4,26 +4,12 @@ use thiserror::Error;
 pub enum LmsError {
     #[error("console.log exists")]
     LeftInLog,
-    #[error("could not find course")]
-    CourseNotFound,
     #[error("error saving cookie")]
     SavingCookie,
     #[error("error getting cookie: {0}")]
     GettingCookie(String),
     #[error("Error sending request to graphQL ({0}): {1}")]
     SendingToGraphqlApi(String, String),
-    #[error("Error building alert store: {0}")]
-    BuildingAlertStore(String),
-    #[error("Error handling auth redirect: {0}")]
-    HandleAuthRedirectError(String),
-    #[error("There was an error, please refresh your browser and try again")]
-    AuthStateDoesNotMatch,
-    #[error("Auth0 state was not found in the cookie")]
-    AuthStateMissing,
-    #[error("Error getting userinfo from Auth0: {0}")]
-    GettingUserInfo(String),
     #[error("Error getting the url")]
     CannotGetURL,
-    #[error("Cannot create course, missing {0}")]
-    MissingCreateCourseData(String),
 }

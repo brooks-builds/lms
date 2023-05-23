@@ -1,0 +1,10 @@
+mutation ApiInsertArticle($title: String!, $content: String!) {
+  insert_lms_articles_one(object: {content: {data: {content: $content}}, title: $title}) {
+    content {
+      content
+    }
+    created_at
+    id
+    title
+  }
+}

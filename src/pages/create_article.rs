@@ -12,25 +12,21 @@ use ycl::{
     foundations::{
         align_text::AlignText,
         container::{BBContainer, BBContainerMargin},
+        states::BBLoadingState,
     },
-    modules::banner::BBBannerType,
 };
 use yew::prelude::*;
 use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
 use crate::{
-    api,
-    logging::log_error,
     router::Routes,
-    stores::{
-        alerts::{AlertsStore, AlertsStoreBuilder},
-        auth_store::AuthStore,
-    },
+    stores::main_store::{self, MainStore},
 };
 
 #[function_component(CreateArticle)]
 pub fn component() -> Html {
+    let (store, dispatch) = use_store::<MainStore>();
     let title = use_state(|| AttrValue::from(""));
     let title_onchange = {
         let title = title.clone();
@@ -38,21 +34,14 @@ pub fn component() -> Html {
             title.set(new_title);
         })
     };
-
-    let (auth, _) = use_store::<AuthStore>();
-    let (_, alert_dispatch) = use_store::<AlertsStore>();
-
     let navigator = use_navigator().unwrap();
 
     {
-        let auth = auth.clone();
-        let alert_dispatch = alert_dispatch.clone();
+        let dispatch = dispatch.clone();
 
         use_effect(move || {
-            if !auth.loading && !auth.is_author() {
-                alert_dispatch.reduce_mut(|alert_state| {
-                    *alert_state = AlertsStoreBuilder::new_error("Only Authors can create Articles")
-                });
+            if store.auth_loaded == BBLoadingState::Loaded && !store.user.is_author() {
+                main_store::error_alert(dispatch, "Only Authors can create articles");
                 navigator.push(&Routes::Home);
             }
 
@@ -61,52 +50,31 @@ pub fn component() -> Html {
     }
 
     let onsubmit = {
-        let title_state = title.clone();
-
         Callback::from(move |form: FormData| {
-            let title = form.get("title").as_string().unwrap();
+            let Some(title )= form.get("title").as_string() else {
+                main_store::error_alert(dispatch.clone(), "missing title");
+                return;
+            };
             if title.is_empty() {
-                alert_dispatch.reduce_mut(|alert_state| {
-                    *alert_state = AlertsStoreBuilder::new_error("Articles must have a title");
-                });
+                main_store::error_alert(dispatch.clone(), "Title cannot be empty");
                 return;
             }
 
-            let content = form.get("content").as_string().unwrap();
+            let Some(content) = form.get("content").as_string() else {
+                main_store::error_alert(dispatch.clone(), "Missing Content");
+                return
+            };
             if content.is_empty() {
-                alert_dispatch.reduce_mut(|alert_state| {
-                    *alert_state = AlertsStoreBuilder::new_error("Articles must have content")
-                });
+                main_store::error_alert(dispatch.clone(), "Content cannot be empty");
                 return;
             }
 
-            let token = auth.access_token.clone().unwrap_or_default();
-            let alert_dispatch = alert_dispatch.clone();
-            let title_state = title_state.clone();
-
-            wasm_bindgen_futures::spawn_local(async move {
-                match api::articles::create_article(title, content, token).await {
-                    Ok(_article) => {
-                        alert_dispatch.reduce_mut(|alert_state| {
-                            *alert_state = AlertsStoreBuilder::new()
-                                .message("Created Article")
-                                .icon(ycl::elements::icon::BBIconType::Star)
-                                .alert_type(BBBannerType::Success)
-                                .build()
-                                .unwrap()
-                        });
-                        title_state.set(AttrValue::default());
-                    }
-                    Err(error) => {
-                        log_error("error creating article", &error);
-                        alert_dispatch.reduce_mut(|alert_state| {
-                            *alert_state = AlertsStoreBuilder::new_error(
-                                "There was an error trying to create the article",
-                            )
-                        });
-                    }
-                }
-            });
+            {
+                let dispatch = dispatch.clone();
+                wasm_bindgen_futures::spawn_local(async move {
+                    main_store::insert_article(dispatch, title.into(), content.into()).await
+                });
+            }
         })
     };
 

@@ -6,85 +6,42 @@ pub type smallint = u8;
 #[allow(non_camel_case_types)]
 pub type timestamp = String;
 
-#[allow(non_camel_case_types)]
-pub type json = Vec<i64>;
-
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "database/schema.json",
-    query_path = "database/queries.graphql",
+    query_path = "database/queries/get_all_courses.graphql",
     response_derives = "Debug"
 )]
-pub struct ListLmsCourses;
+pub struct ApiGetAllData;
 
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "database/schema.json",
-    query_path = "database/queries.graphql",
+    query_path = "database/mutations/api_insert_tag.graphql",
     response_derives = "Debug"
 )]
-pub struct CourseById;
+pub struct ApiInsertTag;
 
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "database/schema.json",
-    query_path = "database/queries/create_lms_account.graphql",
-    response_derives = "Debug, Clone"
+    query_path = "database/mutations/api_insert_course.graphql",
+    response_derives = "Debug"
 )]
-pub struct CreateLmsAccount;
+pub struct ApiInsertCourse;
 
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "database/schema.json",
-    query_path = "database/queries/get_tags.graphql",
-    response_derives = "Debug, Clone"
+    query_path = "database/mutations/api_insert_article.graphql",
+    response_derives = "Debug"
 )]
-pub struct LmsTags;
+pub struct ApiInsertArticle;
 
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "database/schema.json",
-    query_path = "database/queries/create_tag.graphql",
-    response_derives = "Debug, Clone"
+    query_path = "database/mutations/api_insert_course_articles.graphql",
+    response_derives = "Debug"
 )]
-pub struct CreateTag;
-
-#[derive(GraphQLQuery)]
-#[graphql(
-    schema_path = "database/schema.json",
-    query_path = "database/queries/create_course.graphql",
-    response_derives = "Debug, Clone"
-)]
-pub struct CreateLmsCourse;
-
-#[derive(GraphQLQuery)]
-#[graphql(
-    schema_path = "database/schema.json",
-    query_path = "database/queries/create_lms_article.graphql",
-    response_derives = "Debug, Clone"
-)]
-pub struct InsertLmsArticle;
-
-#[derive(GraphQLQuery)]
-#[graphql(
-    schema_path = "database/schema.json",
-    query_path = "database/queries/get_article_titles.graphql",
-    response_derives = "Debug, Clone"
-)]
-pub struct GetLmsArticleTitles;
-
-#[derive(GraphQLQuery)]
-#[graphql(
-    schema_path = "database/schema.json",
-    query_path = "database/queries/set_course_articles.graphql",
-    response_derives = "Debug, Clone"
-)]
-pub struct SetLmsCourseArticles;
-
-#[derive(GraphQLQuery)]
-#[graphql(
-    schema_path = "database/schema.json",
-    query_path = "database/queries/get_article_titles_by_ids.graphql",
-    response_derives = "Debug, Clone"
-)]
-pub struct ApiGetArticleTitlesByIds;
+pub struct ApiInsertCourseArticles;
