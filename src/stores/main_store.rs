@@ -1,7 +1,7 @@
 use crate::{
     api,
     logging::log_error,
-    types::{Alert, Auth0User, Course, Tag, User, Article},
+    types::{Alert, Article, Auth0User, Course, Tag, User},
     utils::cookies::{load_cookie, save_cookie},
 };
 use dotenvy_macro::dotenv;
@@ -34,9 +34,10 @@ impl MainStore {
     }
 
     pub fn logout_url(&self) -> AttrValue {
-        AttrValue::from(format!("{AUTH0_DOMAIN}/v2/logout?returnTo={AUTH0_LOGOUT_REDIRECT}&client_id={AUTH0_CLIENT_ID}"))
+        AttrValue::from(format!(
+            "{AUTH0_DOMAIN}/v2/logout?returnTo={AUTH0_LOGOUT_REDIRECT}&client_id={AUTH0_CLIENT_ID}"
+        ))
     }
-
 }
 
 pub async fn load_all_data(dispatch: Dispatch<MainStore>) {
@@ -84,8 +85,7 @@ pub async fn login_from_redirect(dispatch: Dispatch<MainStore>) {
                     url::form_urlencoded::parse(fragment.as_bytes()).collect::<HashMap<_, _>>();
                 let Some(access_token )= url_encoded
                     .get("access_token")
-                    .map(ToString::to_string)
-                     else { 
+                    .map(ToString::to_string) else {
                         gloo::console::error!("missing access token in redirect uri");
                         return;
                     };
@@ -193,46 +193,58 @@ pub fn error_alert(dispatch: Dispatch<MainStore>, message: impl Into<AttrValue>)
     dispatch.reduce_mut(|store| store.alert.error(message.into()));
 }
 
-pub async fn insert_course(dispatch: Dispatch<MainStore>,
+pub async fn insert_course(
+    dispatch: Dispatch<MainStore>,
     long_description: AttrValue,
     title: AttrValue,
     tag_id: i64,
-    short_description: AttrValue,) {
-    dispatch.clone().reduce_mut_future(move |store| {
-        Box::pin(async move {
-            let Some(token) = store.user.token.clone() else {return};
-            match api::insert_course(token, long_description, title, tag_id, short_description).await {
-                Ok(course) => {
-                    store.courses.insert(course.id, course);
-                    store.alert.message = Some("course created".into());
-                },
-                Err(error) => {
-                    store.alert.message = Some("There was an error creating the course".into());
-                    gloo::console::error!("Error creating course:", error.to_string());
-                },
-            }
+    short_description: AttrValue,
+) {
+    dispatch
+        .clone()
+        .reduce_mut_future(move |store| {
+            Box::pin(async move {
+                let Some(token) = store.user.token.clone() else {return};
+                match api::insert_course(token, long_description, title, tag_id, short_description)
+                    .await
+                {
+                    Ok(course) => {
+                        store.courses.insert(course.id, course);
+                        store.alert.message = Some("course created".into());
+                    }
+                    Err(error) => {
+                        store.alert.message = Some("There was an error creating the course".into());
+                        gloo::console::error!("Error creating course:", error.to_string());
+                    }
+                }
+            })
         })
-    }).await
+        .await
 }
 
 pub async fn insert_article(dispatch: Dispatch<MainStore>, title: AttrValue, content: AttrValue) {
-    dispatch.clone().reduce_mut_future(|store| Box::pin(async move {
-        let Some(token) = store.user.token.clone() else {
+    dispatch
+        .clone()
+        .reduce_mut_future(|store| {
+            Box::pin(async move {
+                let Some(token) = store.user.token.clone() else {
             store.alert.error("Error: missing token, please log in and try again");
             return
         };
 
-        match api::insert_article(token, title, content).await {
-            Ok(article) => {
-                store.articles.insert(article.id, article);
-                store.alert.success("Article created");
-            }
-            Err(error) => {
-                store.alert.error("Error Creating article");
-                gloo::console::error!("Error creating article:", error.to_string());
-            },
-        }
-    })).await
+                match api::insert_article(token, title, content).await {
+                    Ok(article) => {
+                        store.articles.insert(article.id, article);
+                        store.alert.success("Article created");
+                    }
+                    Err(error) => {
+                        store.alert.error("Error Creating article");
+                        gloo::console::error!("Error creating article:", error.to_string());
+                    }
+                }
+            })
+        })
+        .await
 }
 
 pub fn add_article_to_course(dispatch: Dispatch<MainStore>, article: Article, course_id: i64) {
@@ -262,29 +274,35 @@ pub fn remove_article_from_course(dispatch: Dispatch<MainStore>, article_id: i64
 }
 
 pub async fn save_course_articles(dispatch: Dispatch<MainStore>, course_id: i64) {
-    dispatch.reduce_mut_future(|store| Box::pin(async move {
-        let Some(course) = store.courses.get_mut(&course_id) else {
+    dispatch
+        .reduce_mut_future(|store| {
+            Box::pin(async move {
+                let Some(course) = store.courses.get_mut(&course_id) else {
             store.alert.error("Could not find course to save articles");
             return;
         };
 
-        if !course.articles_dirty {
-            store.alert.error("Articles not changed, not saving");
-            return;
-        }
+                if !course.articles_dirty {
+                    store.alert.error("Articles not changed, not saving");
+                    return;
+                }
 
-        let Some(token) = store.user.token.clone() else {
+                let Some(token) = store.user.token.clone() else {
             store.alert.error("Must be logged in to save course articles");
             return;
         };
 
-        if let Err(error) = api::set_course_articles(token, course_id, &course.articles).await {
-            store.alert.error("Error saving course articles");
-            gloo::console::error!("Error saving course articles:", error.to_string());
-            return;
-        }
+                if let Err(error) =
+                    api::set_course_articles(token, course_id, &course.articles).await
+                {
+                    store.alert.error("Error saving course articles");
+                    gloo::console::error!("Error saving course articles:", error.to_string());
+                    return;
+                }
 
-        store.alert.success("Course articles saved");
-        course.articles_dirty = false;
-    })).await
+                store.alert.success("Course articles saved");
+                course.articles_dirty = false;
+            })
+        })
+        .await
 }
