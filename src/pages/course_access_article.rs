@@ -10,9 +10,10 @@ use ycl::{
     modules::course_content::BBCourseContent,
 };
 use yew::prelude::*;
+use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
-use crate::{components::course_nav::CourseNav, stores::main_store::MainStore};
+use crate::{components::course_nav::CourseNav, router::Routes, stores::main_store::MainStore};
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
@@ -23,9 +24,21 @@ pub struct Props {
 #[function_component(CourseAccessArticle)]
 pub fn component(props: &Props) -> Html {
     let (store, _dispatch) = use_store::<MainStore>();
+    let navigation = use_navigator().unwrap();
 
     if let Some(course) = store.courses.get(&props.course_id) {
         let article_id = props.article_id;
+        let course_id = course.id;
+        let onclick_purchase = {
+            let store = store.clone();
+            Callback::from(move |_: ()| {
+                if store.logged_in() {
+                    navigation.push(&Routes::CoursePurchase { course_id });
+                } else {
+                    navigation.push(&Routes::Login);
+                }
+            })
+        };
         if let Some(article) = course
             .articles
             .iter()
@@ -43,7 +56,9 @@ pub fn component(props: &Props) -> Html {
                         <BBCol>
                             <BBCourseContent
                                 have_access={false}
+                                logged_in={store.logged_in()}
                                 course={article.content.clone().unwrap_or_default()}
+                                {onclick_purchase}
                             />
                         </BBCol>
                     </BBRow>
