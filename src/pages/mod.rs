@@ -3,6 +3,7 @@ pub mod course_access;
 pub mod course_access_article;
 pub mod course_articles;
 pub mod course_details;
+pub mod course_purchase;
 pub mod courses;
 pub mod create_account;
 pub mod create_article;
