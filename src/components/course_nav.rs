@@ -3,7 +3,7 @@ use ycl::modules::nav::course_nav::{BBCourseNav, BBCourseNavArticle, BBCourseNav
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
-use crate::{logging::log_data, router::Routes, stores::main_store::MainStore};
+use crate::{router::Routes, stores::main_store::MainStore};
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
@@ -25,7 +25,6 @@ pub fn component(props: &Props) -> Html {
                     .title(article.title.clone())
                     .preview(is_preview);
 
-                log_data("preview", &article.preview);
                 article_builder = if is_preview {
                     article_builder.to(Routes::CourseAccessArticle {
                         course_id: props.course_id,
