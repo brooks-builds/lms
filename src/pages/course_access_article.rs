@@ -39,6 +39,11 @@ pub fn component(props: &Props) -> Html {
                 }
             })
         };
+        let preview_articles = store
+            .preview_articles_by_course
+            .get(&course.id)
+            .cloned()
+            .unwrap_or_default();
         if let Some(article) = course
             .articles
             .iter()
@@ -51,7 +56,7 @@ pub fn component(props: &Props) -> Html {
                     </BBTitle>
                     <BBRow>
                         <BBCol width={BBColWidth::Three}>
-                            <CourseNav course_id={props.course_id} />
+                            <CourseNav course_id={props.course_id} {preview_articles} />
                         </BBCol>
                         <BBCol>
                             <BBCourseContent

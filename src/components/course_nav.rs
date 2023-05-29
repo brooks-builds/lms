@@ -8,6 +8,7 @@ use crate::{router::Routes, stores::main_store::MainStore};
 #[derive(Properties, PartialEq)]
 pub struct Props {
     pub course_id: i64,
+    pub preview_articles: Vec<i64>,
 }
 
 #[function_component(CourseNav)]
@@ -19,14 +20,21 @@ pub fn component(props: &Props) -> Html {
             .articles
             .iter()
             .map(|article| {
-                BBCourseNavArticleBuilder::new()
+                let is_preview = props.preview_articles.contains(&article.id);
+                let mut article_builder = BBCourseNavArticleBuilder::new()
                     .title(article.title.clone())
-                    .to(Routes::CourseAccessArticle {
+                    .preview(is_preview);
+
+                article_builder = if is_preview {
+                    article_builder.to(Routes::CourseAccessArticle {
                         course_id: props.course_id,
                         article_id: article.id,
                     })
-                    .build()
-                    .unwrap()
+                } else {
+                    article_builder
+                };
+
+                article_builder.build().unwrap()
             })
             .collect::<Vec<BBCourseNavArticle<Routes>>>();
 

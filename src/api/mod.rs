@@ -2,6 +2,8 @@ pub mod articles;
 pub mod auth;
 pub mod tags;
 
+use std::collections::HashMap;
+
 use dotenvy_macro::dotenv;
 use eyre::Result;
 use gloo::net::http::Request;
@@ -88,10 +90,22 @@ pub async fn get_all_data(token: Option<AttrValue>, role: BBRole) -> eyre::Resul
 
     let all_data = request.send::<api_get_all_data::ResponseData>().await?;
 
+    let mut preview_articles_by_course: HashMap<i64, Vec<i64>> = HashMap::new();
+    for course in all_data.lms_courses.iter() {
+        for course_article in course.course_articles.iter() {
+            if course_article.preview {
+                let Some(article) = &course_article.article else { continue };
+                let articles = preview_articles_by_course.entry(course.id).or_default();
+                articles.push(article.id)
+            }
+        }
+    }
+
     let all_data = ApiAllData {
         courses: all_data.lms_courses.into_iter().map(Into::into).collect(),
         tags: all_data.lms_tags.into_iter().map(Into::into).collect(),
         articles: all_data.lms_articles.into_iter().map(Into::into).collect(),
+        preview_articles_by_course,
     };
 
     Ok(all_data)

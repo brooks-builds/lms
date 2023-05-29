@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::database_queries::{
     api_get_all_data, api_insert_article, api_insert_course, api_insert_tag,
 };
@@ -98,6 +100,7 @@ pub struct Article {
     pub title: AttrValue,
     pub id: i64,
     pub content: Option<AttrValue>,
+    pub preview: Option<bool>,
 }
 
 impl From<api_get_all_data::ApiGetAllDataLmsCoursesCourseArticlesArticle> for Article {
@@ -108,6 +111,7 @@ impl From<api_get_all_data::ApiGetAllDataLmsCoursesCourseArticlesArticle> for Ar
             content: api_article
                 .content
                 .map(|api_content| api_content.content.into()),
+            preview: None,
         }
     }
 }
@@ -120,6 +124,7 @@ impl From<api_insert_article::ApiInsertArticleInsertLmsArticlesOne> for Article 
             content: api_article
                 .content
                 .map(|api_content| api_content.content.into()),
+            preview: None,
         }
     }
 }
@@ -130,6 +135,7 @@ impl From<api_get_all_data::ApiGetAllDataLmsArticles> for Article {
             title: value.title.into(),
             id: value.id,
             content: None,
+            preview: None,
         }
     }
 }
@@ -195,4 +201,5 @@ pub struct ApiAllData {
     pub courses: Vec<Course>,
     pub tags: Vec<Tag>,
     pub articles: Vec<Article>,
+    pub preview_articles_by_course: HashMap<i64, Vec<i64>>,
 }

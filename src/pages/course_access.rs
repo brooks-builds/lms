@@ -33,12 +33,18 @@ pub fn component(props: &Props) -> Html {
         };
     };
 
+    let preview_articles = store
+        .preview_articles_by_course
+        .get(&course.id)
+        .cloned()
+        .unwrap_or_default();
+
     html! {
         <BBContainer margin={BBContainerMargin::Normal}>
                     <BBTitle align={AlignText::Center} level={BBTitleLevel::One}>{course.title.clone()}</BBTitle>
             <BBRow>
                 <BBCol width={BBColWidth::Three}>
-                    <CourseNav {course_id} />
+                    <CourseNav {course_id} {preview_articles} />
                 </BBCol>
                 <BBCol>
                     <BBTitle
