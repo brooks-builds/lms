@@ -26,6 +26,7 @@ pub struct MainStore {
     pub auth_loaded: BBLoadingState,
     pub tags: HashMap<i64, Tag>,
     pub articles: HashMap<i64, Article>,
+    pub preview_articles_by_course: HashMap<i64, Vec<i64>>,
 }
 
 impl MainStore {
@@ -60,7 +61,8 @@ pub async fn load_all_data(dispatch: Dispatch<MainStore>) {
                             store.articles.insert(article.id, article);
                         }
 
-                        store.courses_loaded = BBLoadingState::Loaded
+                        store.courses_loaded = BBLoadingState::Loaded;
+                        store.preview_articles_by_course = data.preview_articles_by_course;
                     }
                     Err(error) => {
                         gloo::console::error!("Error getting courses:", error.to_string());

@@ -18,6 +18,7 @@ query ApiGetAllData {
           content
         }
       }
+      preview
     }
   }
   lms_tags {
