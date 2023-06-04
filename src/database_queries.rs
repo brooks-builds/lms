@@ -1,3 +1,4 @@
+#![allow(non_camel_case_types)]
 use graphql_client::GraphQLQuery;
 
 #[allow(non_camel_case_types)]

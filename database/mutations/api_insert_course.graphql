@@ -1,5 +1,5 @@
-mutation ApiInsertCourse($long_description: String!, $title: String!, $tag_id: Int!, $short_description: String!) {
-  insert_lms_courses_one(object: {long_description: $long_description, title: $title, tag_id: $tag_id, short_description: $short_description}) {
+mutation ApiInsertCourse($long_description: String!, $title: String!, $tag_id: Int!, $short_description: String!, $live: Boolean!) {
+  insert_lms_courses_one(object: {long_description: $long_description, title: $title, tag_id: $tag_id, short_description: $short_description, live: $live}) {
     id
     long_description
     short_description
@@ -8,5 +8,7 @@ mutation ApiInsertCourse($long_description: String!, $title: String!, $tag_id: I
       id
       name
     }
+    live
+    launches_on
   }
 }

@@ -201,14 +201,22 @@ pub async fn insert_course(
     title: AttrValue,
     tag_id: i64,
     short_description: AttrValue,
+    live: bool,
 ) {
     dispatch
         .clone()
         .reduce_mut_future(move |store| {
             Box::pin(async move {
                 let Some(token) = store.user.token.clone() else {return};
-                match api::insert_course(token, long_description, title, tag_id, short_description)
-                    .await
+                match api::insert_course(
+                    token,
+                    long_description,
+                    title,
+                    tag_id,
+                    short_description,
+                    live,
+                )
+                .await
                 {
                     Ok(course) => {
                         store.courses.insert(course.id, course);

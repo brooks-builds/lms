@@ -18,6 +18,8 @@ pub struct Course {
     pub trailer_uri: Option<AttrValue>,
     pub articles: Vec<Article>,
     pub articles_dirty: bool,
+    pub live: bool,
+    pub launches_on: Option<AttrValue>,
 }
 
 impl From<api_get_all_data::ApiGetAllDataLmsCourses> for Course {
@@ -36,6 +38,8 @@ impl From<api_get_all_data::ApiGetAllDataLmsCourses> for Course {
                 .filter_map(|api_course_articles| api_course_articles.article.map(Into::into))
                 .collect(),
             articles_dirty: false,
+            live: api_course.live,
+            launches_on: api_course.launches_on.map(Into::into),
         }
     }
 }
@@ -55,6 +59,8 @@ impl From<api_insert_course::ApiInsertCourseInsertLmsCoursesOne> for Course {
             trailer_uri: None,
             articles: vec![],
             articles_dirty: false,
+            live: value.live,
+            launches_on: value.launches_on.map(Into::into),
         }
     }
 }

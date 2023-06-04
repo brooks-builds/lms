@@ -5,6 +5,8 @@ query ApiGetAllData {
       name
       id
     }
+    live
+    launches_on
     long_description
     price
     short_description
