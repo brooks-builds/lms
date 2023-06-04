@@ -2,10 +2,7 @@ use std::rc::Rc;
 
 use crate::{router::Routes, stores::main_store::MainStore};
 use ycl::{
-    elements::{
-        text::BBText,
-        title::{BBTitle, BBTitleLevel},
-    },
+    elements::title::BBTitleLevel,
     foundations::container::{BBContainer, BBContainerMargin},
     modules::{
         card_list::{BBCardData, BBCardDataBuilder, BBCardList},
@@ -19,6 +16,7 @@ use yewdux::prelude::use_store;
 pub fn component() -> Html {
     let (store, _dispatch) = use_store::<MainStore>();
     let courses = create_card_data_list(store.clone(), false);
+    let live_courses = create_card_data_list(store, true);
 
     html! {
         <BBContainer>
@@ -26,18 +24,20 @@ pub fn component() -> Html {
                 text="All the courses available"
                 title="Course Library"
             />
-            <BBTitle level={BBTitleLevel::Two}>{"Live Courses"}</BBTitle>
             <BBContainer margin={BBContainerMargin::Normal}>
-                <BBText>
-                    {"Join Brooks and up to 10 other developers in taking a course. When purchasing one of the live courses you'll get access to the course materials, as well as customized lessons throughout the course period. You'll also get some one-on-one time with Brooks as you learn."}
-                </BBText>
-            </BBContainer>
+            <BBCardList<Routes>
+                card_data={live_courses}
+                card_title_level={BBTitleLevel::Three}
+                title_level={BBTitleLevel::Two}
+                title="Live Courses"
+            />
             <BBCardList<Routes>
                 card_data={courses}
                 card_title_level={BBTitleLevel::Three}
                 title_level={BBTitleLevel::Two}
                 title="Featured Courses"
             />
+            </BBContainer>
         </BBContainer>
     }
 }
