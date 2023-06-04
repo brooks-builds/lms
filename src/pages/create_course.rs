@@ -4,6 +4,7 @@ use web_sys::FormData;
 use ycl::{
     elements::{
         button::{BBButton, BBButtonStyle, BBButtonType},
+        checkbox::BBCheckbox,
         form::BBForm,
         input::BBInput,
         text_area::BBTextArea,
@@ -59,6 +60,8 @@ pub fn component() -> Html {
         let Some(title)= event.get("title").as_string() else {return};
         let Some(long_description)= event.get("long_description").as_string() else {return};
         let Some(short_description)= event.get("short_description").as_string() else {return};
+        let live_course = event.get("live_course").as_string().is_some();
+
         let dispatch = dispatch.clone();
 
         wasm_bindgen_futures::spawn_local(async move {
@@ -68,6 +71,7 @@ pub fn component() -> Html {
                 title.into(),
                 tag_id,
                 short_description.into(),
+                live_course,
             )
             .await;
         });
@@ -119,6 +123,14 @@ pub fn component() -> Html {
                     value={short_description.deref().clone()}
                     onchange={short_description_onchange}
                 />
+                <BBContainer>
+                    <BBCheckbox
+                        id="live_course"
+                        value="live_course"
+                        label="live course"
+                        name="live_course"
+                    />
+                </BBContainer>
                 <BBButton button_type={BBButtonType::Submit} button_style={BBButtonStyle::PrimaryLight}>{"Create Course"}</BBButton>
             </BBForm>
         </BBContainer>

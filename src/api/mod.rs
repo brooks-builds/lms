@@ -132,12 +132,14 @@ pub async fn insert_course(
     title: AttrValue,
     tag_id: i64,
     short_description: AttrValue,
+    live: bool,
 ) -> Result<Course> {
     let variables = api_insert_course::Variables {
         long_description: long_description.to_string(),
         title: title.to_string(),
         tag_id,
         short_description: short_description.to_string(),
+        live,
     };
     let mutation = ApiInsertCourse::build_query(variables);
     let result = SendToGraphql::new()
