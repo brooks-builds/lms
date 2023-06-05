@@ -1,6 +1,11 @@
+use std::rc::Rc;
+
 use crate::{router::Routes, stores::main_store::MainStore};
 use ycl::{
-    elements::{image::BBImage, internal_link::BBInternalLink, youtube_video::BBYouTubeVideo},
+    elements::{
+        external_link::BBLink, image::BBImage, internal_link::BBInternalLink,
+        youtube_video::BBYouTubeVideo,
+    },
     foundations::container::{BBContainer, BBContainerMargin},
     modules::{
         hero::{BBHero, BBHeroLeftMedia},
@@ -43,7 +48,7 @@ pub fn component(props: &Props) -> Html {
                     subtitle={course.title.clone()}
                     text={course.long_description.clone()}
                     media={hero_left_media(course.trailer_uri.clone().map(|uri| uri.to_string()), course.title.to_string())}
-                    main={hero_main(props.id)}
+                    main={hero_main(props.id, store)}
                 />
             </div>
         }
@@ -80,13 +85,35 @@ fn create_admin_nav_routes(course_id: i64) -> Vec<BBNavbarLink<Routes>> {
         .unwrap()]
 }
 
-fn hero_main(course_id: i64) -> Html {
+fn hero_main(course_id: i64, store: Rc<MainStore>) -> Html {
     html! {
-        <BBInternalLink<Routes>
-            to={Routes::CourseAccess { id: course_id }}
-            button={true}
-        >
-            {"Preview"}
-        </BBInternalLink<Routes>>
+        <BBContainer>
+            {
+                if store.logged_in() {
+                    store.courses.get(&course_id).map(|course| {
+                        if course.payment_uri.is_none() {
+                            return html! {}
+                        }
+                        html! {
+                            <BBLink
+                                href={course.payment_uri.clone().unwrap()}
+                                button={true}
+                                classes={classes!("mx-1")}
+                            >
+                                {"Purchase"}
+                            </BBLink>
+                        }
+                    })
+                } else {
+                    None
+                }
+            }
+            <BBInternalLink<Routes>
+                to={Routes::CourseAccess { id: course_id }}
+                button={true}
+            >
+                {"Preview"}
+            </BBInternalLink<Routes>>
+        </BBContainer>
     }
 }
