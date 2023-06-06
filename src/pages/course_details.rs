@@ -95,7 +95,9 @@ fn hero_main(course_id: i64, store: Rc<MainStore>) -> Html {
                             return html! {}
                         }
 
-                        let payment_uri = format!("{}?client_reference_id={}", course.payment_uri.clone().unwrap(), 55);
+                        let payment_uri = format!("{}?client_reference_id={}", course.payment_uri.clone().unwrap(), store.user.id.clone().unwrap().to_string().replace("|", ""));
+                        // let payment_uri = format!("{}?client_reference_id={}", course.payment_uri.clone().unwrap(), "5too");
+                        gloo::console::log!(&payment_uri);
                         html! {
                             <BBLink
                                 href={payment_uri}
