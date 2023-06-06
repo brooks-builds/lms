@@ -94,9 +94,11 @@ fn hero_main(course_id: i64, store: Rc<MainStore>) -> Html {
                         if course.payment_uri.is_none() {
                             return html! {}
                         }
+
+                        let payment_uri = format!("{}?client_reference_id={}", course.payment_uri.clone().unwrap(), 55);
                         html! {
                             <BBLink
-                                href={course.payment_uri.clone().unwrap()}
+                                href={payment_uri}
                                 button={true}
                                 classes={classes!("mx-1")}
                             >
