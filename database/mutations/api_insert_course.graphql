@@ -10,5 +10,6 @@ mutation ApiInsertCourse($long_description: String!, $title: String!, $tag_id: I
     }
     live
     launches_on
+    payment_uri
   }
 }

@@ -1,7 +1,7 @@
 use crate::{
     api,
     logging::log_error,
-    types::{Alert, Article, Auth0User, Course, Tag, User},
+    types::{Alert, Article, Auth0User, Course, DbUser, Tag, User},
     utils::cookies::{load_cookie, save_cookie},
 };
 use dotenvy_macro::dotenv;
@@ -27,6 +27,7 @@ pub struct MainStore {
     pub tags: HashMap<i64, Tag>,
     pub articles: HashMap<i64, Article>,
     pub preview_articles_by_course: HashMap<i64, Vec<i64>>,
+    pub db_user: Option<DbUser>,
 }
 
 impl MainStore {
@@ -63,6 +64,7 @@ pub async fn load_all_data(dispatch: Dispatch<MainStore>) {
 
                         store.courses_loaded = BBLoadingState::Loaded;
                         store.preview_articles_by_course = data.preview_articles_by_course;
+                        store.db_user = data.db_user;
                     }
                     Err(error) => {
                         gloo::console::error!("Error getting courses:", error.to_string());

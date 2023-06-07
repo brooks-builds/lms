@@ -22,6 +22,7 @@ query ApiGetAllData {
       }
       preview
     }
+    payment_uri
   }
   lms_tags {
     id
@@ -31,5 +32,8 @@ query ApiGetAllData {
     created_at
     id
     title
+  }
+  users {
+    id
   }
 }

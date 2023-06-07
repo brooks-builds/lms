@@ -101,11 +101,14 @@ pub async fn get_all_data(token: Option<AttrValue>, role: BBRole) -> eyre::Resul
         }
     }
 
+    let db_user = all_data.users.first().map(Into::into);
+
     let all_data = ApiAllData {
         courses: all_data.lms_courses.into_iter().map(Into::into).collect(),
         tags: all_data.lms_tags.into_iter().map(Into::into).collect(),
         articles: all_data.lms_articles.into_iter().map(Into::into).collect(),
         preview_articles_by_course,
+        db_user,
     };
 
     Ok(all_data)

@@ -20,6 +20,7 @@ pub struct Course {
     pub articles_dirty: bool,
     pub live: bool,
     pub launches_on: Option<AttrValue>,
+    pub payment_uri: Option<AttrValue>,
 }
 
 impl From<api_get_all_data::ApiGetAllDataLmsCourses> for Course {
@@ -40,6 +41,7 @@ impl From<api_get_all_data::ApiGetAllDataLmsCourses> for Course {
             articles_dirty: false,
             live: api_course.live,
             launches_on: api_course.launches_on.map(Into::into),
+            payment_uri: api_course.payment_uri.map(Into::into),
         }
     }
 }
@@ -61,6 +63,7 @@ impl From<api_insert_course::ApiInsertCourseInsertLmsCoursesOne> for Course {
             articles_dirty: false,
             live: value.live,
             launches_on: value.launches_on.map(Into::into),
+            payment_uri: value.payment_uri.map(Into::into),
         }
     }
 }
@@ -208,4 +211,16 @@ pub struct ApiAllData {
     pub tags: Vec<Tag>,
     pub articles: Vec<Article>,
     pub preview_articles_by_course: HashMap<i64, Vec<i64>>,
+    pub db_user: Option<DbUser>,
+}
+
+#[derive(Default, Clone, PartialEq)]
+pub struct DbUser {
+    pub id: i64,
+}
+
+impl From<&api_get_all_data::ApiGetAllDataUsers> for DbUser {
+    fn from(value: &api_get_all_data::ApiGetAllDataUsers) -> Self {
+        Self { id: value.id }
+    }
 }
