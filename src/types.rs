@@ -211,4 +211,16 @@ pub struct ApiAllData {
     pub tags: Vec<Tag>,
     pub articles: Vec<Article>,
     pub preview_articles_by_course: HashMap<i64, Vec<i64>>,
+    pub db_user: Option<DbUser>,
+}
+
+#[derive(Default, Clone, PartialEq)]
+pub struct DbUser {
+    pub id: i64,
+}
+
+impl From<&api_get_all_data::ApiGetAllDataUsers> for DbUser {
+    fn from(value: &api_get_all_data::ApiGetAllDataUsers) -> Self {
+        Self { id: value.id }
+    }
 }

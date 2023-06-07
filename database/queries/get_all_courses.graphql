@@ -33,4 +33,7 @@ query ApiGetAllData {
     id
     title
   }
+  users {
+    id
+  }
 }
