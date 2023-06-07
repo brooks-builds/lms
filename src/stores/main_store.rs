@@ -40,6 +40,11 @@ impl MainStore {
             "{AUTH0_DOMAIN}/v2/logout?returnTo={AUTH0_LOGOUT_REDIRECT}&client_id={AUTH0_CLIENT_ID}"
         ))
     }
+
+    pub fn own_course(&self, course_id: i64) -> bool {
+        let Some(user) = &self.db_user else { return false };
+        user.purchased_courses.contains(&course_id)
+    }
 }
 
 pub async fn load_all_data(dispatch: Dispatch<MainStore>) {

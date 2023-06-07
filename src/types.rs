@@ -217,10 +217,18 @@ pub struct ApiAllData {
 #[derive(Default, Clone, PartialEq)]
 pub struct DbUser {
     pub id: i64,
+    pub purchased_courses: Vec<i64>,
 }
 
 impl From<&api_get_all_data::ApiGetAllDataUsers> for DbUser {
     fn from(value: &api_get_all_data::ApiGetAllDataUsers) -> Self {
-        Self { id: value.id }
+        Self {
+            id: value.id,
+            purchased_courses: value
+                .purchased_courses
+                .iter()
+                .map(|course| course.courses.id)
+                .collect(),
+        }
     }
 }

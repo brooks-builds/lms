@@ -89,15 +89,13 @@ fn hero_main(course_id: i64, store: Rc<MainStore>) -> Html {
     html! {
         <BBContainer>
             {
-                if store.logged_in() {
+                if store.logged_in() && !store.own_course(course_id) {
                     store.courses.get(&course_id).map(|course| {
                         if course.payment_uri.is_none() {
                             return html! {}
                         }
 
                         let payment_uri = format!("{}?client_reference_id={}", course.payment_uri.clone().unwrap(), store.db_user.clone().unwrap().id);
-                        // let payment_uri = format!("{}?client_reference_id={}", course.payment_uri.clone().unwrap(), "5too");
-                        gloo::console::log!(&payment_uri);
                         html! {
                             <BBLink
                                 href={payment_uri}
@@ -116,7 +114,7 @@ fn hero_main(course_id: i64, store: Rc<MainStore>) -> Html {
                 to={Routes::CourseAccess { id: course_id }}
                 button={true}
             >
-                {"Preview"}
+                { if store.own_course(course_id) {"Open Course"} else {"Preview"}}
             </BBInternalLink<Routes>>
         </BBContainer>
     }

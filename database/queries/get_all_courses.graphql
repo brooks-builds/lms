@@ -35,5 +35,10 @@ query ApiGetAllData {
   }
   users {
     id
+    purchased_courses {
+      courses {
+        id
+      }
+    }
   }
 }
