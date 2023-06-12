@@ -218,6 +218,7 @@ pub struct ApiAllData {
 pub struct DbUser {
     pub id: i64,
     pub purchased_courses: Vec<i64>,
+    pub articles: Vec<i64>,
 }
 
 impl From<&api_get_all_data::ApiGetAllDataUsers> for DbUser {
@@ -228,6 +229,11 @@ impl From<&api_get_all_data::ApiGetAllDataUsers> for DbUser {
                 .purchased_courses
                 .iter()
                 .map(|course| course.courses.id)
+                .collect(),
+            articles: value
+                .articles
+                .iter()
+                .map(|db_user_article| db_user_article.article_id)
                 .collect(),
         }
     }

@@ -1,0 +1,6 @@
+mutation ApiInsertUserArticle($user_id: Int!, $article_id: Int!) {
+  insert_user_articles_one(object: {article_id: $article_id, user_id: $user_id}) {
+    article_id
+    user_id
+  }
+}

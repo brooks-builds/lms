@@ -9,6 +9,7 @@ use crate::{router::Routes, stores::main_store::MainStore};
 pub struct Props {
     pub course_id: i64,
     pub preview_articles: Vec<i64>,
+    pub onclick: Callback<i64>,
 }
 
 #[function_component(CourseNav)]

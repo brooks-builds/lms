@@ -15,8 +15,10 @@ use yewdux::prelude::use_store;
 
 use crate::{
     components::{course_nav::CourseNav, next_article::NextArticle},
+    logging::log_data,
     router::Routes,
     stores::main_store::MainStore,
+    utils::nav_article_onclick::{self, article_nav_onclick},
 };
 
 #[derive(Properties, PartialEq)]
@@ -27,7 +29,7 @@ pub struct Props {
 
 #[function_component(CourseAccessArticle)]
 pub fn component(props: &Props) -> Html {
-    let (store, _dispatch) = use_store::<MainStore>();
+    let (store, dispatch) = use_store::<MainStore>();
     let navigation = use_navigator().unwrap();
 
     if let Some(course) = store.courses.get(&props.course_id) {
@@ -48,6 +50,10 @@ pub fn component(props: &Props) -> Html {
             .get(&course.id)
             .cloned()
             .unwrap_or_default();
+        let next_article_onclick = Callback::from(|completed_article_id: i64| {
+            log_data("moving to next article from: ", completed_article_id);
+        });
+
         if let Some(article) = course
             .articles
             .iter()
@@ -60,7 +66,7 @@ pub fn component(props: &Props) -> Html {
                     </BBTitle>
                     <BBRow>
                         <BBCol width={BBColWidth::Three}>
-                            <CourseNav course_id={props.course_id} {preview_articles} />
+                            <CourseNav course_id={props.course_id} {preview_articles} onclick={article_nav_onclick(store.clone(), dispatch)} />
                         </BBCol>
                         <BBCol>
                             <BBCourseContent
@@ -69,7 +75,7 @@ pub fn component(props: &Props) -> Html {
                                 course={article.content.clone().unwrap_or_default()}
                                 {onclick_purchase}
                             />
-                            <NextArticle course_id={props.course_id} article_id={props.article_id} />
+                            <NextArticle course_id={props.course_id} article_id={props.article_id} onclick={next_article_onclick} />
                         </BBCol>
                     </BBRow>
                 </BBContainer>

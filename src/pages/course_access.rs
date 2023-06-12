@@ -13,7 +13,10 @@ use ycl::{
 use yew::{function_component, html, Html, Properties};
 use yewdux::prelude::use_store;
 
-use crate::{components::course_nav::CourseNav, stores::main_store::MainStore};
+use crate::{
+    components::course_nav::CourseNav, stores::main_store::MainStore,
+    utils::nav_article_onclick::article_nav_onclick,
+};
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
@@ -22,7 +25,7 @@ pub struct Props {
 
 #[function_component(CourseAccess)]
 pub fn component(props: &Props) -> Html {
-    let (store, _dispatch) = use_store::<MainStore>();
+    let (store, dispatch) = use_store::<MainStore>();
     let course_id = props.id;
 
     let Some(course) = store.courses.get(&props.id) else {
@@ -44,7 +47,7 @@ pub fn component(props: &Props) -> Html {
                     <BBTitle align={AlignText::Center} level={BBTitleLevel::One}>{course.title.clone()}</BBTitle>
             <BBRow>
                 <BBCol width={BBColWidth::Three}>
-                    <CourseNav {course_id} {preview_articles} />
+                    <CourseNav {course_id} {preview_articles} onclick={article_nav_onclick(store, dispatch)} />
                 </BBCol>
                 <BBCol>
                     <BBTitle

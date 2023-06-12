@@ -5,7 +5,7 @@ use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use yew::AttrValue;
 
 static STATE_COOKIE_KEY: &str = "auth_state";
-static STATE_COOKIE_MAX_LIFE: u32 = 60 * 5;
+static STATE_COOKIE_MAX_LIFE: u32 = 60 * 60;
 static AUTH0_DOMAIN: &str = dotenv!("AUTH0_DOMAIN");
 static AUTH0_CLIENT_ID: &str = dotenv!("AUTH0_CLIENT_ID");
 static AUTH_REDIRECT_URI: &str = dotenv!("AUTH_REDIRECT_URI");
