@@ -13,7 +13,11 @@ use yew::prelude::*;
 use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
-use crate::{components::course_nav::CourseNav, router::Routes, stores::main_store::MainStore};
+use crate::{
+    components::{course_nav::CourseNav, next_article::NextArticle},
+    router::Routes,
+    stores::main_store::MainStore,
+};
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
@@ -65,6 +69,7 @@ pub fn component(props: &Props) -> Html {
                                 course={article.content.clone().unwrap_or_default()}
                                 {onclick_purchase}
                             />
+                            <NextArticle course_id={props.course_id} article_id={props.article_id} />
                         </BBCol>
                     </BBRow>
                 </BBContainer>
