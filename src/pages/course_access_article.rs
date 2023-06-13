@@ -17,8 +17,8 @@ use crate::{
     components::{course_nav::CourseNav, next_article::NextArticle},
     logging::log_data,
     router::Routes,
-    stores::main_store::MainStore,
-    utils::nav_article_onclick::{self, article_nav_onclick},
+    stores::main_store::{MainStore, self},
+    utils::nav_article_onclick::{self, article_nav_onclick}, api,
 };
 
 #[derive(Properties, PartialEq)]
@@ -50,9 +50,34 @@ pub fn component(props: &Props) -> Html {
             .get(&course.id)
             .cloned()
             .unwrap_or_default();
-        let next_article_onclick = Callback::from(|completed_article_id: i64| {
-            log_data("moving to next article from: ", completed_article_id);
-        });
+
+        let next_article_onclick = {
+            let store = store.clone();
+            let dispatch = dispatch.clone();
+        Callback::from(move |completed_article_id: i64| {
+            let Some(user) = &store.db_user else { 
+                    gloo::console::error!("missing user so cannot mark article read");
+                    return
+             };
+            let Some(token) = store.user.token.clone() else {
+                    gloo::console::error!("missing token so cannot mark article completed");
+                    return
+                };
+            let user_id = user.id;
+                let dispatch = dispatch.clone();
+
+            wasm_bindgen_futures::spawn_local(async move {
+                    match api::completed_user_article(token.clone(), user_id, completed_article_id).await {
+                        Ok(_) => {
+                            gloo::console::log!("completed article", completed_article_id);
+                        }
+                        Err(error) => {
+                            gloo::console::error!("Error completing user article", error.to_string());
+                            main_store::error_alert(dispatch.clone(), "There was an error marking the article as completed");
+                        }
+                    }
+                });
+        })};
 
         if let Some(article) = course
             .articles

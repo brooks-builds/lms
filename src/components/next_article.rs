@@ -1,5 +1,8 @@
 #![allow(non_camel_case_types)]
-use ycl::elements::internal_link::BBInternalLink;
+use ycl::elements::{
+    button::{BBButton, BBButtonStyle, BBButtonType},
+    internal_link::BBInternalLink,
+};
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -22,13 +25,15 @@ pub struct Props {
 pub fn component(props: &Props) -> Html {
     let (store, _dispatch) = use_store::<MainStore>();
     let Some(course) = store.courses.get(&props.course_id) else { return html! {} };
-    let Some(next_article) = next_article(course, props.article_id, store.own_course(props.course_id)) else { return html! {} };
-    let title = format!("Next Article: {}", &next_article.title);
     let props_onclick = props.onclick.clone();
     let article_id = props.article_id;
     let onclick = Callback::from(move |_| {
         props_onclick.emit(article_id);
     });
+    let Some(next_article) = next_article(course, props.article_id, store.own_course(props.course_id)) else { return html! {
+        <BBButton onclick={onclick.clone()} button_style={BBButtonStyle::PrimaryLight}>{"Complete Article"}</BBButton>
+    } };
+    let title = format!("Complete and goto next article: {}", &next_article.title);
 
     html! {
         <BBInternalLink<Routes> to={Routes::CourseAccessArticle { course_id: props.course_id, article_id: next_article.id }} button={true} {onclick}>{title}</BBInternalLink<Routes>>

@@ -14,8 +14,9 @@ use yew::AttrValue;
 
 use crate::{
     database_queries::{
-        api_get_all_data, api_insert_article, api_insert_course, api_insert_course_articles,
-        api_insert_tag, api_insert_user_article, ApiGetAllData, ApiInsertArticle, ApiInsertCourse,
+        api_complete_user_article, api_get_all_data, api_insert_article, api_insert_course,
+        api_insert_course_articles, api_insert_tag, api_insert_user_article,
+        ApiCompleteUserArticle, ApiGetAllData, ApiInsertArticle, ApiInsertCourse,
         ApiInsertCourseArticles, ApiInsertTag, ApiInsertUserArticle,
     },
     errors::LmsError,
@@ -221,8 +222,23 @@ pub async fn insert_user_article(token: AttrValue, user_id: i64, article_id: i64
         .authorization(token.as_str())
         .role(BBRole::Learner)
         .json(mutation)?
-        .send()
+        .send::<api_insert_user_article::ResponseData>()
         .await?;
 
+    Ok(())
+}
+
+pub async fn completed_user_article(token: AttrValue, user_id: i64, article_id: i64) -> Result<()> {
+    let variables = api_complete_user_article::Variables {
+        user_id,
+        article_id,
+    };
+    let mutation = ApiCompleteUserArticle::build_query(variables);
+    SendToGraphql::new()
+        .authorization(token.as_str())
+        .role(BBRole::Learner)
+        .json(mutation)?
+        .send::<api_complete_user_article::ResponseData>()
+        .await?;
     Ok(())
 }

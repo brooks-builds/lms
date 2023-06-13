@@ -3,7 +3,10 @@ use ycl::modules::nav::course_nav::{BBCourseNav, BBCourseNavArticle, BBCourseNav
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
-use crate::{router::Routes, stores::main_store::MainStore};
+use crate::{
+    router::Routes,
+    stores::main_store::{self, MainStore},
+};
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
@@ -14,7 +17,16 @@ pub struct Props {
 
 #[function_component(CourseNav)]
 pub fn component(props: &Props) -> Html {
-    let (store, _dispatch) = use_store::<MainStore>();
+    let (store, dispatch) = use_store::<MainStore>();
+    let props_onclick = props.onclick.clone();
+    let onclick = Callback::from(move |id: AttrValue| {
+        let Ok(article_id) = id.to_string().parse() else {
+            main_store::error_alert(dispatch.clone(), "There was an error marking the article completed");
+            return
+        };
+
+        props_onclick.emit(article_id);
+    });
 
     if let Some(course) = store.courses.get(&props.course_id) {
         let course_id = props.course_id;
@@ -28,6 +40,7 @@ pub fn component(props: &Props) -> Html {
                     let is_owned = store.own_course(course_id);
                     let mut article_builder = BBCourseNavArticleBuilder::new()
                         .title(article.title.clone())
+                        .id(article.id.to_string())
                         .preview(if is_owned { false } else { is_preview });
 
                     article_builder = if is_preview || is_owned {
@@ -45,7 +58,7 @@ pub fn component(props: &Props) -> Html {
         };
 
         html! {
-            <BBCourseNav<Routes> {articles} />
+            <BBCourseNav<Routes> {articles} {onclick} />
         }
     } else {
         html! {}

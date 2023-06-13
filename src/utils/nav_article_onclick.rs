@@ -21,10 +21,6 @@ pub fn article_nav_onclick(store: Rc<MainStore>, dispatch: Dispatch<MainStore>) 
         wasm_bindgen_futures::spawn_local(async move {
             if let Err(error) = api::insert_user_article(token, user_id, article_id).await {
                 gloo::console::error!("error inserting user article:", error.to_string());
-                main_store::error_alert(
-                    dispatch,
-                    "There was an error marking the article as started",
-                );
             }
         });
     })

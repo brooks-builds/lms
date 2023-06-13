@@ -27342,6 +27342,34 @@
             {
               "args": [],
               "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "completed_at",
+              "type": {
+                "kind": "SCALAR",
+                "name": "timestamp",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "created_at",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "timestamp",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
               "description": "An object relationship",
               "isDeprecated": false,
               "name": "user",
@@ -27989,6 +28017,26 @@
             {
               "defaultValue": null,
               "description": null,
+              "name": "completed_at",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "timestamp_comparison_exp",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "created_at",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "timestamp_comparison_exp",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
               "name": "user",
               "type": {
                 "kind": "INPUT_OBJECT",
@@ -28088,6 +28136,26 @@
             {
               "defaultValue": null,
               "description": null,
+              "name": "completed_at",
+              "type": {
+                "kind": "SCALAR",
+                "name": "timestamp",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "created_at",
+              "type": {
+                "kind": "SCALAR",
+                "name": "timestamp",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
               "name": "user",
               "type": {
                 "kind": "INPUT_OBJECT",
@@ -28132,6 +28200,30 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "completed_at",
+              "type": {
+                "kind": "SCALAR",
+                "name": "timestamp",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "created_at",
+              "type": {
+                "kind": "SCALAR",
+                "name": "timestamp",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "user_id",
               "type": {
                 "kind": "SCALAR",
@@ -28155,6 +28247,26 @@
               "defaultValue": null,
               "description": null,
               "name": "article_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "completed_at",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "created_at",
               "type": {
                 "kind": "ENUM",
                 "name": "order_by",
@@ -28198,6 +28310,30 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "completed_at",
+              "type": {
+                "kind": "SCALAR",
+                "name": "timestamp",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "created_at",
+              "type": {
+                "kind": "SCALAR",
+                "name": "timestamp",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "user_id",
               "type": {
                 "kind": "SCALAR",
@@ -28221,6 +28357,26 @@
               "defaultValue": null,
               "description": null,
               "name": "article_id",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "completed_at",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "created_at",
               "type": {
                 "kind": "ENUM",
                 "name": "order_by",
@@ -28379,6 +28535,26 @@
             {
               "defaultValue": null,
               "description": null,
+              "name": "completed_at",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "created_at",
+              "type": {
+                "kind": "ENUM",
+                "name": "order_by",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
               "name": "user",
               "type": {
                 "kind": "INPUT_OBJECT",
@@ -28454,6 +28630,18 @@
               "deprecationReason": null,
               "description": "column name",
               "isDeprecated": false,
+              "name": "completed_at"
+            },
+            {
+              "deprecationReason": null,
+              "description": "column name",
+              "isDeprecated": false,
+              "name": "created_at"
+            },
+            {
+              "deprecationReason": null,
+              "description": "column name",
+              "isDeprecated": false,
               "name": "user_id"
             }
           ],
@@ -28476,6 +28664,26 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "completed_at",
+              "type": {
+                "kind": "SCALAR",
+                "name": "timestamp",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "created_at",
+              "type": {
+                "kind": "SCALAR",
+                "name": "timestamp",
                 "ofType": null
               }
             },
@@ -28746,6 +28954,26 @@
             {
               "defaultValue": null,
               "description": null,
+              "name": "completed_at",
+              "type": {
+                "kind": "SCALAR",
+                "name": "timestamp",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "created_at",
+              "type": {
+                "kind": "SCALAR",
+                "name": "timestamp",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
               "name": "user_id",
               "type": {
                 "kind": "SCALAR",
@@ -28833,6 +29061,18 @@
               "description": "column name",
               "isDeprecated": false,
               "name": "article_id"
+            },
+            {
+              "deprecationReason": null,
+              "description": "column name",
+              "isDeprecated": false,
+              "name": "completed_at"
+            },
+            {
+              "deprecationReason": null,
+              "description": "column name",
+              "isDeprecated": false,
+              "name": "created_at"
             },
             {
               "deprecationReason": null,
