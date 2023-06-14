@@ -1,7 +1,8 @@
 use std::collections::HashMap;
 
 use crate::database_queries::{
-    api_get_all_data, api_insert_article, api_insert_course, api_insert_tag,
+    api_get_all_data::{self, ApiGetAllDataUsersArticles},
+    api_insert_article, api_insert_course, api_insert_tag,
 };
 use serde::{Deserialize, Serialize};
 use ycl::{elements::icon::BBIconType, foundations::roles::BBRole, modules::banner::BBBannerType};
@@ -218,7 +219,22 @@ pub struct ApiAllData {
 pub struct DbUser {
     pub id: i64,
     pub purchased_courses: Vec<i64>,
-    pub articles: Vec<i64>,
+    pub articles: Vec<UserArticle>,
+}
+
+impl DbUser {
+    pub fn has_started_article(&self, article_id: i64) -> bool {
+        self.articles
+            .iter()
+            .find(|article| article.article_id == article_id)
+            .is_some()
+    }
+
+    pub fn has_completed_article(&self, article_id: i64) -> bool {
+        let Some(article) = self.articles.iter().find(|article| article.article_id == article_id) else { return false };
+
+        article.completed_at.is_some()
+    }
 }
 
 impl From<&api_get_all_data::ApiGetAllDataUsers> for DbUser {
@@ -230,11 +246,22 @@ impl From<&api_get_all_data::ApiGetAllDataUsers> for DbUser {
                 .iter()
                 .map(|course| course.courses.id)
                 .collect(),
-            articles: value
-                .articles
-                .iter()
-                .map(|db_user_article| db_user_article.article_id)
-                .collect(),
+            articles: value.articles.iter().map(Into::into).collect(),
+        }
+    }
+}
+
+#[derive(Default, Clone, PartialEq)]
+pub struct UserArticle {
+    pub article_id: i64,
+    pub completed_at: Option<AttrValue>,
+}
+
+impl From<&ApiGetAllDataUsersArticles> for UserArticle {
+    fn from(value: &ApiGetAllDataUsersArticles) -> Self {
+        Self {
+            article_id: value.article_id,
+            completed_at: value.completed_at.clone().map(Into::into),
         }
     }
 }

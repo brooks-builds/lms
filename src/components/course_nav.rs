@@ -4,6 +4,7 @@ use yew::prelude::*;
 use yewdux::prelude::use_store;
 
 use crate::{
+    api::articles,
     router::Routes,
     stores::main_store::{self, MainStore},
 };
@@ -42,6 +43,12 @@ pub fn component(props: &Props) -> Html {
                         .title(article.title.clone())
                         .id(article.id.to_string())
                         .preview(if is_owned { false } else { is_preview });
+
+                    article_builder = if let Some(db_user) = &store.db_user {
+                        article_builder.completed(db_user.has_completed_article(article.id))
+                    } else {
+                        article_builder
+                    };
 
                     article_builder = if is_preview || is_owned {
                         article_builder.to(Routes::CourseAccessArticle {

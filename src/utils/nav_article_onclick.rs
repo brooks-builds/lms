@@ -11,7 +11,7 @@ use crate::{
 pub fn article_nav_onclick(store: Rc<MainStore>, dispatch: Dispatch<MainStore>) -> Callback<i64> {
     Callback::from(move |article_id: i64| {
         let Some(user) = &store.db_user else { return };
-        if user.articles.contains(&article_id) {
+        if user.has_started_article(article_id) {
             return;
         };
         let dispatch = dispatch.clone();
