@@ -69,7 +69,8 @@ pub fn component(props: &Props) -> Html {
             wasm_bindgen_futures::spawn_local(async move {
                     match api::completed_user_article(token.clone(), user_id, completed_article_id).await {
                         Ok(_) => {
-                            gloo::console::log!("completed article", completed_article_id);
+                            // TODO upsert the completed article in the case it doesn't exist yet: https://hasura.io/docs/latest/mutations/postgres/upsert/
+                            main_store::mark_article_completed(dispatch.clone(), completed_article_id);
                         }
                         Err(error) => {
                             gloo::console::error!("Error completing user article", error.to_string());

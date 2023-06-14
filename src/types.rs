@@ -235,6 +235,15 @@ impl DbUser {
 
         article.completed_at.is_some()
     }
+
+    pub fn complete_article(&mut self, article_id: i64) {
+        for article in self.articles.iter_mut() {
+            if article.article_id == article_id {
+                // This should be a date, but for right now we are being lazy and just setting it to be some since we don't care (at this moment) about the content, just that something exists
+                article.completed_at = Some(Default::default());
+            }
+        }
+    }
 }
 
 impl From<&api_get_all_data::ApiGetAllDataUsers> for DbUser {
