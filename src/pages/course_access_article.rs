@@ -93,7 +93,7 @@ pub fn component(props: &Props) -> Html {
         let next_article_onclick = {
             let store = store.clone();
             Callback::from(move |completed_article_id: i64| {
-                let Some(user) = &store.db_user else { 
+                let Some(user) = &store.db_user else {
                     gloo::console::error!("missing user so cannot mark article read");
                     return
              };
