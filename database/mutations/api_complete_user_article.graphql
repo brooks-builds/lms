@@ -1,0 +1,5 @@
+mutation ApiCompleteUserArticle($user_id: Int!, $article_id: Int!) {
+  update_user_articles(where: {user_id: {_eq: $user_id}, article_id: {_eq: $article_id}}, _set: {completed_at: "NOW()"}) {
+    affected_rows
+  }
+}

@@ -40,5 +40,9 @@ query ApiGetAllData {
         id
       }
     }
+    articles {
+      article_id
+      completed_at
+    }
   }
 }

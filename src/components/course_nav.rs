@@ -27,7 +27,14 @@ pub fn component(props: &Props) -> Html {
                     let is_owned = store.own_course(course_id);
                     let mut article_builder = BBCourseNavArticleBuilder::new()
                         .title(article.title.clone())
+                        .id(article.id.to_string())
                         .preview(if is_owned { false } else { is_preview });
+
+                    article_builder = if let Some(db_user) = &store.db_user {
+                        article_builder.completed(db_user.has_completed_article(article.id))
+                    } else {
+                        article_builder
+                    };
 
                     article_builder = if is_preview || is_owned {
                         article_builder.to(Routes::CourseAccessArticle {
