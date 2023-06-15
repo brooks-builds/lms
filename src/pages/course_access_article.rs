@@ -10,6 +10,7 @@ use ycl::{
     modules::course_content::BBCourseContent,
 };
 use yew::prelude::*;
+use yew_hooks::use_effect_once;
 use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
@@ -31,6 +32,39 @@ pub struct Props {
 pub fn component(props: &Props) -> Html {
     let (store, dispatch) = use_store::<MainStore>();
     let navigation = use_navigator().unwrap();
+
+
+    {
+        let dispatch = dispatch.clone();
+        let article_id = props.article_id;
+        let store = store.clone();
+        
+    use_effect(move || {
+        let return_closure = || {};
+        let dispatch = dispatch.clone();
+        let Some(db_user) = &store.db_user else { return return_closure };
+
+        if !db_user.has_started_article(article_id) {
+            main_store::mark_article_opened(dispatch.clone(), article_id);
+
+            {
+                let store = store.clone();
+                let user_id = db_user.id;
+                let dispatch = dispatch.clone();
+
+                wasm_bindgen_futures::spawn_local(async move {
+                    let Some(token) = store.user.token.clone() else { return };
+                    if let Err(error) = api::insert_user_article(token, user_id, article_id).await {
+                            gloo::console::error!("Error inserting user article:", error.to_string());
+                            main_store::error_alert(dispatch, "There was an error marking the article as started");
+                        }
+                });
+            }
+        }
+
+
+        return_closure
+    })};
 
     if let Some(course) = store.courses.get(&props.course_id) {
         let article_id = props.article_id;
@@ -92,7 +126,7 @@ pub fn component(props: &Props) -> Html {
                     </BBTitle>
                     <BBRow>
                         <BBCol width={BBColWidth::Three}>
-                            <CourseNav course_id={props.course_id} {preview_articles} onclick={article_nav_onclick(store.clone(), dispatch)} />
+                            <CourseNav course_id={props.course_id} {preview_articles} />
                         </BBCol>
                         <BBCol>
                             <BBCourseContent

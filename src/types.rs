@@ -244,6 +244,13 @@ impl DbUser {
             }
         }
     }
+
+    pub fn start_article(&mut self, article_id: i64) {
+        self.articles.push(UserArticle {
+            article_id,
+            completed_at: None,
+        });
+    }
 }
 
 impl From<&api_get_all_data::ApiGetAllDataUsers> for DbUser {

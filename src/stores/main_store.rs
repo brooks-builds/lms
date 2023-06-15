@@ -330,3 +330,10 @@ pub fn mark_article_completed(dispatch: Dispatch<MainStore>, article_id: i64) {
         user.complete_article(article_id);
     })
 }
+
+pub fn mark_article_opened(dispatch: Dispatch<MainStore>, article_id: i64) {
+    dispatch.reduce_mut(move |store| {
+        let Some(db_user) = &mut store.db_user else { return };
+        db_user.start_article(article_id);
+    });
+}

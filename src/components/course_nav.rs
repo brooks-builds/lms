@@ -13,21 +13,11 @@ use crate::{
 pub struct Props {
     pub course_id: i64,
     pub preview_articles: Vec<i64>,
-    pub onclick: Callback<i64>,
 }
 
 #[function_component(CourseNav)]
 pub fn component(props: &Props) -> Html {
     let (store, dispatch) = use_store::<MainStore>();
-    let props_onclick = props.onclick.clone();
-    let onclick = Callback::from(move |id: AttrValue| {
-        let Ok(article_id) = id.to_string().parse() else {
-            main_store::error_alert(dispatch.clone(), "There was an error marking the article completed");
-            return
-        };
-
-        props_onclick.emit(article_id);
-    });
 
     if let Some(course) = store.courses.get(&props.course_id) {
         let course_id = props.course_id;
@@ -65,7 +55,7 @@ pub fn component(props: &Props) -> Html {
         };
 
         html! {
-            <BBCourseNav<Routes> {articles} {onclick} />
+            <BBCourseNav<Routes> {articles} />
         }
     } else {
         html! {}

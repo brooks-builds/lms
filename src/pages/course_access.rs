@@ -47,7 +47,7 @@ pub fn component(props: &Props) -> Html {
                     <BBTitle align={AlignText::Center} level={BBTitleLevel::One}>{course.title.clone()}</BBTitle>
             <BBRow>
                 <BBCol width={BBColWidth::Three}>
-                    <CourseNav {course_id} {preview_articles} onclick={article_nav_onclick(store, dispatch)} />
+                    <CourseNav {course_id} {preview_articles} />
                 </BBCol>
                 <BBCol>
                     <BBTitle
