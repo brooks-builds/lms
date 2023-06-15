@@ -226,8 +226,7 @@ impl DbUser {
     pub fn has_started_article(&self, article_id: i64) -> bool {
         self.articles
             .iter()
-            .find(|article| article.article_id == article_id)
-            .is_some()
+            .any(|article| article.article_id == article_id)
     }
 
     pub fn has_completed_article(&self, article_id: i64) -> bool {

@@ -49,7 +49,6 @@ pub fn component(props: &Props) -> Html {
             {
                 let store = store.clone();
                 let user_id = db_user.id;
-                let dispatch = dispatch.clone();
 
                 wasm_bindgen_futures::spawn_local(async move {
                     let Some(token) = store.user.token.clone() else { return };
@@ -86,7 +85,6 @@ pub fn component(props: &Props) -> Html {
 
         let next_article_onclick = {
             let store = store.clone();
-            let dispatch = dispatch.clone();
         Callback::from(move |completed_article_id: i64| {
             let Some(user) = &store.db_user else { 
                     gloo::console::error!("missing user so cannot mark article read");

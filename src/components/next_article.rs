@@ -30,7 +30,7 @@ pub fn component(props: &Props) -> Html {
         props_onclick.emit(article_id);
     });
     let Some(next_article) = next_article(course, props.article_id, store.own_course(props.course_id)) else { return html! {
-        <BBButton onclick={onclick.clone()} button_style={BBButtonStyle::PrimaryLight}>{"Complete Article"}</BBButton>
+        <BBButton onclick={onclick} button_style={BBButtonStyle::PrimaryLight}>{"Complete Article"}</BBButton>
     } };
     let title = format!("Complete and goto next article: {}", &next_article.title);
 
