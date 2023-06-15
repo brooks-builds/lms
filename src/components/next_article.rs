@@ -1,13 +1,12 @@
 #![allow(non_camel_case_types)]
 use ycl::elements::{
-    button::{BBButton, BBButtonStyle, BBButtonType},
+    button::{BBButton, BBButtonStyle},
     internal_link::BBInternalLink,
 };
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
 use crate::{
-    logging::log_data,
     router::Routes,
     stores::main_store::MainStore,
     types::{Article, Course},

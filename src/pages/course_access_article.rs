@@ -10,16 +10,15 @@ use ycl::{
     modules::course_content::BBCourseContent,
 };
 use yew::prelude::*;
-use yew_hooks::use_effect_once;
+
 use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
 use crate::{
     components::{course_nav::CourseNav, next_article::NextArticle},
-    logging::log_data,
     router::Routes,
     stores::main_store::{MainStore, self},
-    utils::nav_article_onclick::{self, article_nav_onclick}, api,
+    api,
 };
 
 #[derive(Properties, PartialEq)]
