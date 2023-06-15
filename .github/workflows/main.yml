@@ -6,6 +6,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Install latest nightly
+        uses: actions-rs/toolchain@v1
+        with:
+            toolchain: 1.69.0
+            components: rustfmt, clippy
       - name: cargo check
         run: touch .env && cargo check --lib
         env:
