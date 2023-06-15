@@ -26,3 +26,6 @@ stylist = { version = "0.12.0", features = ["yew"] }
 url = "2.3.1"
 wasm-bindgen-futures = "0.4.34"
 eyre = "0.6.8"
+
+[profile.dev.package.wasm-bindgen]
+debug-assertions = false
