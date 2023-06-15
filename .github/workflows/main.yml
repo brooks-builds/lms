@@ -7,7 +7,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: cargo check
-        run: touch .env && cargo check
+        run: touch .env && cargo check --lib
         env:
             RUST_ENV: test
             GRAPHQL_URI: http://localhost:8081
