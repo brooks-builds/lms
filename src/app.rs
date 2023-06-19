@@ -85,7 +85,7 @@ pub fn component() -> Html {
                 {logout_onclick}
                 role={store.user.role}
             />
-            <main>
+            <main role="main">
                 <Switch<Routes> render={switch} />
             </main>
             <BBSiteFooter<Routes>

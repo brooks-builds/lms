@@ -7,37 +7,33 @@ import { interceptGraphql } from "./graphql_intercepter";
 const GRAPHQL_URI =
   process.env.GRAPHQL_URI || "http://localhost:8081/v1/graphql";
 const routes = [
-  "/",
-  "/courses",
-  "/auth/create_account",
-  "/auth/login",
-  "/create_article",
-  "/course_articles/1", // In order to support course articles we need to create a centralized graphql intercept with mock data
+  { path: "/", role: Role.None },
+  { path: "/auth/create_account", role: Role.None },
+  { path: "/auth/login", role: Role.None },
+  { path: "/courses", role: Role.None },
+  { path: "/courses/1", role: Role.None },
+  { path: "/create_course", role: Role.Author },
+  { path: "/tags", role: Role.Author },
+  { path: "/create_article", role: Role.Author },
+  { path: "/course_articles/1", role: Role.Learner },
+  { path: "/courses/1/access", role: Role.Learner },
+  { path: "/courses/1/access/1", role: Role.Learner },
+  { path: "/courses/1/purchase", role: Role.Learner },
 ];
 
 for (let route of routes) {
-  test(`${route} should not have any automatically detectable accessibility issues`, async ({
+  test(`${route.path} should not have any automatically detectable accessibility issues`, async ({
     page,
   }) => {
     await interceptGraphql(page);
-    await login(Role.Author, page, route);
+    if (route.role == Role.None) {
+      await page.goto(route.path, { waitUntil: "networkidle" });
+    } else {
+      await login(route.role, page, route.path);
+    }
 
     const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
 
     expect(accessibilityScanResults.violations).toEqual([]);
   });
 }
-
-test(`/tags should not have any automatically detectable accessibility issues`, async ({
-  page,
-}) => {
-  await page.route(GRAPHQL_URI, async (route) => {
-    const json = tagsMockData();
-    await route.fulfill({ json });
-  });
-  await login(Role.Author, page, "/tags");
-
-  const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
-
-  expect(accessibilityScanResults.violations).toEqual([]);
-});
