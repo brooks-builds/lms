@@ -88,6 +88,7 @@ pub fn component() -> Html {
                         required={true}
                         value={account_state.email.clone().unwrap_or_default()}
                         onchange={username_onchange}
+                        input_type={BBInputType::Email}
                     />
                     <BBInput
                         id="password"
