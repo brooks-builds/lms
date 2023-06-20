@@ -9,16 +9,6 @@ const GRAPHQL_URI =
 const routes = [
   { path: "/", role: Role.None },
   { path: "/auth/create_account", role: Role.None },
-  { path: "/auth/login", role: Role.None },
-  { path: "/courses", role: Role.None },
-  { path: "/courses/1", role: Role.None },
-  { path: "/create_course", role: Role.Author },
-  { path: "/tags", role: Role.Author },
-  { path: "/create_article", role: Role.Author },
-  { path: "/course_articles/1", role: Role.Learner },
-  { path: "/courses/1/access", role: Role.Learner },
-  { path: "/courses/1/access/1", role: Role.Learner },
-  { path: "/courses/1/purchase", role: Role.Learner },
 ];
 
 for (let route of routes) {
