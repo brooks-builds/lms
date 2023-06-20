@@ -86,6 +86,23 @@ test("cannot create an account without a password", async ({ page }) => {
   expect(graphqlCalled).toBe(false);
 });
 
-test("cannot create an account with a password that doesn't match requirements", async ({ page }) => { });
+test("cannot create an account with a password that doesn't match requirements", async ({ page }) => {
+  let password = faker.random.word();
+  let email = faker.internet.email(undefined, undefined, "mailinator.com");
+  let graphqlCalled = false;
+
+  await page.route(GRAPHQL_URI, async (route, request) => {
+    const body = request.postData();
+    graphqlCalled = true;
+  });
+
+  await page.getByLabel("email").type(email);
+  await page.getByLabel("password").type(password);
+  await page.getByRole("button", { name: "Create Account" }).click();
+
+  await expect(page.getByText("match requirements")).toBeVisible();
+  expect(page.url()).toMatch(/create_account/);
+  expect(graphqlCalled).toBe(false);
+});
 
 test("submit button is disabled if form is invalid", async ({ page }) => { });
