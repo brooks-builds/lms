@@ -50,7 +50,7 @@ pub fn component() -> Html {
     let new_tag_onsubmit = Callback::from(move |event: FormData| {
         let dispatch = dispatch.clone();
         let Some(tag_name) = event.get("tag_name").as_string() else {
-                main_store::set_alert(dispatch, "Missing tag name".into());
+                main_store::set_alert(dispatch, "Missing tag name");
 
                 return;
             };

@@ -16,20 +16,42 @@ use ycl::{
     },
 };
 use yew::prelude::*;
+use yew_router::prelude::use_navigator;
+use yewdux::prelude::use_store;
+
+use crate::{
+    api,
+    router::Routes,
+    stores::main_store::{self, MainStore},
+};
 
 #[styled_component(CreateAccount)]
 pub fn component() -> Html {
     let account_state = use_state(NewUser::default);
+    let (_, dispatch) = use_store::<MainStore>();
+    let navigator = use_navigator().unwrap();
+
     let onsubmit = {
         let account_state = account_state.clone();
 
         Callback::from(move |form_data: FormData| {
             let email = form_data.get("email").as_string().unwrap();
             let password = form_data.get("password").as_string().unwrap();
-            account_state.set(NewUser {
-                email: Some(email),
-                password: Some(password),
-            });
+            let dispatch = dispatch.clone();
+            let navigator = navigator.clone();
+
+            wasm_bindgen_futures::spawn_local(async move {
+                let Err(error) = api::create_account(email, password).await else {
+                    main_store::set_alert(dispatch, "Account created, please log to complete registration");
+                    navigator.push(&Routes::Login);
+                    return;
+                };
+                gloo::console::error!("Error creating account", error.to_string());
+                main_store::error_alert(
+                    dispatch,
+                    "There was an error creating the account, please try again",
+                );
+            })
         })
     };
 

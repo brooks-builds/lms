@@ -62,3 +62,11 @@ pub struct ApiInsertUserArticle;
     response_derives = "Debug"
 )]
 pub struct ApiCompleteUserArticle;
+
+#[derive(GraphQLQuery)]
+#[graphql(
+    schema_path = "database/schema.json",
+    query_path = "database/mutations/api_create_account.graphql",
+    response_derives = "Debug"
+)]
+pub struct ApiCreateAccount;

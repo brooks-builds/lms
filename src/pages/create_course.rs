@@ -50,11 +50,11 @@ pub fn component() -> Html {
 
     let onsubmit = Callback::from(move |event: FormData| {
         let Some(tag) = event.get("tag").as_string() else {
-            main_store::set_alert(dispatch.clone(), "missing tag id".into());
+            main_store::set_alert(dispatch.clone(), "missing tag id");
             return
         };
         let Ok(tag_id) = tag.parse::<i64>() else {
-            main_store::set_alert(dispatch.clone(), "tag id is not a number".into());
+            main_store::set_alert(dispatch.clone(), "tag id is not a number");
             return
         };
         let Some(title)= event.get("title").as_string() else {return};
