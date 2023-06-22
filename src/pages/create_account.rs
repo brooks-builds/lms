@@ -1,12 +1,13 @@
 use std::ops::Deref;
 
+use gloo::timers::callback::Timeout;
 use stylist::{yew::styled_component, Style};
 use web_sys::FormData;
 use ycl::{
     elements::{
         button::{BBButton, BBButtonStyle, BBButtonType},
         form::BBForm,
-        input::{BBInput, BBInputType},
+        input::{BBInput, BBInputType, BBInputValue},
         text::BBText,
         title::{BBTitle, BBTitleLevel},
     },
@@ -58,8 +59,9 @@ pub fn component() -> Html {
     let username_onchange = {
         let account_state = account_state.clone();
 
-        Callback::from(move |email: AttrValue| {
+        Callback::from(move |input_value: BBInputValue| {
             let mut state = account_state.deref().clone();
+            let email = input_value.value;
             state.email = Some(email.to_string());
             account_state.set(state);
         })
@@ -68,9 +70,31 @@ pub fn component() -> Html {
     let password_onchange = {
         let account_state = account_state.clone();
 
-        Callback::from(move |password: AttrValue| {
+        Callback::from(move |input_value: BBInputValue| {
             let mut state = account_state.deref().clone();
+            let password = input_value.value;
             state.password = Some(password.to_string());
+            account_state.set(state);
+        })
+    };
+
+    let username_oninput = {
+        let account_state = account_state.clone();
+
+        Callback::from(move |event: BBInputValue| {
+            let mut state = account_state.deref().clone();
+            state.email = Some(event.value.to_string());
+            account_state.set(state);
+        })
+    };
+
+    let password_oninput = {
+        let account_state = account_state.clone();
+
+        Callback::from(move |event: BBInputValue| {
+            let mut state = account_state.deref().clone();
+            state.password_valid = event.is_valid;
+            state.password = Some(event.value.to_string());
             account_state.set(state);
         })
     };
@@ -89,6 +113,7 @@ pub fn component() -> Html {
                         value={account_state.email.clone().unwrap_or_default()}
                         onchange={username_onchange}
                         input_type={BBInputType::Email}
+                        oninput={username_oninput}
                     />
                     <BBInput
                         id="password"
@@ -99,12 +124,14 @@ pub fn component() -> Html {
                         message="Password requirements: 8 characters, 3 of the four types of characters ( a-z, A-Z, 0-9, !@#$%^&*() )"
                         value={account_state.password.clone().unwrap_or_default()}
                         onchange={password_onchange}
+                        oninput={password_oninput}
                     />
                     <div>
                         <BBButton
                             button_type={BBButtonType::Submit}
                             button_style={BBButtonStyle::PrimaryLight}
                             classes={classes!(Style::new(css!("margin-top: 1rem;")).unwrap())}
+                            disabled={!account_state.is_valid()}
                         >
                             {"Create Account"}
                         </BBButton>
@@ -119,4 +146,12 @@ pub fn component() -> Html {
 struct NewUser {
     pub email: Option<String>,
     pub password: Option<String>,
+    pub email_valid: bool,
+    pub password_valid: bool,
+}
+
+impl NewUser {
+    pub fn is_valid(&self) -> bool {
+        self.email_valid && self.password_valid
+    }
 }

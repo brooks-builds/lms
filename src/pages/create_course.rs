@@ -6,7 +6,7 @@ use ycl::{
         button::{BBButton, BBButtonStyle, BBButtonType},
         checkbox::BBCheckbox,
         form::BBForm,
-        input::BBInput,
+        input::{BBInput, BBInputValue},
         text_area::BBTextArea,
         title::{BBTitle, BBTitleLevel},
     },
@@ -80,16 +80,16 @@ pub fn component() -> Html {
     let title_onchange = {
         let title = title.clone();
 
-        Callback::from(move |event: AttrValue| {
-            title.set(event);
+        Callback::from(move |event: BBInputValue| {
+            title.set(event.value);
         })
     };
 
     let short_description_onchange = {
         let short_description = short_description.clone();
 
-        Callback::from(move |event: AttrValue| {
-            short_description.set(event);
+        Callback::from(move |event: BBInputValue| {
+            short_description.set(event.value);
         })
     };
 

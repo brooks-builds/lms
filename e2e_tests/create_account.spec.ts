@@ -43,9 +43,8 @@ test("cannot create an account with missing email", async ({ page }) => {
   });
 
   await page.getByLabel("password").type(password);
-  await page.getByRole("button", { name: "Create Account" }).click();
-
-  await expect(page.getByText("must be an email and required")).toBeVisible();
+  const button = page.getByRole("button", { name: "Create Account" });
+  expect(await button.isDisabled()).toBe(true);
   expect(page.url()).toMatch(/create_account/);
   expect(graphqlCalled).toBe(false);
 });

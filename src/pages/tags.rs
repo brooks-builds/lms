@@ -5,7 +5,7 @@ use ycl::{
     elements::{
         button::{BBButton, BBButtonStyle, BBButtonType},
         form::BBForm,
-        input::BBInput,
+        input::{BBInput, BBInputValue},
         table::BBTable,
         title::{BBTitle, BBTitleLevel},
     },
@@ -62,8 +62,8 @@ pub fn component() -> Html {
 
     let new_tag_onchange = {
         let new_tag_state = new_tag_state.clone();
-        Callback::from(move |event: AttrValue| {
-            new_tag_state.set(event);
+        Callback::from(move |event: BBInputValue| {
+            new_tag_state.set(event.value);
         })
     };
 

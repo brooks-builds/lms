@@ -30,8 +30,8 @@ pub fn component() -> Html {
     let title = use_state(|| AttrValue::from(""));
     let title_onchange = {
         let title = title.clone();
-        Callback::from(move |new_title: AttrValue| {
-            title.set(new_title);
+        Callback::from(move |new_title: ycl::elements::input::BBInputValue| {
+            title.set(new_title.value);
         })
     };
     let navigator = use_navigator().unwrap();
