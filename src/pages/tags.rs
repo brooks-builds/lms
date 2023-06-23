@@ -5,7 +5,7 @@ use ycl::{
     elements::{
         button::{BBButton, BBButtonStyle, BBButtonType},
         form::BBForm,
-        input::{BBInput, BBInputValue},
+        input::BBInput,
         table::BBTable,
         title::{BBTitle, BBTitleLevel},
     },
@@ -60,13 +60,6 @@ pub fn component() -> Html {
         });
     });
 
-    let new_tag_onchange = {
-        let new_tag_state = new_tag_state.clone();
-        Callback::from(move |event: BBInputValue| {
-            new_tag_state.set(event.value);
-        })
-    };
-
     html! {
         <BBContainer margin={BBContainerMargin::Normal}>
             <BBTitle level={BBTitleLevel::One} align={AlignText::Center}>{"Course Tags"}</BBTitle>
@@ -77,7 +70,6 @@ pub fn component() -> Html {
                     label="Tag Name"
                     name="tag_name"
                     value={new_tag_state.deref()}
-                    onchange={new_tag_onchange}
                 />
                 <BBButton button_style={BBButtonStyle::PrimaryLight} button_type={BBButtonType::Submit}>{"Create Tag"}</BBButton>
             </BBForm>

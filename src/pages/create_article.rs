@@ -28,12 +28,6 @@ use crate::{
 pub fn component() -> Html {
     let (store, dispatch) = use_store::<MainStore>();
     let title = use_state(|| AttrValue::from(""));
-    let title_onchange = {
-        let title = title.clone();
-        Callback::from(move |new_title: ycl::elements::input::BBInputValue| {
-            title.set(new_title.value);
-        })
-    };
     let navigator = use_navigator().unwrap();
 
     {
@@ -87,7 +81,6 @@ pub fn component() -> Html {
                     label="Title"
                     name="title"
                     value={title.deref().clone()}
-                    onchange={title_onchange}
                 />
                 <BBTextArea
                     id="body"

@@ -6,7 +6,7 @@ use ycl::{
         button::{BBButton, BBButtonStyle, BBButtonType},
         checkbox::BBCheckbox,
         form::BBForm,
-        input::{BBInput, BBInputValue},
+        input::BBInput,
         text_area::BBTextArea,
         title::{BBTitle, BBTitleLevel},
     },
@@ -77,22 +77,6 @@ pub fn component() -> Html {
         });
     });
 
-    let title_onchange = {
-        let title = title.clone();
-
-        Callback::from(move |event: BBInputValue| {
-            title.set(event.value);
-        })
-    };
-
-    let short_description_onchange = {
-        let short_description = short_description.clone();
-
-        Callback::from(move |event: BBInputValue| {
-            short_description.set(event.value);
-        })
-    };
-
     html! {
         <BBContainer margin={BBContainerMargin::Normal}>
             <BBTitle level={BBTitleLevel::One} align={AlignText::Center}>{"Create Course"}</BBTitle>
@@ -102,7 +86,6 @@ pub fn component() -> Html {
                     label="Title"
                     name="title"
                     value={title.deref().clone()}
-                    onchange={title_onchange}
                 />
                 <BBSelect
                     id="tag"
@@ -121,7 +104,6 @@ pub fn component() -> Html {
                     label="Short Description"
                     name="short_description"
                     value={short_description.deref().clone()}
-                    onchange={short_description_onchange}
                 />
                 <BBContainer>
                     <BBCheckbox

@@ -52,37 +52,19 @@ test("cannot create an account with missing email", async ({ page }) => {
 test("cannot create an account with a string that is not an email", async ({ page }) => {
   const email = faker.random.word();
   const password = faker.internet.password();
-  let graphqlCalled = false;
-
-  await page.route(GRAPHQL_URI, async (route, request) => {
-    const body = request.postData();
-    graphqlCalled = true;
-  });
 
   await page.getByLabel("password").type(password);
   await page.getByLabel("email").type(email);
-  await page.getByRole("button", { name: "Create Account" }).click();
 
+  expect(await page.getByRole("button", { name: "Create Account" }).isDisabled()).toBe(true);
   await expect(page.getByText("must be an email")).toBeVisible();
-  expect(page.url()).toMatch(/create_account/);
-  expect(graphqlCalled).toBe(false);
 });
 
 test("cannot create an account without a password", async ({ page }) => {
   let email = faker.internet.email(undefined, undefined, "mailinator.com");
-  let graphqlCalled = false;
-
-  await page.route(GRAPHQL_URI, async (route, request) => {
-    const body = request.postData();
-    graphqlCalled = true;
-  });
-
   await page.getByLabel("email").type(email);
-  await page.getByRole("button", { name: "Create Account" }).click();
 
-  await expect(page.getByText("required")).toBeVisible();
-  expect(page.url()).toMatch(/create_account/);
-  expect(graphqlCalled).toBe(false);
+  expect(await page.getByRole("button", { name: "Create Account" }).isDisabled()).toBe(true);
 });
 
 test("cannot create an account with a password that doesn't match requirements", async ({ page }) => {
