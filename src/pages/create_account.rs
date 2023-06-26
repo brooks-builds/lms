@@ -3,6 +3,7 @@ use std::ops::Deref;
 use stylist::{yew::styled_component, Style};
 use web_sys::FormData;
 use ycl::foundations::states::BBValidationState;
+use ycl::modules::password_strength::BBPasswordStrength;
 use ycl::{
     elements::{
         button::{BBButton, BBButtonStyle, BBButtonType},
@@ -32,6 +33,7 @@ pub fn component() -> Html {
     let password_validation_state = use_state(BBValidationState::default);
     let (_, dispatch) = use_store::<MainStore>();
     let navigator = use_navigator().unwrap();
+    let password_state = use_state(|| AttrValue::from(""));
 
     let onsubmit = {
         Callback::from(move |form_data: FormData| {
@@ -71,6 +73,13 @@ pub fn component() -> Html {
         })
     };
 
+    let password_oninput = {
+        let password_state = password_state.clone();
+        Callback::from(move |password: AttrValue| {
+            password_state.set(password);
+        })
+    };
+
     html! {
         <BBContainer>
             <BBTitle align={AlignText::Center} level={BBTitleLevel::One}>{"Create Account"}</BBTitle>
@@ -92,10 +101,16 @@ pub fn component() -> Html {
                         name="password"
                         input_type={BBInputType::Password}
                         required={true}
-                        message="Password requirements: 8 characters, 3 of the four types of characters ( a-z, A-Z, 0-9, !@#$%^&*() )"
+                        message="Password requirements: At least 8 characters, no more than 64 characters"
                         onisvalid={password_onisvalid}
                         is_valid={password_validation_state.deref().clone()}
+                        oninput={password_oninput}
+                        min={8}
+                        max={64}
                     />
+                    <div>
+                        <BBPasswordStrength password={password_state.deref().clone()}/>
+                    </div>
                     <div>
                         <BBButton
                             button_type={BBButtonType::Submit}
@@ -109,30 +124,5 @@ pub fn component() -> Html {
                 </BBForm>
             </BBContainer>
         </BBContainer>
-    }
-}
-
-#[derive(Clone, Debug)]
-struct NewUser {
-    pub email: Option<String>,
-    pub password: Option<String>,
-    pub email_valid: bool,
-    pub password_valid: bool,
-}
-
-impl NewUser {
-    pub fn is_valid(&self) -> bool {
-        self.email_valid && self.password_valid && self.email.is_some() && self.password.is_some()
-    }
-}
-
-impl Default for NewUser {
-    fn default() -> Self {
-        Self {
-            email_valid: true,
-            password_valid: true,
-            email: None,
-            password: None,
-        }
     }
 }
