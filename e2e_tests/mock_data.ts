@@ -40,11 +40,11 @@ export function userinfoMockData() {
     email: "meow@mailinator.com",
     email_verified: false,
     "https://hasura.io/jwt/claims": {
-      "x-hasura-allowed-roles": [],
+      "x-hasura-allowed-roles": ["Author", "Learner"],
       "x-hasura-default-role": "public",
       "x-hasura-user-id": "auth0|641465b9d1afd8c27810392b",
     },
-    "https://brooksbuilds.com": { roles: ["Author", "Learner"] },
+    "https://brooksbuilds.com": { roles: ["Author"], role: "Author" },
   };
 }
 
@@ -58,11 +58,11 @@ export const learnerInfoMockData = {
   email: "meow@mailinator.com",
   email_verified: false,
   "https://hasura.io/jwt/claims": {
-    "x-hasura-allowed-roles": [],
+    "x-hasura-allowed-roles": ["Learner"],
     "x-hasura-default-role": "public",
     "x-hasura-user-id": "auth0|641465b9d1afd8c27810392b",
   },
-  "https://brooksbuilds.com": { roles: ["Learner"] },
+  "https://brooksbuilds.com": { roles: ["Learner"], role: "Learner" },
 };
 
 export function tagsMockData() {

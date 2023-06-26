@@ -50,11 +50,11 @@ pub fn component() -> Html {
 
     let onsubmit = Callback::from(move |event: FormData| {
         let Some(tag) = event.get("tag").as_string() else {
-            main_store::set_alert(dispatch.clone(), "missing tag id".into());
+            main_store::set_alert(dispatch.clone(), "missing tag id");
             return
         };
         let Ok(tag_id) = tag.parse::<i64>() else {
-            main_store::set_alert(dispatch.clone(), "tag id is not a number".into());
+            main_store::set_alert(dispatch.clone(), "tag id is not a number");
             return
         };
         let Some(title)= event.get("title").as_string() else {return};
@@ -77,22 +77,6 @@ pub fn component() -> Html {
         });
     });
 
-    let title_onchange = {
-        let title = title.clone();
-
-        Callback::from(move |event: AttrValue| {
-            title.set(event);
-        })
-    };
-
-    let short_description_onchange = {
-        let short_description = short_description.clone();
-
-        Callback::from(move |event: AttrValue| {
-            short_description.set(event);
-        })
-    };
-
     html! {
         <BBContainer margin={BBContainerMargin::Normal}>
             <BBTitle level={BBTitleLevel::One} align={AlignText::Center}>{"Create Course"}</BBTitle>
@@ -102,7 +86,6 @@ pub fn component() -> Html {
                     label="Title"
                     name="title"
                     value={title.deref().clone()}
-                    onchange={title_onchange}
                 />
                 <BBSelect
                     id="tag"
@@ -121,7 +104,6 @@ pub fn component() -> Html {
                     label="Short Description"
                     name="short_description"
                     value={short_description.deref().clone()}
-                    onchange={short_description_onchange}
                 />
                 <BBContainer>
                     <BBCheckbox

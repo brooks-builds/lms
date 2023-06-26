@@ -190,8 +190,8 @@ pub async fn insert_tag(dispatch: Dispatch<MainStore>, name: AttrValue) {
         .await
 }
 
-pub fn set_alert(dispatch: Dispatch<MainStore>, message: AttrValue) {
-    dispatch.reduce_mut(move |store| store.alert.message = Some(message));
+pub fn set_alert(dispatch: Dispatch<MainStore>, message: impl Into<AttrValue>) {
+    dispatch.reduce_mut(move |store| store.alert.success(message));
 }
 
 pub fn reset_alert(dispatch: Dispatch<MainStore>) {

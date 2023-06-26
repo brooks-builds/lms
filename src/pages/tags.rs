@@ -50,7 +50,7 @@ pub fn component() -> Html {
     let new_tag_onsubmit = Callback::from(move |event: FormData| {
         let dispatch = dispatch.clone();
         let Some(tag_name) = event.get("tag_name").as_string() else {
-                main_store::set_alert(dispatch, "Missing tag name".into());
+                main_store::set_alert(dispatch, "Missing tag name");
 
                 return;
             };
@@ -59,13 +59,6 @@ pub fn component() -> Html {
             main_store::insert_tag(dispatch, tag_name.into()).await;
         });
     });
-
-    let new_tag_onchange = {
-        let new_tag_state = new_tag_state.clone();
-        Callback::from(move |event: AttrValue| {
-            new_tag_state.set(event);
-        })
-    };
 
     html! {
         <BBContainer margin={BBContainerMargin::Normal}>
@@ -77,7 +70,6 @@ pub fn component() -> Html {
                     label="Tag Name"
                     name="tag_name"
                     value={new_tag_state.deref()}
-                    onchange={new_tag_onchange}
                 />
                 <BBButton button_style={BBButtonStyle::PrimaryLight} button_type={BBButtonType::Submit}>{"Create Tag"}</BBButton>
             </BBForm>
