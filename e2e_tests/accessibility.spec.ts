@@ -9,6 +9,7 @@ const GRAPHQL_URI =
 const routes = [
   { path: "/", role: Role.None },
   { path: "/auth/create_account", role: Role.None },
+  { path: "/auth/login", role: Role.None },
 ];
 
 for (let route of routes) {

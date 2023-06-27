@@ -8,3 +8,4 @@ node_modules/
 /playwright/.cache/
 courses should
 .DS_Store
+.git
