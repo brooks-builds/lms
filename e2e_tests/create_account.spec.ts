@@ -25,7 +25,7 @@ test("can create an account", async ({ page }) => {
   })
 
   await page.getByLabel("email").type(email);
-  await page.getByLabel("password").type(password);
+  await page.getByLabel("password (required)").type(password, { delay: 10 });
   await page.getByRole("button", { name: "Create Account" }).click();
 
   await expect(page.getByText("Account created")).toBeVisible();
@@ -41,7 +41,7 @@ test("cannot create an account with missing email", async ({ page }) => {
     graphqlCalled = true;
   });
 
-  await page.getByLabel("password").type(password);
+  await page.getByLabel("password (required)").type(password);
   const button = page.getByRole("button", { name: "Create Account" });
   expect(await button.isDisabled()).toBe(true);
   expect(page.url()).toMatch(/create_account/);
@@ -52,7 +52,7 @@ test("cannot create an account with a string that is not an email", async ({ pag
   const email = faker.random.word();
   const password = faker.internet.password();
 
-  await page.getByLabel("password").type(password);
+  await page.getByLabel("password (required)").type(password);
   await page.getByLabel("email").type(email);
 
   expect(await page.getByRole("button", { name: "Create Account" }).isDisabled()).toBe(true);

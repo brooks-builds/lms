@@ -10,6 +10,8 @@ const routes = [
   { path: "/", role: Role.None },
   { path: "/auth/create_account", role: Role.None },
   { path: "/auth/login", role: Role.None },
+  { path: "/courses", role: Role.None },
+  { path: "/courses/2", role: Role.None },
 ];
 
 for (let route of routes) {
