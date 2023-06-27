@@ -107,6 +107,7 @@ pub fn component() -> Html {
                         oninput={password_oninput}
                         min={8}
                         max={64}
+                        validation_debounce={1000}
                     />
                     <div>
                         <BBPasswordStrength password={password_state.deref().clone()}/>
