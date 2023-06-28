@@ -15,7 +15,27 @@ test.describe("visitor", async () => {
     await expect(page.getByText(/Yay I am an article/)).toBeVisible()
   });
 
-  test("can create an account", async ({ page }) => { throw new Error("stub") });
+  test.describe("log in to purchase button", async () => {
+    test("visible when logged out", async ({ page }) => {
+      await page.goto("/courses/2/access/1", { waitUntil: "networkidle" });
+      const loginButton = await page.getByRole("button", { name: "Log in to purchase" });
 
-  test("can mark preview article completed", async ({ page }) => { throw new Error("stub") });
+      expect(loginButton).toBeVisible();
+
+      await loginButton.click();
+
+      expect(page.url()).toMatch(/login/);
+    });
+
+  });
+
+
+  test.describe("complete article button", async () => {
+    test("is disabled when viewing as a visitor", async ({ page }) => {
+      await page.goto("/courses/2/access/1", { waitUntil: "networkidle" });
+      const completeArticleButton = await page.getByRole("button", { name: "Complete Article" });
+      expect(await completeArticleButton.isDisabled()).toBe(true);
+    });
+
+  })
 });
