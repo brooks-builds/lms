@@ -64,4 +64,17 @@ test.describe("learner", async () => {
 
     expect(expectCount).toBe(3);
   });
+
+  test("should not get an error marking article as started", async ({ page }) => {
+    await page.goto("/courses/2/access/2", { waitUntil: "networkidle" });
+    expect(await page.getByText("There was an error marking the article as started").isVisible()).toBe(false);
+  });
+
+  test("can mark article as completed", async ({ page }) => {
+    await page.goto("/courses/2/access/2", { waitUntil: "networkidle" });
+    await page.getByRole("link", { name: "Complete and goto" }).click();
+    expect(page.url()).toMatch(/courses\/2\/access\/1/);
+    expect(await page.getByText("There was an error marking the article as completed").isVisible()).toBe(false);
+    expect(await page.getByRole('link', { name: 'CheckmarkCool article 5' }).isVisible()).toBe(true);
+  })
 });

@@ -11,6 +11,8 @@ const routes = [
   { path: "/courses/2", role: Role.None },
   { path: "/courses/2", role: Role.Learner },
   { path: "/courses/1", role: Role.Learner },
+  { path: "/courses/2/access", role: Role.Learner },
+  { path: "/courses/2/access/1", role: Role.Learner },
 ];
 
 for (let route of routes) {
