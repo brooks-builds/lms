@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { interceptGraphql } from "./graphql_intercepter";
+import { Role, login } from "./utils";
 
 test.beforeEach(async ({ page }) => {
   await interceptGraphql(page);
@@ -38,4 +39,29 @@ test.describe("visitor", async () => {
     });
 
   })
+});
+
+test.describe("learner", async () => {
+  test.beforeEach(async ({ page }) => {
+    await login(Role.Learner, page);
+  });
+
+  test("can access all articles in course learner owns", async ({ page }) => {
+    await page.goto("/courses/2/access", { waitUntil: "networkidle" });
+
+    const articles = [
+      { title: "Cool article 5", id: 2 },
+      { title: "created in hasura", id: 1 },
+      { title: "Long Article", id: 3 },
+    ];
+    let expectCount = 0;
+
+    for (const article of articles) {
+      await page.getByRole("link", { name: article.title, exact: true }).click();
+      expect(page.url()).toContain(`/courses/2/access/${article.id}`);
+      expectCount++;
+    }
+
+    expect(expectCount).toBe(3);
+  });
 });

@@ -36,3 +36,10 @@ test.describe("learner", async () => {
     expect(page.url()).toMatch(/courses\/2\/access/);
   })
 });
+
+test.describe("author", async () => {
+  test.beforeEach(async ({ page }) => {
+    await login(Role.Author, page);
+  });
+
+})

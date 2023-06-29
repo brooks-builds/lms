@@ -1,6 +1,9 @@
 use std::rc::Rc;
 
-use crate::{router::Routes, stores::main_store::MainStore};
+use crate::{
+    router::Routes,
+    stores::main_store::{self, MainStore},
+};
 use ycl::{
     elements::{
         external_link::BBLink, image::BBImage, internal_link::BBInternalLink,
@@ -16,7 +19,7 @@ use ycl::{
     },
 };
 use yew::prelude::*;
-use yewdux::prelude::use_store;
+use yewdux::prelude::{use_store, Dispatch};
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
@@ -25,7 +28,7 @@ pub struct Props {
 
 #[function_component(CourseDetails)]
 pub fn component(props: &Props) -> Html {
-    let (store, _dispatch) = use_store::<MainStore>();
+    let (store, dispatch) = use_store::<MainStore>();
 
     if let Some(course) = store.courses.get(&props.id) {
         html! {
@@ -48,7 +51,7 @@ pub fn component(props: &Props) -> Html {
                     subtitle={course.title.clone()}
                     text={course.long_description.clone()}
                     media={hero_left_media(course.trailer_uri.clone().map(|uri| uri.to_string()), course.title.to_string())}
-                    main={hero_main(props.id, store)}
+                    main={hero_main(props.id, store, dispatch)}
                 />
             </div>
         }
@@ -85,7 +88,7 @@ fn create_admin_nav_routes(course_id: i64) -> Vec<BBNavbarLink<Routes>> {
         .unwrap()]
 }
 
-fn hero_main(course_id: i64, store: Rc<MainStore>) -> Html {
+fn hero_main(course_id: i64, store: Rc<MainStore>, dispatch: Dispatch<MainStore>) -> Html {
     html! {
         <BBContainer>
             {
@@ -94,7 +97,11 @@ fn hero_main(course_id: i64, store: Rc<MainStore>) -> Html {
                         if course.payment_uri.is_none() {
                             return html! {}
                         }
-                        gloo::console::log!(format!("{:?}", &store.db_user));
+
+                        if store.db_user.is_none() {
+                            main_store::error_alert(dispatch, "Missing user info");
+                            return html! {}
+                        }
 
                         let payment_uri = format!("{}?client_reference_id={}", course.payment_uri.clone().unwrap(), store.db_user.clone().unwrap().id);
                         html! {

@@ -9,13 +9,9 @@ const GRAPHQL_URI =
 export async function interceptGraphql(page: Page): Promise<void> {
   await page.route(GRAPHQL_URI, async (route) => {
     const { operationName } = route.request().postDataJSON();
-    const role = await route.request().headerValue("x-hasura-role");
+    const role = await route.request().headerValue("x-hasura-role") || Role.Public;
 
-    if (role == Role.Learner) {
-      route.fulfill({ json: { data: mockData[operationName] } });
-    } else if (role == Role.Public) {
-      route.fulfill({ json: { data: mockDataVisitor[operationName] } });
-    }
+    route.fulfill({ json: { data: mockDataByRole[role][operationName] } });
   });
 }
 
@@ -25,4 +21,10 @@ const mockData = {
 
 const mockDataVisitor = {
   ApiGetAllData: apiGetAllDataVisitor,
+}
+
+const mockDataByRole = {
+  public: mockDataVisitor,
+  Learner: mockData,
+  Author: mockData
 }
