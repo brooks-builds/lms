@@ -94,6 +94,7 @@ fn hero_main(course_id: i64, store: Rc<MainStore>) -> Html {
                         if course.payment_uri.is_none() {
                             return html! {}
                         }
+                        gloo::console::log!(format!("{:?}", &store.db_user));
 
                         let payment_uri = format!("{}?client_reference_id={}", course.payment_uri.clone().unwrap(), store.db_user.clone().unwrap().id);
                         html! {
@@ -114,7 +115,7 @@ fn hero_main(course_id: i64, store: Rc<MainStore>) -> Html {
                 to={Routes::CourseAccess { id: course_id }}
                 button={true}
             >
-                { if store.own_course(course_id) {"Open Course"} else {"Preview"}}
+                { if store.logged_in() && store.own_course(course_id) {"Open Course"} else {"Preview"}}
             </BBInternalLink<Routes>>
         </BBContainer>
     }

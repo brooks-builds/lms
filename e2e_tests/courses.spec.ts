@@ -18,3 +18,4 @@ test.describe("visitor", async () => {
     expect(page.url()).toMatch(/courses\/1/);
   });
 });
+

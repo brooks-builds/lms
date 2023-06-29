@@ -102,13 +102,5 @@
       "title": "Long Article"
     }
   ],
-  "users": [{
-    "id": 1,
-    "purchased_courses": [{
-      "courses": {
-        "id": 2
-      }
-    }],
-    "articles": []
-  }]
+  "users": []
 }

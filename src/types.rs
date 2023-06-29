@@ -215,7 +215,7 @@ pub struct ApiAllData {
     pub db_user: Option<DbUser>,
 }
 
-#[derive(Default, Clone, PartialEq)]
+#[derive(Default, Clone, PartialEq, Debug)]
 pub struct DbUser {
     pub id: i64,
     pub purchased_courses: Vec<i64>,
@@ -266,7 +266,7 @@ impl From<&api_get_all_data::ApiGetAllDataUsers> for DbUser {
     }
 }
 
-#[derive(Default, Clone, PartialEq)]
+#[derive(Default, Clone, PartialEq, Debug)]
 pub struct UserArticle {
     pub article_id: i64,
     pub completed_at: Option<AttrValue>,

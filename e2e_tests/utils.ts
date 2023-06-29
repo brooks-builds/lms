@@ -10,6 +10,7 @@ export enum Role {
   Learner = "Learner",
   Author = "Author",
   None = "",
+  Public = "public"
 }
 
 const userInfo = {
