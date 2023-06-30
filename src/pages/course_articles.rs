@@ -122,7 +122,7 @@ pub fn component(props: &Props) -> Html {
             <BBTitle level={BBTitleLevel::One} align={AlignText::Center}>
                 {"Course Articles"}
             </BBTitle>
-            <BBRow>
+            <BBRow test_id="articles">
                 <BBCol>
                     <BBTitle level={BBTitleLevel::Two} align={AlignText::Center}>
                         {"Assigned"}
