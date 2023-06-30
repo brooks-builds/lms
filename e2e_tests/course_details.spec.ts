@@ -42,4 +42,11 @@ test.describe("author", async () => {
     await login(Role.Author, page);
   });
 
+  test("can navigate to the course articles page", async ({ page }) => {
+    await page.goto("/courses/1", { waitUntil: "networkidle" });
+    await page.getByRole("link", { name: "Course Articles" }).click();
+    const url = page.url();
+
+    expect(url).toMatch(/course_articles\/1/);
+  })
 })
