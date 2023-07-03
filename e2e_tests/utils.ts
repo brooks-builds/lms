@@ -26,6 +26,10 @@ export async function login(
   await page.goto("/", { waitUntil: "networkidle" });
 
   await page.route(`${AUTH0_DOMAIN}/userinfo`, (route) => {
+    if (0 == role.length) {
+      return route.fulfill({});
+    }
+
     return route.fulfill({ json: userInfo[role] });
   });
   await page.context().addCookies([

@@ -12,9 +12,10 @@ use ycl::{
     foundations::{
         align_text::AlignText,
         container::{BBContainer, BBContainerMargin},
+        states::BBLoadingState,
     },
 };
-use yew::{function_component, html, use_state, AttrValue, Callback, Html};
+use yew::{function_component, html, use_effect, use_state, AttrValue, Callback, Html};
 use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
@@ -28,9 +29,26 @@ pub fn component() -> Html {
     let navigator = use_navigator().unwrap();
     let (store, dispatch) = use_store::<MainStore>();
 
-    if store.logged_in() && !store.user.is_author() {
-        main_store::error_alert(dispatch.clone(), "Only Authors can manage tags");
-        navigator.push(&Routes::Home);
+    {
+        let store = store.clone();
+        let dispatch = dispatch.clone();
+
+        use_effect(move || {
+            let done = || {};
+
+            match store.auth_loaded {
+                BBLoadingState::Initialized => {}
+                BBLoadingState::Loading => {}
+                BBLoadingState::Loaded => {
+                    if !store.user.is_author() {
+                        main_store::error_alert(dispatch, "Only Authors can manage tags");
+                        navigator.push(&Routes::Home);
+                    }
+                }
+            }
+
+            done
+        });
     }
 
     let tag_titles = vec!["Tag Name".into()];
