@@ -22,7 +22,7 @@ test("add an article to a course", async ({ page }) => {
 
   await page.getByRole("button", { name: "Save" }).click();
 
-  expect(await page.getByText("saved").isVisible()).toBe(true);
+  expect(await page.getByText("Course articles saved").isVisible()).toBe(true);
 })
 
 test("remove an article from a course", async ({ page }) => {

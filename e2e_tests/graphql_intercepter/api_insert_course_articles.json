@@ -2,15 +2,18 @@
   "delete_lms_course_articles": {
     "affected_rows": 2
   },
-  "insert_lms_course_articles": [{
-    "article": {
-      "created_at": "2023-06-30",
-      "id": 1,
-      "title": "Inserted title",
-      "content": {
-        "content": "#Title \n\n I am an article",
-        "id": 1
+  "insert_lms_course_articles": {
+    "returning": [{
+      "course_id": 1,
+      "article": {
+        "created_at": "2023-06-30",
+        "id": 1,
+        "title": "Inserted title",
+        "content": {
+          "content": "#Title \n\n I am an article",
+          "id": 1
+        }
       }
-    }
-  }]
+    }]
+  }
 }
