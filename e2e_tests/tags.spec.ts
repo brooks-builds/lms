@@ -21,3 +21,19 @@ test.describe("Visitor", async () => {
 		expect(await page.getByText("Authors can manage tags").isVisible()).toBe(true);
 	})
 });
+
+test.describe("Learners", async () => {
+	test.beforeEach(async ({ page }) => {
+		await login(Role.Learner, page, "/");
+	});
+
+	test("cannot see the tags link", async ({ page }) => {
+		expect(await page.getByRole("link", { name: "Tags" }).isVisible()).toBe(false);
+	});
+
+	test("cannot load the tags page", async ({ page }) => {
+		await page.goto("/tags", { waitUntil: "networkidle" });
+		expect(page.url()).not.toMatch(/tags/);
+		expect(await page.getByText("Authors can manage tags").isVisible()).toBe(true);
+	})
+});
