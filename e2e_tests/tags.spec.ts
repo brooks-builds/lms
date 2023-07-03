@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { interceptGraphql } from "./graphql_intercepter";
 import { Role, login } from "./utils";
+import { faker } from "@faker-js/faker";
 
 test.beforeEach(async ({ page }) => {
 	await interceptGraphql(page);
@@ -45,5 +46,18 @@ test.describe("Authors", async () => {
 
 	test("can navigate to tags", async ({ page }) => {
 		expect(await page.getByRole("link", { name: "Tags" }).first().isVisible()).toBe(true);
+	});
+
+	test("can create a tag", async ({ page }) => {
+		const tagName = faker.random.word();
+
+		const tagInput = await page.getByLabel("Tag Name")
+
+		await tagInput.type(tagName, { delay: 50 });
+		await page.getByRole("button", { name: "Create Tag" }).click();
+
+		expect(await page.getByText("Tag Created").isVisible()).toBe(true);
+		expect(await page.getByText(tagName).isVisible()).toBe(true);
+		expect(await tagInput.inputValue()).toBe("");
 	})
 });

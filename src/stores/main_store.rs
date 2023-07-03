@@ -175,9 +175,10 @@ pub async fn insert_tag(dispatch: Dispatch<MainStore>, name: AttrValue) {
                     return;
                 };
 
-                match api::insert_tag(&token, name).await {
-                    Ok(tag) => {
+                match api::insert_tag(&token, name.clone()).await {
+                    Ok(mut tag) => {
                         store.alert.message = Some("Tag created".into());
+                        tag.name = name;
                         store.tags.insert(tag.id, tag);
                     }
                     Err(error) => {
