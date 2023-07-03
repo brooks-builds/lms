@@ -37,3 +37,13 @@ test.describe("Learners", async () => {
 		expect(await page.getByText("Authors can manage tags").isVisible()).toBe(true);
 	})
 });
+
+test.describe("Authors", async () => {
+	test.beforeEach(async ({ page }) => {
+		await login(Role.Author, page, "/tags");
+	});
+
+	test("can navigate to tags", async ({ page }) => {
+		expect(await page.getByRole("link", { name: "Tags" }).first().isVisible()).toBe(true);
+	})
+});
