@@ -2,16 +2,10 @@ import { expect, test } from "@playwright/test";
 import { Role, login } from "./utils";
 import { interceptGraphql } from "./graphql_intercepter";
 
-test.beforeEach(async ({ page }) => {
-  await interceptGraphql(page);
-});
-
 test.describe("Author", async () => {
-  test.beforeEach(async ({ page }) => {
-    await login(Role.Author, page, "/course_articles/1");
-  })
-
   test("add an article to a course", async ({ page }) => {
+    await interceptGraphql(page);
+    await login(Role.Author, page, "/course_articles/1");
     await page.getByTestId("articles")
       .filter({ has: page.getByRole("heading", { name: "All Articles" }) })
       .getByRole("button", { name: "Long Article" })
@@ -30,6 +24,8 @@ test.describe("Author", async () => {
   })
 
   test("remove an article from a course", async ({ page }) => {
+    await interceptGraphql(page);
+    await login(Role.Author, page, "/course_articles/1");
     await page.getByTestId("articles")
       .filter({ has: page.getByRole("heading", { name: "Assigned" }) })
       .getByRole("button", { name: "created in hasura" })
@@ -46,32 +42,33 @@ test.describe("Author", async () => {
 })
 
 test.describe("Visitor", async () => {
-  test.beforeEach(async ({ page }) => {
-    await login(Role.None, page, "/courses/1");
-  });
-
   test("cannot see the course articles link", async ({ page }) => {
+    await interceptGraphql(page);
+    await login(Role.None, page, "/courses/1");
     expect(await page.getByRole("link", { name: "Course Articles" }).isVisible()).toBe(false);
   });
 
   test("cannot load the course articles page", async ({ page }) => {
+    await interceptGraphql(page);
+    await login(Role.None, page, "/courses/1");
     await page.goto("/course_articles/1", { waitUntil: "networkidle" });
+    await page.waitForTimeout(100);
     expect(page.url()).not.toMatch(/course_articles/);
     expect(await page.getByText("Only Authors can manage course articles").isVisible()).toBe(true);
   })
 });
 
 test.describe("Learners", async () => {
-  test.beforeEach(async ({ page }) => {
-    await login(Role.Learner, page, "/courses/1");
-  });
-
   test("cannot see the course articles link", async ({ page }) => {
+    await interceptGraphql(page);
+    await login(Role.Learner, page, "/courses/1");
     expect(await page.getByRole("link", { name: "Course Articles" }).isVisible()).toBe(false);
   });
 
   test("cannot load the course articles page", async ({ page }) => {
-    await page.goto("/course_articles/1", { waitUntil: "networkidle" });
+    await interceptGraphql(page);
+    await login(Role.Learner, page, "/course_articles/1");
+    await page.waitForTimeout(100);
     expect(page.url()).not.toMatch(/course_articles/);
     expect(await page.getByText("Only Authors can manage course articles").isVisible()).toBe(true);
   })

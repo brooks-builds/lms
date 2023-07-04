@@ -48,22 +48,24 @@ export function userinfoMockData() {
   };
 }
 
-export const learnerInfoMockData = {
-  sub: "auth0|38947jfsuyhafiull",
-  nickname: "meow",
-  name: "meow@mailinator.com",
-  picture:
-    "https://s.gravatar.com/avatar/4aefaae80a9342bf4fd82b469021fdb5?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fme.png",
-  updated_at: "2023-03-17T13:06:27.451Z",
-  email: "meow@mailinator.com",
-  email_verified: false,
-  "https://hasura.io/jwt/claims": {
-    "x-hasura-allowed-roles": ["Learner"],
-    "x-hasura-default-role": "public",
-    "x-hasura-user-id": "auth0|641465b9d1afd8c27810392b",
-  },
-  "https://brooksbuilds.com": { roles: ["Learner"], role: "Learner" },
-};
+export function learnerInfoMockData() {
+  return {
+    sub: "auth0|38947jfsuyhafiull",
+    nickname: "meow",
+    name: "meow@mailinator.com",
+    picture:
+      "https://s.gravatar.com/avatar/4aefaae80a9342bf4fd82b469021fdb5?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fme.png",
+    updated_at: "2023-03-17T13:06:27.451Z",
+    email: "meow@mailinator.com",
+    email_verified: false,
+    "https://hasura.io/jwt/claims": {
+      "x-hasura-allowed-roles": ["Learner"],
+      "x-hasura-default-role": "public",
+      "x-hasura-user-id": "auth0|641465b9d1afd8c27810392b",
+    },
+    "https://brooksbuilds.com": { roles: ["Learner"], role: "Learner" },
+  };
+}
 
 export function tagsMockData() {
   const result = {

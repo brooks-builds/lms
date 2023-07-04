@@ -18,22 +18,21 @@ test.describe("Visitor", async () => {
 
 	test("cannot load the tags page", async ({ page }) => {
 		await page.goto("/tags", { waitUntil: "networkidle" });
+		await page.waitForTimeout(25);
 		expect(page.url()).not.toMatch(/tags/);
 		expect(await page.getByText("Authors can manage tags").isVisible()).toBe(true);
 	})
 });
 
 test.describe("Learners", async () => {
-	test.beforeEach(async ({ page }) => {
-		await login(Role.Learner, page, "/");
-	});
-
 	test("cannot see the tags link", async ({ page }) => {
+		await login(Role.Learner, page, "/");
 		expect(await page.getByRole("link", { name: "Tags" }).isVisible()).toBe(false);
 	});
 
 	test("cannot load the tags page", async ({ page }) => {
-		await page.goto("/tags", { waitUntil: "networkidle" });
+		await login(Role.Learner, page, "/tags");
+		await page.waitForTimeout(25);
 		expect(page.url()).not.toMatch(/tags/);
 		expect(await page.getByText("Authors can manage tags").isVisible()).toBe(true);
 	})
@@ -45,6 +44,7 @@ test.describe("Authors", async () => {
 	});
 
 	test("can navigate to tags", async ({ page }) => {
+		await page.waitForTimeout(50);
 		expect(await page.getByRole("link", { name: "Tags" }).first().isVisible()).toBe(true);
 	});
 

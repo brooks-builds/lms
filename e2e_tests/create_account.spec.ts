@@ -24,6 +24,8 @@ test("can create an account", async ({ page }) => {
     route.fulfill({ body: JSON.stringify(responseBody) })
   })
 
+  await page.waitForTimeout(25);
+
   await page.getByLabel("email").type(email);
   await page.getByLabel("password (required)").type(password, { delay: 10 });
   await page.getByRole("button", { name: "Create Account" }).click();

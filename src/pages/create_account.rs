@@ -34,6 +34,8 @@ pub fn component() -> Html {
     let (_, dispatch) = use_store::<MainStore>();
     let navigator = use_navigator().unwrap();
     let password_state = use_state(|| AttrValue::from(""));
+    let username_value = use_state(|| AttrValue::default());
+    let password_value = use_state(|| AttrValue::default());
 
     let onsubmit = {
         Callback::from(move |form_data: FormData| {
@@ -73,10 +75,19 @@ pub fn component() -> Html {
         })
     };
 
+    let username_oninput = {
+        let value = username_value.clone();
+
+        Callback::from(move |username: AttrValue| {
+            value.set(username);
+        })
+    };
+
     let password_oninput = {
-        let password_state = password_state.clone();
+        let value = password_value.clone();
+
         Callback::from(move |password: AttrValue| {
-            password_state.set(password);
+            value.set(password);
         })
     };
 
@@ -94,6 +105,8 @@ pub fn component() -> Html {
                         input_type={BBInputType::Email}
                         onisvalid={username_onisvalid}
                         is_valid={username_validation_state.deref().clone()}
+                        oninput={username_oninput}
+                        value={username_value.deref().clone()}
                     />
                     <BBInput
                         id="password"
@@ -108,6 +121,7 @@ pub fn component() -> Html {
                         min={8}
                         max={64}
                         validation_debounce={1000}
+                        value={password_value.deref().clone()}
                     />
                     <div>
                         <BBPasswordStrength password={password_state.deref().clone()}/>

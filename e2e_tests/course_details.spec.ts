@@ -20,6 +20,7 @@ test.describe("learner", async () => {
   });
 
   test("can purchase a course", async ({ page }) => {
+    await page.waitForTimeout(50);
     const purchaseButton = page.getByRole("link", { name: "purchase" });
 
     expect(await purchaseButton.isVisible()).toBe(true);

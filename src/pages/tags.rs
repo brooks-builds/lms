@@ -28,6 +28,7 @@ use crate::{
 pub fn component() -> Html {
     let navigator = use_navigator().unwrap();
     let (store, dispatch) = use_store::<MainStore>();
+    let tag_value = use_state(|| AttrValue::default());
 
     {
         let store = store.clone();
@@ -65,18 +66,32 @@ pub fn component() -> Html {
 
     let new_tag_state = use_state(|| AttrValue::from(""));
 
-    let new_tag_onsubmit = Callback::from(move |event: FormData| {
-        let dispatch = dispatch.clone();
-        let Some(tag_name) = event.get("tag_name").as_string() else {
+    let new_tag_onsubmit = {
+        let tag_value = tag_value.clone();
+
+        Callback::from(move |event: FormData| {
+            let dispatch = dispatch.clone();
+            let Some(tag_name) = event.get("tag_name").as_string() else {
                 main_store::set_alert(dispatch, "Missing tag name");
 
                 return;
             };
+            let tag_value = tag_value.clone();
 
-        wasm_bindgen_futures::spawn_local(async move {
-            main_store::insert_tag(dispatch, tag_name.into()).await;
-        });
-    });
+            wasm_bindgen_futures::spawn_local(async move {
+                main_store::insert_tag(dispatch, tag_name.into()).await;
+                tag_value.set(AttrValue::default());
+            });
+        })
+    };
+
+    let tag_oninput = {
+        let value = tag_value.clone();
+
+        Callback::from(move |tag: AttrValue| {
+            value.set(tag);
+        })
+    };
 
     html! {
         <BBContainer margin={BBContainerMargin::Normal}>
@@ -87,7 +102,8 @@ pub fn component() -> Html {
                     id="tag-name"
                     label="Tag Name"
                     name="tag_name"
-                    value={new_tag_state.deref()}
+                    value={tag_value.deref().clone()}
+                    oninput={tag_oninput}
                 />
                 <BBButton button_style={BBButtonStyle::PrimaryLight} button_type={BBButtonType::Submit}>{"Create Tag"}</BBButton>
             </BBForm>
