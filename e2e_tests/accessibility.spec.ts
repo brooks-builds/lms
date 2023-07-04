@@ -13,6 +13,7 @@ const routes = [
   { path: "/courses/1", role: Role.Learner },
   { path: "/courses/2/access", role: Role.Learner },
   { path: "/courses/2/access/1", role: Role.Learner },
+  { path: "/tags", role: Role.Author },
 ];
 
 for (let route of routes) {
