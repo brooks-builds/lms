@@ -39,6 +39,8 @@ test("cannot create an account with missing email", async ({ page }) => {
   const password = faker.internet.password();
   let graphqlCalled = false;
 
+  await page.waitForTimeout(100);
+
   await page.route(GRAPHQL_URI, async (_route, _request) => {
     graphqlCalled = true;
   });
