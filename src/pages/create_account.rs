@@ -34,8 +34,8 @@ pub fn component() -> Html {
     let (_, dispatch) = use_store::<MainStore>();
     let navigator = use_navigator().unwrap();
     let password_state = use_state(|| AttrValue::from(""));
-    let username_value = use_state(|| AttrValue::default());
-    let password_value = use_state(|| AttrValue::default());
+    let username_value = use_state(AttrValue::default);
+    let password_value = use_state(AttrValue::default);
 
     let onsubmit = {
         Callback::from(move |form_data: FormData| {

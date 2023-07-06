@@ -28,7 +28,7 @@ use crate::{
 pub fn component() -> Html {
     let navigator = use_navigator().unwrap();
     let (store, dispatch) = use_store::<MainStore>();
-    let tag_value = use_state(|| AttrValue::default());
+    let tag_value = use_state(AttrValue::default);
 
     {
         let store = store.clone();
@@ -63,8 +63,6 @@ pub fn component() -> Html {
             row
         })
         .collect::<Vec<HashMap<AttrValue, AttrValue>>>();
-
-    let new_tag_state = use_state(|| AttrValue::from(""));
 
     let new_tag_onsubmit = {
         let tag_value = tag_value.clone();
