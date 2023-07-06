@@ -6,8 +6,9 @@ import { Role } from "../utils";
 import apiCompleteUserArticle from "./api_complete_user_article.json";
 import apiInsertCourseArticles from "./api_insert_course_articles.json";
 import apiInsertTag from "./api_insert_tag.json";
+import apiInsertArticle from "./api_insert_article.json";
 
-const GRAPHQL_URI =
+export const GRAPHQL_URI =
   process.env.GRAPHQL_URI || "http://localhost:8081/v1/graphql";
 
 export async function interceptGraphql(page: Page): Promise<void> {
@@ -26,6 +27,7 @@ const mockData = {
   ApiCompleteUserArticle: apiCompleteUserArticle,
   ApiInsertCourseArticles: apiInsertCourseArticles,
   ApiInsertTag: apiInsertTag,
+  ApiInsertArticle: apiInsertArticle,
 };
 
 const mockDataVisitor = {

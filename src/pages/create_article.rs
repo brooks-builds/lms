@@ -72,6 +72,12 @@ pub fn component() -> Html {
         })
     };
 
+    let title_oninput = {
+        let title = title.clone();
+
+        Callback::from(move |new_title: AttrValue| title.set(new_title))
+    };
+
     html! {
         <BBContainer margin={BBContainerMargin::Normal}>
             <BBTitle align={AlignText::Center} level={BBTitleLevel::One}>{"Articles"}</BBTitle>
@@ -81,6 +87,7 @@ pub fn component() -> Html {
                     label="Title"
                     name="title"
                     value={title.deref().clone()}
+                    oninput={title_oninput}
                 />
                 <BBTextArea
                     id="body"
