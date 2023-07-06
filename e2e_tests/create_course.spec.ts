@@ -88,6 +88,7 @@ test.describe("Author", async () => {
 	test("cannot create a course if info is missing", async ({ page }) => {
 		await interceptGraphql(page);
 		await login(Role.Author, page, "/create_course");
+		await page.waitForTimeout(50);
 
 		expect(await page.getByRole("button").isDisabled()).toBe(true);
 	});

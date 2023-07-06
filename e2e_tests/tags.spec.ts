@@ -44,7 +44,7 @@ test.describe("Authors", async () => {
 	});
 
 	test("can navigate to tags", async ({ page }) => {
-		await page.waitForTimeout(50);
+		await page.waitForTimeout(100);
 		expect(await page.getByRole("link", { name: "Tags" }).first().isVisible()).toBe(true);
 	});
 

@@ -4,6 +4,7 @@ import { interceptGraphql } from "./graphql_intercepter";
 test("login page links to auth0", async ({ page }) => {
   await interceptGraphql(page);
   await page.goto("/auth/login", { waitUntil: "networkidle" });
+  await page.waitForTimeout(50);
 
   const authLink = page.getByRole('link', { name: "Username and Password" });
 

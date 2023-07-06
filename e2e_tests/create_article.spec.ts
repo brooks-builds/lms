@@ -89,6 +89,7 @@ test.describe("Authors", async () => {
 
   test("cannot create an article without title", async ({
     page }) => {
+    await page.waitForTimeout(50);
     await page.getByRole("button", { name: "Create Article" }).click();
     await page.waitForTimeout(50);
     expect(await page.getByText("Title cannot be empty").isVisible()).toBe(true);

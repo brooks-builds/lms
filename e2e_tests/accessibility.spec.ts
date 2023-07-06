@@ -27,7 +27,7 @@ for (let route of routes) {
       await login(route.role, page, route.path);
     }
 
-    await page.waitForTimeout(50);
+    await page.waitForTimeout(150);
     const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
 
     expect(accessibilityScanResults.violations).toEqual([]);
