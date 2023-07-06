@@ -65,11 +65,30 @@ test.describe("Author", async () => {
 			await page.getByLabel("Live Course").check();
 		}
 
-		page.route(GRAPHQL_URI, async (route, request) => {
+		let intercepted = false;
+
+		page.route(GRAPHQL_URI, async (_route, request) => {
 			const body = request.postDataJSON();
-			console.log("post body json:", body, typeof body);
+			const { title, tag_id, long_description, short_description, live } = body.variables;
+
+			expect(title).toBe(newCourseTitle);
+			expect(tag_id).toBe(5);
+			expect(long_description).toBe(longDescription);
+			expect(short_description).toBe(shortDescription);
+			expect(live).toBe(liveCourse);
+
+			intercepted = true;
 		});
 
 		await page.getByRole("button", { name: "Create Course" }).click();
+
+		expect(intercepted).toBe(true);
+	});
+
+	test("cannot create a course if info is missing", async ({ page }) => {
+		await interceptGraphql(page);
+		await login(Role.Author, page, "/create_course");
+
+		expect(await page.getByRole("button").isDisabled()).toBe(true);
 	});
 });

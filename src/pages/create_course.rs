@@ -13,7 +13,7 @@ use ycl::{
     foundations::{
         align_text::AlignText,
         container::{BBContainer, BBContainerMargin},
-        states::BBLoadingState,
+        states::{BBLoadingState, BBValidationState},
     },
     modules::select::{BBOption, BBSelect},
 };
@@ -33,6 +33,7 @@ pub fn component() -> Html {
     let title = use_state(|| AttrValue::from(""));
     let short_description = use_state(|| AttrValue::from(""));
     let (store, dispatch) = use_store::<MainStore>();
+    let title_isvalid = use_state(|| BBValidationState::Initialized);
 
     {
         let store = store.clone();
@@ -77,6 +78,26 @@ pub fn component() -> Html {
         });
     });
 
+    let title_oninput = {
+        let title = title.clone();
+
+        Callback::from(move |new_title: AttrValue| title.set(new_title))
+    };
+
+    let short_description_oninput = {
+        let short_description = short_description.clone();
+
+        Callback::from(move |new_short_description: AttrValue| {
+            short_description.set(new_short_description)
+        })
+    };
+
+    let title_onisvalid = {
+        let title_isvalid = title_isvalid.clone();
+
+        Callback::from(move |valid: BBValidationState| title_isvalid.set(valid))
+    };
+
     html! {
         <BBContainer margin={BBContainerMargin::Normal}>
             <BBTitle level={BBTitleLevel::One} align={AlignText::Center}>{"Create Course"}</BBTitle>
@@ -86,6 +107,9 @@ pub fn component() -> Html {
                     label="Title"
                     name="title"
                     value={title.deref().clone()}
+                    oninput={title_oninput}
+                    onisvalid={title_onisvalid}
+                    is_valid={title_isvalid.deref().clone()}
                 />
                 <BBSelect
                     id="tag"
@@ -104,6 +128,7 @@ pub fn component() -> Html {
                     label="Short Description"
                     name="short_description"
                     value={short_description.deref().clone()}
+                    oninput={short_description_oninput}
                 />
                 <BBContainer>
                     <BBCheckbox
@@ -113,7 +138,7 @@ pub fn component() -> Html {
                         name="live_course"
                     />
                 </BBContainer>
-                <BBButton button_type={BBButtonType::Submit} button_style={BBButtonStyle::PrimaryLight}>{"Create Course"}</BBButton>
+                <BBButton button_type={BBButtonType::Submit} button_style={BBButtonStyle::PrimaryLight} disabled={title_isvalid.not_valid()}>{"Create Course"}</BBButton>
             </BBForm>
         </BBContainer>
     }
