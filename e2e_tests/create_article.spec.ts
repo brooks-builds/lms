@@ -87,6 +87,18 @@ test.describe("Authors", async () => {
     expect(await page.getByText("created").isVisible()).toBe(true);
   });
 
-  test.skip("cannot create an article without title", async ({ page }) => { });
-  test.skip("cannot create an article without a body", async ({ page }) => { });
+  test("cannot create an article without title", async ({
+    page }) => {
+    await page.getByRole("button", { name: "Create Article" }).click();
+    await page.waitForTimeout(50);
+    expect(await page.getByText("Title cannot be empty").isVisible()).toBe(true);
+  });
+
+  test("cannot create an article without a body", async ({ page }) => {
+    const newTitle = faker.commerce.productName();
+    await page.getByLabel("Title").type(newTitle);
+    await page.getByRole("button", { name: "Create Article" }).click();
+    await page.waitForTimeout(50);
+    expect(await page.getByText("Content cannot be empty").isVisible()).toBe(true);
+  });
 });
