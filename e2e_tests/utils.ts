@@ -23,7 +23,7 @@ export async function login(
   page: Page,
   destination: string = "/"
 ): Promise<void> {
-  await page.goto("/", { waitUntil: "networkidle" });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
   if (role != Role.None) {
     await page.route(`${AUTH0_DOMAIN}/userinfo`, async (route) => {
       if (0 == role.length) {

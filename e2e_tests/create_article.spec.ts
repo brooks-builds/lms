@@ -55,7 +55,7 @@ test.describe("Authors", async () => {
   });
 
   test("can navigate to the create article page", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/", { waitUntil: "domcontentloaded" });
     await page.getByRole("link", { name: "Create Article" }).first().click();
     await page.waitForURL("/create_article");
     await page.waitForTimeout(50);
