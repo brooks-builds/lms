@@ -14,6 +14,8 @@ const routes = [
   { path: "/courses/2/access", role: Role.Learner },
   { path: "/courses/2/access/1", role: Role.Learner },
   { path: "/tags", role: Role.Author },
+  { path: "/create_course", role: Role.Author },
+  { path: "/create_article", role: Role.Author },
 ];
 
 for (let route of routes) {
@@ -22,12 +24,12 @@ for (let route of routes) {
   }) => {
     await interceptGraphql(page);
     if (route.role == Role.None) {
-      await page.goto(route.path, { waitUntil: "networkidle" });
+      await page.goto(route.path, { waitUntil: "domcontentloaded" });
     } else {
       await login(route.role, page, route.path);
     }
 
-    await page.waitForTimeout(150);
+    await page.waitForTimeout(555);
     const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
 
     expect(accessibilityScanResults.violations).toEqual([]);

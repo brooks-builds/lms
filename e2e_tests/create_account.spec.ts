@@ -66,6 +66,7 @@ test("cannot create an account with a string that is not an email", async ({ pag
 test("cannot create an account without a password", async ({ page }) => {
   let email = faker.internet.email(undefined, undefined, "mailinator.com");
   await page.getByLabel("email").type(email);
+  await page.waitForTimeout(500);
 
   expect(await page.getByRole("button", { name: "Create Account" }).isDisabled()).toBe(true);
 });
@@ -74,6 +75,7 @@ test("cannot create an account with a password that doesn't match requirements",
   let password = faker.random.alphaNumeric(7);
   let email = faker.internet.email(undefined, undefined, "mailinator.com");
 
+  await page.waitForTimeout(500);
   await page.getByLabel("email").type(email);
   await page.getByLabel("password (required)").type(password);
 
