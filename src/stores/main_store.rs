@@ -42,7 +42,9 @@ impl MainStore {
     }
 
     pub fn own_course(&self, course_id: i64) -> bool {
-        let Some(user) = &self.db_user else { return false };
+        let Some(user) = &self.db_user else {
+            return false;
+        };
         user.purchased_courses.contains(&course_id)
     }
 }
@@ -86,22 +88,28 @@ pub async fn login_from_redirect(dispatch: Dispatch<MainStore>) {
         .reduce_mut_future(|store| {
             Box::pin(async move {
                 store.auth_loaded = BBLoadingState::Loading;
-                let Ok(url) = gloo::utils::window().location().href() else { return;};
-                let Ok(Some(saved_state)) = load_cookie(STATE_COOKIE_KEY) else {return;};
-                let Ok(parsed_url) = url::Url::parse(&url)  else {return;};
-                let Some(fragment) = parsed_url.fragment() else { return; };
+                let Ok(url) = gloo::utils::window().location().href() else {
+                    return;
+                };
+                let Ok(Some(saved_state)) = load_cookie(STATE_COOKIE_KEY) else {
+                    return;
+                };
+                let Ok(parsed_url) = url::Url::parse(&url) else {
+                    return;
+                };
+                let Some(fragment) = parsed_url.fragment() else {
+                    return;
+                };
                 let url_encoded =
                     url::form_urlencoded::parse(fragment.as_bytes()).collect::<HashMap<_, _>>();
-                let Some(access_token )= url_encoded
-                    .get("access_token")
-                    .map(ToString::to_string) else {
-                        gloo::console::error!("missing access token in redirect uri");
-                        return;
-                    };
-                let Some(url_state )= url_encoded
-                    .get("state")
-                    .map(ToString::to_string)
-                     else { return; };
+                let Some(access_token) = url_encoded.get("access_token").map(ToString::to_string)
+                else {
+                    gloo::console::error!("missing access token in redirect uri");
+                    return;
+                };
+                let Some(url_state) = url_encoded.get("state").map(ToString::to_string) else {
+                    return;
+                };
 
                 if saved_state != url_state {
                     return;
@@ -151,12 +159,31 @@ pub async fn login_from_refresh(dispatch: Dispatch<MainStore>) {
 
                     return;
                 };
-                let Ok(Auth0User { sub, nickname, name, picture, updated_at: _updated_at, email, email_verified, metadata }) = api::auth::get_user_info(&token).await else {
+                let Ok(Auth0User {
+                    sub,
+                    nickname,
+                    name,
+                    picture,
+                    updated_at: _updated_at,
+                    email,
+                    email_verified,
+                    metadata,
+                }) = api::auth::get_user_info(&token).await
+                else {
                     store.auth_loaded = BBLoadingState::Loaded;
-                    return
+                    return;
                 };
 
-                store.user = User { role: metadata.role.into(), token: Some(token.into()), id: Some(sub.into()), nickname: Some(nickname.into()), name: Some(name.into()), picture: Some(picture.into()), email: Some(email.into()), email_verified: Some(email_verified) };
+                store.user = User {
+                    role: metadata.role.into(),
+                    token: Some(token.into()),
+                    id: Some(sub.into()),
+                    nickname: Some(nickname.into()),
+                    name: Some(name.into()),
+                    picture: Some(picture.into()),
+                    email: Some(email.into()),
+                    email_verified: Some(email_verified),
+                };
 
                 store.auth_loaded = BBLoadingState::Loaded;
             })
@@ -215,7 +242,9 @@ pub async fn insert_course(
         .clone()
         .reduce_mut_future(move |store| {
             Box::pin(async move {
-                let Some(token) = store.user.token.clone() else {return};
+                let Some(token) = store.user.token.clone() else {
+                    return;
+                };
                 match api::insert_course(
                     token,
                     long_description,
@@ -246,9 +275,11 @@ pub async fn insert_article(dispatch: Dispatch<MainStore>, title: AttrValue, con
         .reduce_mut_future(|store| {
             Box::pin(async move {
                 let Some(token) = store.user.token.clone() else {
-            store.alert.error("Error: missing token, please log in and try again");
-            return
-        };
+                    store
+                        .alert
+                        .error("Error: missing token, please log in and try again");
+                    return;
+                };
 
                 match api::insert_article(token, title, content).await {
                     Ok(article) => {
@@ -281,7 +312,9 @@ pub fn add_article_to_course(dispatch: Dispatch<MainStore>, article: Article, co
 pub fn remove_article_from_course(dispatch: Dispatch<MainStore>, article_id: i64, course_id: i64) {
     dispatch.reduce_mut(|store| {
         let Some(course) = store.courses.get_mut(&course_id) else {
-            store.alert.error("Could not find course to remove article from");
+            store
+                .alert
+                .error("Could not find course to remove article from");
             return;
         };
 
@@ -296,9 +329,9 @@ pub async fn save_course_articles(dispatch: Dispatch<MainStore>, course_id: i64)
         .reduce_mut_future(|store| {
             Box::pin(async move {
                 let Some(course) = store.courses.get_mut(&course_id) else {
-            store.alert.error("Could not find course to save articles");
-            return;
-        };
+                    store.alert.error("Could not find course to save articles");
+                    return;
+                };
 
                 if !course.articles_dirty {
                     store.alert.error("Articles not changed, not saving");
@@ -306,9 +339,11 @@ pub async fn save_course_articles(dispatch: Dispatch<MainStore>, course_id: i64)
                 }
 
                 let Some(token) = store.user.token.clone() else {
-            store.alert.error("Must be logged in to save course articles");
-            return;
-        };
+                    store
+                        .alert
+                        .error("Must be logged in to save course articles");
+                    return;
+                };
 
                 if let Err(error) =
                     api::set_course_articles(token, course_id, &course.articles).await
@@ -327,14 +362,18 @@ pub async fn save_course_articles(dispatch: Dispatch<MainStore>, course_id: i64)
 
 pub fn mark_article_completed(dispatch: Dispatch<MainStore>, article_id: i64) {
     dispatch.reduce_mut(|store| {
-        let Some(user) = &mut store.db_user else { return };
+        let Some(user) = &mut store.db_user else {
+            return;
+        };
         user.complete_article(article_id);
     })
 }
 
 pub fn mark_article_opened(dispatch: Dispatch<MainStore>, article_id: i64) {
     dispatch.reduce_mut(move |store| {
-        let Some(db_user) = &mut store.db_user else { return };
+        let Some(db_user) = &mut store.db_user else {
+            return;
+        };
         db_user.start_article(article_id);
     });
 }

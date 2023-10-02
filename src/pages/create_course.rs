@@ -52,15 +52,21 @@ pub fn component() -> Html {
     let onsubmit = Callback::from(move |event: FormData| {
         let Some(tag) = event.get("tag").as_string() else {
             main_store::set_alert(dispatch.clone(), "missing tag id");
-            return
+            return;
         };
         let Ok(tag_id) = tag.parse::<i64>() else {
             main_store::set_alert(dispatch.clone(), "tag id is not a number");
-            return
+            return;
         };
-        let Some(title)= event.get("title").as_string() else {return};
-        let Some(long_description)= event.get("long_description").as_string() else {return};
-        let Some(short_description)= event.get("short_description").as_string() else {return};
+        let Some(title) = event.get("title").as_string() else {
+            return;
+        };
+        let Some(long_description) = event.get("long_description").as_string() else {
+            return;
+        };
+        let Some(short_description) = event.get("short_description").as_string() else {
+            return;
+        };
         let live_course = event.get("live_course").as_string().is_some();
 
         let dispatch = dispatch.clone();

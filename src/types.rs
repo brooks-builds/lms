@@ -230,7 +230,13 @@ impl DbUser {
     }
 
     pub fn has_completed_article(&self, article_id: i64) -> bool {
-        let Some(article) = self.articles.iter().find(|article| article.article_id == article_id) else { return false };
+        let Some(article) = self
+            .articles
+            .iter()
+            .find(|article| article.article_id == article_id)
+        else {
+            return false;
+        };
 
         article.completed_at.is_some()
     }

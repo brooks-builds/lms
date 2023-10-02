@@ -46,7 +46,10 @@ pub fn component() -> Html {
 
             wasm_bindgen_futures::spawn_local(async move {
                 let Err(error) = api::create_account(email, password).await else {
-                    main_store::set_alert(dispatch, "Account created, please log to complete registration");
+                    main_store::set_alert(
+                        dispatch,
+                        "Account created, please log to complete registration",
+                    );
                     navigator.push(&Routes::Login);
                     return;
                 };

@@ -40,7 +40,9 @@ pub fn component(props: &Props) -> Html {
         use_effect(move || {
             let return_closure = || {};
             let dispatch = dispatch.clone();
-            let Some(db_user) = &store.db_user else { return return_closure };
+            let Some(db_user) = &store.db_user else {
+                return return_closure;
+            };
 
             if !db_user.has_started_article(article_id) {
                 main_store::mark_article_opened(dispatch.clone(), article_id);
@@ -50,7 +52,9 @@ pub fn component(props: &Props) -> Html {
                     let user_id = db_user.id;
 
                     wasm_bindgen_futures::spawn_local(async move {
-                        let Some(token) = store.user.token.clone() else { return };
+                        let Some(token) = store.user.token.clone() else {
+                            return;
+                        };
                         if let Err(error) =
                             api::insert_user_article(token, user_id, article_id).await
                         {
@@ -95,11 +99,11 @@ pub fn component(props: &Props) -> Html {
             Callback::from(move |completed_article_id: i64| {
                 let Some(user) = &store.db_user else {
                     gloo::console::error!("missing user so cannot mark article read");
-                    return
-             };
+                    return;
+                };
                 let Some(token) = store.user.token.clone() else {
                     gloo::console::error!("missing token so cannot mark article completed");
-                    return
+                    return;
                 };
                 let user_id = user.id;
                 let dispatch = dispatch.clone();
