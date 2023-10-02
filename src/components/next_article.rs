@@ -23,17 +23,21 @@ pub struct Props {
 #[function_component(NextArticle)]
 pub fn component(props: &Props) -> Html {
     let (store, _dispatch) = use_store::<MainStore>();
-    let Some(course) = store.courses.get(&props.course_id) else { return html! {} };
+    let Some(course) = store.courses.get(&props.course_id) else {
+        return html! {};
+    };
     let props_onclick = props.onclick.clone();
     let article_id = props.article_id;
     let onclick = Callback::from(move |_| {
         props_onclick.emit(article_id);
     });
-    let Some(next_article) = next_article(course, props.article_id, store.own_course(props.course_id)) else { 
+    let Some(next_article) =
+        next_article(course, props.article_id, store.own_course(props.course_id))
+    else {
         let logged_in = store.logged_in();
         return html! {
             <BBButton onclick={onclick} button_style={BBButtonStyle::PrimaryLight} disabled={!logged_in}>{"Complete Article"}</BBButton>
-        } 
+        };
     };
     let title = format!("Complete and goto next article: {}", &next_article.title);
 

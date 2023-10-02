@@ -45,7 +45,7 @@ pub fn component() -> Html {
 
     let onsubmit = {
         Callback::from(move |form: FormData| {
-            let Some(title )= form.get("title").as_string() else {
+            let Some(title) = form.get("title").as_string() else {
                 main_store::error_alert(dispatch.clone(), "missing title");
                 return;
             };
@@ -56,7 +56,7 @@ pub fn component() -> Html {
 
             let Some(content) = form.get("content").as_string() else {
                 main_store::error_alert(dispatch.clone(), "Missing Content");
-                return
+                return;
             };
             if content.is_empty() {
                 main_store::error_alert(dispatch.clone(), "Content cannot be empty");

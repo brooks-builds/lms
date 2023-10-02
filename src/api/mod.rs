@@ -95,7 +95,9 @@ pub async fn get_all_data(token: Option<AttrValue>, role: BBRole) -> eyre::Resul
     for course in all_data.lms_courses.iter() {
         for course_article in course.course_articles.iter() {
             if course_article.preview {
-                let Some(article) = &course_article.article else { continue };
+                let Some(article) = &course_article.article else {
+                    continue;
+                };
                 let articles = preview_articles_by_course.entry(course.id).or_default();
                 articles.push(article.id)
             }

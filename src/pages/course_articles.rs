@@ -97,8 +97,8 @@ pub fn component(props: &Props) -> Html {
         })
     };
 
-    let Some(course)= &store.courses.get(&props.course_id) else {
-        return html!{};
+    let Some(course) = &store.courses.get(&props.course_id) else {
+        return html! {};
     };
 
     let available_articles = store
