@@ -1,5 +1,8 @@
 name: Yew Component Library
-on: [push, pull_request]
+on: 
+  - push
+  - pull_request
+  - release
 jobs:
   lint:
     name: Cargo check and check formatting
@@ -40,7 +43,7 @@ jobs:
             LOGOUT_REDIRECT: http://localhost:8082
 
   deploy:
-    if: github.event_name == 'push' && github.ref_name == 'main'
+    if: github.event_name == 'release' && github.ref_name == 'main'
     name: deploy to production
     runs-on: ubuntu-latest
     needs:
@@ -79,3 +82,21 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
+  mark_release:
+    needs:
+      - deploy
+    name: mark release in Sentry
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Sentry
+        run: curl -sL https://sentry.io/get-cli/ | SENTRY_CLI_VERSION="2.2.0" bash
+      - name: submit new version
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: brooks-builds
+          SENTRY_PROJECT: lms
+          VERSION: sentry-cli releases propose-version
+        run: |
+          sentry-cli releases new "$VERSION"
+          sentry-cli releases set-commits "$VERSION" --auto
+          sentry-cli releases finalize "$VERSION"
