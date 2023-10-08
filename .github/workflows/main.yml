@@ -44,7 +44,7 @@ jobs:
             LOGOUT_REDIRECT: http://localhost:8082
 
   deploy:
-    if: github.event_name == 'release' && github.ref_name == 'main'
+    if: github.event_name == 'release' && github.event.action == 'published'
     name: deploy to production
     runs-on: ubuntu-latest
     needs:
