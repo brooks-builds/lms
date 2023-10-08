@@ -2,7 +2,9 @@ name: Yew Component Library
 on: 
   - push
   - pull_request
-  - release
+  - release:
+    types:
+      - published
 jobs:
   lint:
     name: Cargo check and check formatting
