@@ -150,7 +150,7 @@ pub fn component(props: &Props) -> Html {
                         </BBCol>
                         <BBCol>
                             <BBCourseContent
-                                have_access={false}
+                                have_access={store.own_course(course.id)}
                                 logged_in={store.logged_in()}
                                 course={article.content.clone().unwrap_or_default()}
                                 {onclick_purchase}
