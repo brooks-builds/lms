@@ -12,10 +12,10 @@ use yewdux::prelude::*;
 
 static STATE_COOKIE_KEY: &str = "auth_state";
 static TOKEN_COOKIE_KEY: &str = "auth_token";
-static STATE_COOKIE_MAX_LIFE: u32 = 60 * 5;
 static AUTH0_DOMAIN: &str = dotenv!("AUTH0_DOMAIN");
 static AUTH0_LOGOUT_REDIRECT: &str = dotenv!("LOGOUT_REDIRECT");
 static AUTH0_CLIENT_ID: &str = dotenv!("AUTH0_CLIENT_ID");
+static TOKEN_COOKIE_MAX_LIFE: u32 = 60 * 60 * 24;
 
 #[derive(Store, Default, Clone, PartialEq)]
 pub struct MainStore {
@@ -116,7 +116,7 @@ pub async fn login_from_redirect(dispatch: Dispatch<MainStore>) {
                 }
 
                 if let Err(error) =
-                    save_cookie(TOKEN_COOKIE_KEY, &access_token, STATE_COOKIE_MAX_LIFE)
+                    save_cookie(TOKEN_COOKIE_KEY, &access_token, TOKEN_COOKIE_MAX_LIFE)
                 {
                     log_error("Error saving token to cookie", &error);
                 }
