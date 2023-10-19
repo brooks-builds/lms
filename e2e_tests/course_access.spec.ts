@@ -58,8 +58,12 @@ test.describe("learner", async () => {
 
     for (const article of articles) {
       await page.getByRole("link", { name: article.title, exact: true }).click();
+
       expect(page.url()).toContain(`/courses/2/access/${article.id}`);
+      expect(page.getByText("Purchase to access")).not.toBeVisible();
+
       expectCount++;
+
     }
 
     expect(expectCount).toBe(3);
