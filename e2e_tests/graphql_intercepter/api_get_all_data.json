@@ -46,7 +46,7 @@
             "title": "Cool article 5",
             "id": 2,
             "content": {
-              "content": "# Yay I am an article \\rn new line \\rn new line"
+              "content": "# Yay I am an article \r\n new line \r\n new line"
             }
           },
           "preview": true
