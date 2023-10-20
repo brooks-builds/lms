@@ -1,5 +1,5 @@
 use ycl::{
-    foundations::{roles::BBRole, states::BBLoadingState},
+    foundations::{container::BBContainer, roles::BBRole, states::BBLoadingState},
     modules::{
         nav::{
             navbar::BBNavbar,
@@ -86,7 +86,9 @@ pub fn component() -> Html {
                 role={store.user.role}
             />
             <main role="main">
-                <Switch<Routes> render={switch} />
+                <BBContainer>
+                    <Switch<Routes> render={switch} />
+                </BBContainer>
             </main>
             <BBSiteFooter<Routes>
                 left_links={create_routes(store.user.role)}
