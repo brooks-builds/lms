@@ -86,9 +86,7 @@ pub fn component() -> Html {
                 role={store.user.role}
             />
             <main role="main">
-                <BBContainer>
-                    <Switch<Routes> render={switch} />
-                </BBContainer>
+                <Switch<Routes> render={switch} />
             </main>
             <BBSiteFooter<Routes>
                 left_links={create_routes(store.user.role)}
