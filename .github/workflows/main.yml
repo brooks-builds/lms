@@ -89,6 +89,7 @@ jobs:
     name: mark release in Sentry
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - name: Install Sentry
         run: curl -sL https://sentry.io/get-cli/ | SENTRY_CLI_VERSION="2.2.0" bash
       - name: submit new version
