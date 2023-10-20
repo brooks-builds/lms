@@ -44,6 +44,8 @@ pub fn component() -> Html {
     }
 
     let onsubmit = {
+        let title_store = title.clone();
+
         Callback::from(move |form: FormData| {
             let Some(title) = form.get("title").as_string() else {
                 main_store::error_alert(dispatch.clone(), "missing title");
@@ -69,6 +71,8 @@ pub fn component() -> Html {
                     main_store::insert_article(dispatch, title.into(), content.into()).await
                 });
             }
+
+            title_store.set(AttrValue::from(""));
         })
     };
 
