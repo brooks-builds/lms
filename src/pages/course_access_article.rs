@@ -148,7 +148,7 @@ pub fn component(props: &Props) -> Html {
                         <BBCol width={BBColWidth::Three}>
                             <CourseNav course_id={props.course_id} {preview_articles} />
                         </BBCol>
-                        <BBCol>
+                        <BBCol width={BBColWidth::Nine}>
                             <BBCourseContent
                                 have_access={store.own_course(course.id)}
                                 logged_in={store.logged_in()}
