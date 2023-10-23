@@ -49,40 +49,53 @@ pub fn component() -> Html {
         });
     }
 
-    let onsubmit = Callback::from(move |event: FormData| {
-        let Some(tag) = event.get("tag").as_string() else {
-            main_store::set_alert(dispatch.clone(), "missing tag id");
-            return;
-        };
-        let Ok(tag_id) = tag.parse::<i64>() else {
-            main_store::set_alert(dispatch.clone(), "tag id is not a number");
-            return;
-        };
-        let Some(title) = event.get("title").as_string() else {
-            return;
-        };
-        let Some(long_description) = event.get("long_description").as_string() else {
-            return;
-        };
-        let Some(short_description) = event.get("short_description").as_string() else {
-            return;
-        };
-        let live_course = event.get("live_course").as_string().is_some();
+    let long_description_value = use_state(|| AttrValue::from(""));
+    let long_description_oninput = {
+        let value = long_description_value.clone();
 
-        let dispatch = dispatch.clone();
+        Callback::from(move |new_value| value.set(new_value))
+    };
 
-        wasm_bindgen_futures::spawn_local(async move {
-            main_store::insert_course(
-                dispatch,
-                long_description.into(),
-                title.into(),
-                tag_id,
-                short_description.into(),
-                live_course,
-            )
-            .await;
-        });
-    });
+    let onsubmit = {
+        let long_description_value = long_description_value.clone();
+
+        Callback::from(move |event: FormData| {
+            let Some(tag) = event.get("tag").as_string() else {
+                main_store::set_alert(dispatch.clone(), "missing tag id");
+                return;
+            };
+            let Ok(tag_id) = tag.parse::<i64>() else {
+                main_store::set_alert(dispatch.clone(), "tag id is not a number");
+                return;
+            };
+            let Some(title) = event.get("title").as_string() else {
+                return;
+            };
+            let Some(long_description) = event.get("long_description").as_string() else {
+                return;
+            };
+            let Some(short_description) = event.get("short_description").as_string() else {
+                return;
+            };
+            let live_course = event.get("live_course").as_string().is_some();
+
+            let dispatch = dispatch.clone();
+
+            wasm_bindgen_futures::spawn_local(async move {
+                main_store::insert_course(
+                    dispatch,
+                    long_description.into(),
+                    title.into(),
+                    tag_id,
+                    short_description.into(),
+                    live_course,
+                )
+                .await;
+            });
+
+            long_description_value.set(AttrValue::from(""));
+        })
+    };
 
     let title_oninput = {
         let title = title.clone();
@@ -128,6 +141,8 @@ pub fn component() -> Html {
                     label="Long Description"
                     rows=5
                     name="long_description"
+                    value={long_description_value.deref().clone()}
+                    oninput={long_description_oninput}
                 />
                 <BBInput
                     id="short-description"

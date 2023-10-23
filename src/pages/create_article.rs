@@ -43,7 +43,17 @@ pub fn component() -> Html {
         })
     }
 
+    let content_value = use_state(|| AttrValue::from(""));
+    let content_oninput = {
+        let value = content_value.clone();
+
+        Callback::from(move |new_value| value.set(new_value))
+    };
+
     let onsubmit = {
+        let title_store = title.clone();
+        let content_value = content_value.clone();
+
         Callback::from(move |form: FormData| {
             let Some(title) = form.get("title").as_string() else {
                 main_store::error_alert(dispatch.clone(), "missing title");
@@ -69,6 +79,9 @@ pub fn component() -> Html {
                     main_store::insert_article(dispatch, title.into(), content.into()).await
                 });
             }
+
+            title_store.set(AttrValue::from(""));
+            content_value.set(AttrValue::from(""));
         })
     };
 
@@ -93,6 +106,8 @@ pub fn component() -> Html {
                     id="body"
                     label="Article Body"
                     name="content"
+                    value={content_value.deref().clone()}
+                    oninput={content_oninput}
                 />
                 <BBButton button_style={BBButtonStyle::PrimaryLight} button_type={BBButtonType::Submit}>{"Create Article"}</BBButton>
             </BBForm>

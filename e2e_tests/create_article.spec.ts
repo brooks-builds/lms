@@ -85,6 +85,9 @@ test.describe("Authors", async () => {
 
     expect(intercepted).toBe(true);
     expect(await page.getByText("created").isVisible()).toBe(true);
+
+    expect(await page.getByLabel("Title").inputValue()).toBe("");
+    expect(await page.getByLabel("Article Body").inputValue()).toBe("");
   });
 
   test("cannot create an article without title", async ({
