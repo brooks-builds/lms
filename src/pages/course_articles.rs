@@ -127,7 +127,7 @@ pub fn component(props: &Props) -> Html {
                     <BBTitle level={BBTitleLevel::Two} align={AlignText::Center}>
                         {"Assigned"}
                     </BBTitle>
-                    <BBButtonList items={create_article_titles(&course.articles)} onclick={assigned_articles_onclick} />
+                    <BBButtonList items={create_article_titles(&course.articles)} onclick={assigned_articles_onclick} draggable={true} />
                 </BBCol>
                 <BBCol>
                     <BBTitle level={BBTitleLevel::Two} align={AlignText::Center}>
