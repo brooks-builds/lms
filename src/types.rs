@@ -24,6 +24,32 @@ pub struct Course {
     pub payment_uri: Option<AttrValue>,
 }
 
+impl Course {
+    pub fn move_article_before(&mut self, moving_article_id: i64, target_article_id: i64) {
+        let Some(moving_article_index) = self
+            .articles
+            .iter()
+            .position(|article| article.id == moving_article_id)
+        else {
+            return;
+        };
+
+        let Some(target_article_index) = self
+            .articles
+            .iter()
+            .position(|article| article.id == target_article_id)
+        else {
+            return;
+        };
+
+        let moving_article = self.articles.remove(moving_article_index);
+
+        self.articles.insert(target_article_index, moving_article);
+
+        self.articles_dirty = true;
+    }
+}
+
 impl From<api_get_all_data::ApiGetAllDataLmsCourses> for Course {
     fn from(api_course: api_get_all_data::ApiGetAllDataLmsCourses) -> Self {
         Self {
