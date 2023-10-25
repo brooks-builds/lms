@@ -12,7 +12,7 @@ use ycl::{
         row::BBRow,
         states::BBLoadingState,
     },
-    modules::lists::button_list::{BBButtonList, BBButtonListItem},
+    modules::lists::button_list::{BBButtonList, BBButtonListItem, BBButtonListMove},
 };
 pub use yew::prelude::*;
 use yew_router::prelude::use_navigator;
@@ -20,7 +20,7 @@ use yewdux::prelude::use_store;
 
 use crate::{
     router::Routes,
-    stores::main_store::{self, MainStore},
+    stores::main_store::{self, move_article_before, MainStore},
 };
 
 #[derive(Properties, PartialEq)]
@@ -87,6 +87,7 @@ pub fn component(props: &Props) -> Html {
 
     let save_onclick = {
         let course_id = props.course_id;
+        let dispatch = dispatch.clone();
 
         Callback::from(move |_| {
             let dispatch = dispatch.clone();
@@ -117,6 +118,25 @@ pub fn component(props: &Props) -> Html {
         })
         .collect::<Vec<crate::types::Article>>();
 
+    let course_articles_ondrop = {
+        let dispatch = dispatch.clone();
+        let course_id = props.course_id;
+
+        Callback::from(move |move_data: BBButtonListMove| {
+            let Ok(moving_id) = move_data.moving_id.parse::<i64>() else {
+                gloo::console::error!("id of dragged element is not an i64");
+                return;
+            };
+
+            let Ok(target_id) = move_data.target_id.parse::<i64>() else {
+                gloo::console::error!("id of element dropped on is not an i64");
+                return;
+            };
+
+            move_article_before(dispatch.clone(), moving_id, target_id, course_id);
+        })
+    };
+
     html! {
         <BBContainer margin={BBContainerMargin::Normal}>
             <BBTitle level={BBTitleLevel::One} align={AlignText::Center}>
@@ -127,13 +147,21 @@ pub fn component(props: &Props) -> Html {
                     <BBTitle level={BBTitleLevel::Two} align={AlignText::Center}>
                         {"Assigned"}
                     </BBTitle>
-                    <BBButtonList items={create_article_titles(&course.articles)} onclick={assigned_articles_onclick} draggable={true} />
+                    <BBButtonList
+                        items={create_article_titles(&course.articles)}
+                        onclick={assigned_articles_onclick}
+                        draggable={true}
+                        ondrop={course_articles_ondrop}
+                    />
                 </BBCol>
                 <BBCol>
                     <BBTitle level={BBTitleLevel::Two} align={AlignText::Center}>
                         {"All Articles"}
                     </BBTitle>
-                    <BBButtonList items={create_article_titles(&available_articles)} onclick={all_articles_onclick} />
+                    <BBButtonList
+                        items={create_article_titles(&available_articles)}
+                        onclick={all_articles_onclick}
+                    />
                 </BBCol>
             </BBRow>
             <BBRow>

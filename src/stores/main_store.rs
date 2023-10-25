@@ -377,3 +377,19 @@ pub fn mark_article_opened(dispatch: Dispatch<MainStore>, article_id: i64) {
         db_user.start_article(article_id);
     });
 }
+
+pub fn move_article_before(
+    dispatch: Dispatch<MainStore>,
+    moving_article_id: i64,
+    target_article_id: i64,
+    course_id: i64,
+) {
+    dispatch.reduce_mut(|store| {
+        let Some(course) = store.courses.get_mut(&course_id) else {
+            gloo::console::warn!("could not find course with id", course_id);
+            return;
+        };
+
+        course.move_article_before(moving_article_id, target_article_id);
+    })
+}
