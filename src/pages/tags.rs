@@ -1,12 +1,16 @@
-use std::{collections::HashMap, ops::Deref};
-
+use crate::{
+    router::Routes,
+    stores::main_store::{self, MainStore},
+};
+use std::ops::Deref;
 use web_sys::FormData;
 use ycl::{
+    components::data_table::BBDataTable,
     elements::{
         button::{BBButton, BBButtonStyle, BBButtonType},
         form::BBForm,
         input::BBInput,
-        table::BBTable,
+        table::BBTableRow,
         title::{BBTitle, BBTitleLevel},
     },
     foundations::{
@@ -18,11 +22,6 @@ use ycl::{
 use yew::{function_component, html, use_effect, use_state, AttrValue, Callback, Html};
 use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
-
-use crate::{
-    router::Routes,
-    stores::main_store::{self, MainStore},
-};
 
 #[function_component(Tags)]
 pub fn component() -> Html {
@@ -52,17 +51,17 @@ pub fn component() -> Html {
         });
     }
 
-    let tag_titles = vec!["Tag Name".into()];
+    let all_tags_titles = vec!["Tag Name".into()];
 
-    let tag_values = store
+    let all_tags_rows = store
         .tags
         .values()
-        .map(|tag| {
-            let mut row = HashMap::new();
-            row.insert("Tag Name".into(), tag.name.clone());
-            row
+        .map(|tag| BBTableRow {
+            id: tag.id.to_string().into(),
+            values: vec![tag.name.clone()],
+            slot: None,
         })
-        .collect::<Vec<HashMap<AttrValue, AttrValue>>>();
+        .collect::<Vec<BBTableRow>>();
 
     let new_tag_onsubmit = {
         let tag_value = tag_value.clone();
@@ -106,7 +105,15 @@ pub fn component() -> Html {
                 <BBButton button_style={BBButtonStyle::PrimaryLight} button_type={BBButtonType::Submit}>{"Create Tag"}</BBButton>
             </BBForm>
 
-            <BBTable titles={tag_titles} values={tag_values} />
+            // table no longer takes values, but a Vec<BBTableRow>
+            // probably want to switch to a data table anyways
+            <BBDataTable
+                title="Tags"
+                title_level={BBTitleLevel::Two}
+                id="all-tags"
+                titles={all_tags_titles}
+                rows={all_tags_rows}
+            />
         </BBContainer>
     }
 }
