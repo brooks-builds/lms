@@ -39,6 +39,11 @@ test.describe("Author", async () => {
 
     expect(await page.getByText("saved").isVisible()).toBe(true);
   })
+
+  test("articles are preview by default", async ({ page }) => {
+    await interceptGraphql(page);
+    await login(Role.Author, page, "/course_articles/1");
+  })
 })
 
 test.describe("Visitor", async () => {
