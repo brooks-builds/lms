@@ -12,7 +12,7 @@ query ApiGetAllData {
     short_description
     title
     trailer_uri
-    course_articles {
+    course_articles(order_by: {order_by: asc}) {
       article {
         title
         id

@@ -56,7 +56,8 @@ test.describe("Authors", async () => {
 		await tagInput.type(tagName, { delay: 50 });
 		await page.getByRole("button", { name: "Create Tag" }).click();
 
-		expect(await page.getByText("Tag Created").isVisible()).toBe(true);
+		expect(await page.getByText("Tag created").isVisible()).toBe(true);
+		await page.waitForTimeout(500);
 		expect(await page.getByText(tagName).isVisible()).toBe(true);
 		expect(await tagInput.inputValue()).toBe("");
 	})
