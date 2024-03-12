@@ -26,7 +26,7 @@ pub fn component() -> Html {
             />
             <BBContainer margin={BBContainerMargin::Normal}>
             {
-                if live_courses.len() > 0 {
+                if live_courses.is_empty() {
                     html! {
                         <BBCardList<Routes>
                             card_data={live_courses}
