@@ -17,6 +17,7 @@ pub fn component() -> Html {
     let (store, _dispatch) = use_store::<MainStore>();
     let courses = create_card_data_list(store.clone(), false);
     let live_courses = create_card_data_list(store, true);
+    gloo::console::log!(live_courses.len());
 
     html! {
         <BBContainer>
@@ -27,6 +28,8 @@ pub fn component() -> Html {
             <BBContainer margin={BBContainerMargin::Normal}>
             {
                 if live_courses.is_empty() {
+                    html! {}
+                } else {
                     html! {
                         <BBCardList<Routes>
                             card_data={live_courses}
@@ -35,8 +38,6 @@ pub fn component() -> Html {
                             title="Live Courses"
                         />
                     }
-                } else {
-                    html! {}
                 }
             }
             <BBCardList<Routes>
