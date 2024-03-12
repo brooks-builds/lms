@@ -25,12 +25,20 @@ pub fn component() -> Html {
                 title="Course Library"
             />
             <BBContainer margin={BBContainerMargin::Normal}>
-            <BBCardList<Routes>
-                card_data={live_courses}
-                card_title_level={BBTitleLevel::Three}
-                title_level={BBTitleLevel::Two}
-                title="Live Courses"
-            />
+            {
+                if live_courses.len() > 0 {
+                    html! {
+                        <BBCardList<Routes>
+                            card_data={live_courses}
+                            card_title_level={BBTitleLevel::Three}
+                            title_level={BBTitleLevel::Two}
+                            title="Live Courses"
+                        />
+                    }
+                } else {
+                    html! {}
+                }
+            }
             <BBCardList<Routes>
                 card_data={courses}
                 card_title_level={BBTitleLevel::Three}
