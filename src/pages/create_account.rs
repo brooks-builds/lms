@@ -3,7 +3,6 @@ use std::ops::Deref;
 use stylist::{yew::styled_component, Style};
 use web_sys::FormData;
 use ycl::foundations::states::BBValidationState;
-use ycl::modules::password_strength::BBPasswordStrength;
 use ycl::{
     elements::{
         button::{BBButton, BBButtonStyle, BBButtonType},
@@ -33,7 +32,6 @@ pub fn component() -> Html {
     let password_validation_state = use_state(BBValidationState::default);
     let (_, dispatch) = use_store::<MainStore>();
     let navigator = use_navigator().unwrap();
-    let password_state = use_state(|| AttrValue::from(""));
     let username_value = use_state(AttrValue::default);
     let password_value = use_state(AttrValue::default);
 
