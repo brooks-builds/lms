@@ -110,6 +110,7 @@ pub fn component() -> Html {
                         is_valid={username_validation_state.deref().clone()}
                         oninput={username_oninput}
                         value={username_value.deref().clone()}
+                        classes="form-control-medium"
                     />
                     <BBInput
                         id="password"
@@ -117,7 +118,6 @@ pub fn component() -> Html {
                         name="password"
                         input_type={BBInputType::Password}
                         required={true}
-                        message="Password requirements: At least 8 characters, no more than 64 characters"
                         onisvalid={password_onisvalid}
                         is_valid={password_validation_state.deref().clone()}
                         oninput={password_oninput}
@@ -125,10 +125,8 @@ pub fn component() -> Html {
                         max={64}
                         validation_debounce={1000}
                         value={password_value.deref().clone()}
+                        classes="form-control-medium"
                     />
-                    <div>
-                        <BBPasswordStrength password={password_state.deref().clone()}/>
-                    </div>
                     <div>
                         <BBButton
                             button_type={BBButtonType::Submit}
