@@ -13,20 +13,21 @@
     <link data-trunk rel="copy-dir" href="../ycl/src/foundations/js" />
     <link data-trunk rel="copy-dir" href="../ycl/src/foundations/images" />
     <link data-trunk rel="copy-dir" href="./public/" />
-    <-- <script src="https://js.sentry-cdn.com/33876fc188ca1afab7834265ab8aa718.min.js" crossorigin="anonymous"></script> -->
+    <script
+      src="https://js.sentry-cdn.com/0f52f5bb7b849adf663bfafa90412598.min.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
     <script>
       if (window.location.hostname == 'learning.brooksbuilds.com') {
         Sentry.onLoad(function() {
-          console.log('loading sentry')
           Sentry.init({
             // Performance Monitoring
-            tracesSampleRate: 1.0, // Capture 100% of the transactions, reduce in production!
+            tracesSampleRate: 1.0, // Capture 100% of the transactions
             // Session Replay
             replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
             replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
-            integrations: [new Sentry.Replay()]
           });
         });
       }
