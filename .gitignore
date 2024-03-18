@@ -9,3 +9,5 @@ node_modules/
 courses should
 .DS_Store
 .git
+.env_prod
+.env_dev

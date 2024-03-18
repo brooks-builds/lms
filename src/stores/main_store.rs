@@ -5,6 +5,7 @@ use crate::{
     utils::cookies::{load_cookie, save_cookie},
 };
 use dotenvy_macro::dotenv;
+use gloo::console::error;
 use std::collections::HashMap;
 use ycl::foundations::states::BBLoadingState;
 use yew::AttrValue;
@@ -89,15 +90,19 @@ pub async fn login_from_redirect(dispatch: Dispatch<MainStore>) {
             Box::pin(async move {
                 store.auth_loaded = BBLoadingState::Loading;
                 let Ok(url) = gloo::utils::window().location().href() else {
+                    error!("missing window location url");
                     return;
                 };
                 let Ok(Some(saved_state)) = load_cookie(STATE_COOKIE_KEY) else {
+                    error!("missing state cookie");
                     return;
                 };
                 let Ok(parsed_url) = url::Url::parse(&url) else {
+                    error!("Error parsing url");
                     return;
                 };
                 let Some(fragment) = parsed_url.fragment() else {
+                    error!("Error parsing url fragment");
                     return;
                 };
                 let url_encoded =
@@ -108,10 +113,12 @@ pub async fn login_from_redirect(dispatch: Dispatch<MainStore>) {
                     return;
                 };
                 let Some(url_state) = url_encoded.get("state").map(ToString::to_string) else {
+                    error!("missing url state");
                     return;
                 };
 
                 if saved_state != url_state {
+                    error!("saved state doesn't match url state");
                     return;
                 }
 
