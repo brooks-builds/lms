@@ -1,3 +1,4 @@
+use url::Url;
 use ycl::{
     elements::title::{BBTitle, BBTitleLevel},
     foundations::align_text::AlignText,
@@ -9,7 +10,7 @@ use yewdux::prelude::use_store;
 
 use crate::{
     router::Routes,
-    stores::main_store::{self, MainStore},
+    stores::main_store::{self, error_alert, MainStore},
 };
 
 #[function_component(AuthRedirect)]

@@ -5,7 +5,7 @@ use crate::{
     utils::cookies::{load_cookie, save_cookie},
 };
 use dotenvy_macro::dotenv;
-use gloo::console::error;
+use gloo::console::{error, log};
 use std::collections::HashMap;
 use ycl::foundations::states::BBLoadingState;
 use yew::AttrValue;
@@ -85,47 +85,53 @@ pub async fn load_all_data(dispatch: Dispatch<MainStore>) {
 }
 
 pub async fn login_from_redirect(dispatch: Dispatch<MainStore>) {
-    dispatch
-        .reduce_mut_future(|store| {
+    dispatch.clone()
+        .reduce_mut_future(move |store| {
             Box::pin(async move {
                 store.auth_loaded = BBLoadingState::Loading;
                 let Ok(url) = gloo::utils::window().location().href() else {
-                    error!("missing window location url");
+                    store.alert.error("There was a problem handling the Auth0 login/signup. Please try again later and/or let us know in Discord");
                     return;
                 };
                 let Ok(Some(saved_state)) = load_cookie(STATE_COOKIE_KEY) else {
-                    error!("missing state cookie");
+                    store.alert.error("There was a problem handling the Auth0 login/signup. Please try again later and/or let us know in Discord");
                     return;
                 };
                 let Ok(parsed_url) = url::Url::parse(&url) else {
-                    error!("Error parsing url");
+                    store.alert.error("There was a problem handling the Auth0 login/signup. Please try again later and/or let us know in Discord");
                     return;
                 };
                 let Some(fragment) = parsed_url.fragment() else {
-                    error!("Error parsing url fragment");
+                    store.alert.error("There was a problem handling the Auth0 login/signup. Please try again later and/or let us know in Discord");
                     return;
                 };
                 let url_encoded =
                     url::form_urlencoded::parse(fragment.as_bytes()).collect::<HashMap<_, _>>();
+                if let Some(error_description) = url_encoded.get("error_description").map(ToString::to_string) {
+                    error!("auth0 returned an error", &error_description);
+                    store.alert.error(error_description);
+                    return
+                }
                 let Some(access_token) = url_encoded.get("access_token").map(ToString::to_string)
                 else {
-                    gloo::console::error!("missing access token in redirect uri");
+                    store.alert.error("There was a problem handling the Auth0 login/signup. Please try again later and/or let us know in Discord");
                     return;
                 };
                 let Some(url_state) = url_encoded.get("state").map(ToString::to_string) else {
-                    error!("missing url state");
+                    store.alert.error("There was a problem handling the Auth0 login/signup. Please try again later and/or let us know in Discord");
                     return;
                 };
 
                 if saved_state != url_state {
-                    error!("saved state doesn't match url state");
+                    store.alert.error("There was a problem handling the Auth0 login/signup. Please try again later and/or let us know in Discord");
                     return;
                 }
 
                 if let Err(error) =
                     save_cookie(TOKEN_COOKIE_KEY, &access_token, TOKEN_COOKIE_MAX_LIFE)
                 {
-                    log_error("Error saving token to cookie", &error);
+                    store.alert.error("There was a problem handling the Auth0 login/signup. Please try again later and/or let us know in Discord");
+                    return;
                 }
 
                 let Auth0User {
@@ -399,4 +405,24 @@ pub fn move_article_before(
 
         course.move_article_before(moving_article_id, target_article_id);
     })
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum MainStoreError {
+    #[error("There was a problem handling the AUTH0 login/signup")]
+    MissingWindowLocationUri,
+    #[error("There was a problem handling the AUTH0 login/signup")]
+    MissingStateCookie,
+    #[error("There was a problem handling the AUTH0 login/signup")]
+    ErrorParsingUri,
+    #[error("There was a problem handling the AUTH0 login/signup")]
+    ErrorParsingUriFragment,
+    #[error("Thanks for signing up! Please verify your email before you can log in")]
+    EmailNotVerified,
+    #[error("There was a problem handling the AUTH0 login/signup")]
+    MissingUriState,
+    #[error("There was a problem handling the AUTH0 login/signup")]
+    StatesDoNotMatch,
+    #[error("There was a problem handling the AUTH0 login/signup")]
+    ErrorSavingToken,
 }
