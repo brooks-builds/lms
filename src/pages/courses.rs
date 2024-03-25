@@ -61,7 +61,7 @@ fn create_card_data_list(store: Rc<MainStore>, live: bool) -> Vec<BBCardData<Rou
 
             Some(
                 BBCardDataBuilder::<Routes>::new()
-                    .title(store_course.title.as_str())
+                    .title(store_course.title.clone())
                     .add_text(store_course.short_description.clone())
                     .link(Routes::CourseDetails { id: *id })
                     .width(BBCardDataWidth::Small)

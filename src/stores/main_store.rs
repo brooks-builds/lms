@@ -1,5 +1,5 @@
 use crate::{
-    api,
+    api::{self, articles},
     types::{Alert, Article, Auth0User, Course, DbUser, Tag, User},
     utils::cookies::{load_cookie, save_cookie},
 };
@@ -46,6 +46,40 @@ impl MainStore {
             return false;
         };
         user.purchased_courses.contains(&course_id)
+    }
+
+    pub fn get_next_article_for_course(&self, course_id: i64) -> Option<i64> {
+        let learner_article_ids = self
+            .db_user
+            .as_ref()?
+            .articles
+            .iter()
+            .map(|learner_article| learner_article.article_id)
+            .collect::<Vec<i64>>();
+        let course = self.courses.get(&course_id)?;
+        let article_ids = course
+            .articles
+            .iter()
+            .filter_map(|article| {
+                if article.content.is_some() {
+                    Some(article.id)
+                } else {
+                    None
+                }
+            })
+            .collect::<Vec<i64>>();
+        let mut article_id = *article_ids.last()?;
+
+        for id in article_ids {
+            if learner_article_ids.contains(&id) {
+                continue;
+            }
+
+            article_id = id;
+            break;
+        }
+
+        Some(article_id)
     }
 }
 

@@ -9,11 +9,17 @@ use ycl::{
         container::{BBContainer, BBContainerMargin},
         row::BBRow,
     },
+    modules::card_list::{BBCardData, BBCardDataBuilder, BBCardDataWidth, BBCardList},
 };
 use yew::{function_component, html, Html, Properties};
+use yew_router::hooks::use_navigator;
 use yewdux::prelude::use_store;
 
-use crate::{components::course_nav::CourseNav, stores::main_store::MainStore};
+use crate::{
+    components::course_nav::CourseNav,
+    router::Routes,
+    stores::main_store::{error_alert, MainStore},
+};
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
@@ -22,42 +28,51 @@ pub struct Props {
 
 #[function_component(CourseAccess)]
 pub fn component(props: &Props) -> Html {
-    let (store, _dispatch) = use_store::<MainStore>();
+    let (store, dispatch) = use_store::<MainStore>();
     let course_id = props.id;
+    let navigator = use_navigator().unwrap();
 
-    let Some(course) = store.courses.get(&props.id) else {
-        return html! {
-        <BBContainer margin={BBContainerMargin::Normal}>
-            <BBTitle align={AlignText::Center} level={BBTitleLevel::One}>{"Loading course"}</BBTitle>
-        </BBContainer>
-        };
+    let Some(course) = store.courses.get(&course_id) else {
+        error_alert(dispatch, "Unable to load course");
+        navigator.push(&Routes::Courses);
+
+        return html! {<></>};
     };
 
-    let preview_articles = store
-        .preview_articles_by_course
-        .get(&course.id)
-        .cloned()
-        .unwrap_or_default();
+    if let Some(article_id) = store.get_next_article_for_course(course_id) {
+        navigator.push(&Routes::CourseAccessArticle {
+            course_id,
+            article_id,
+        });
 
-    html! {
-        <BBContainer margin={BBContainerMargin::Normal}>
-                    <BBTitle align={AlignText::Center} level={BBTitleLevel::One}>{course.title.clone()}</BBTitle>
-            <BBRow>
-                <BBCol width={BBColWidth::Three}>
-                    <CourseNav {course_id} {preview_articles} />
-                </BBCol>
-                <BBCol>
-                    <BBTitle
-                        align={AlignText::Center}
-                        level={BBTitleLevel::Two}
-                    >
-                        {"Select an Article"}
-                    </BBTitle>
-                    <BBText>
-                        {"Click an article to the left to load it"}
-                    </BBText>
-                </BBCol>
-            </BBRow>
-        </BBContainer>
+        html! {
+            <></>
+        }
+    } else {
+        let articles_card_data = course
+            .articles
+            .iter()
+            .map(|article| {
+                BBCardDataBuilder::new()
+                    .title(article.title.clone())
+                    .width(BBCardDataWidth::Medium)
+                    .build()
+            })
+            .collect::<Vec<BBCardData<Routes>>>();
+
+        html! {
+            <BBContainer>
+                <BBTitle level={BBTitleLevel::One} align={AlignText::Center}>
+                    {course.title.clone()}
+                </BBTitle>
+                <BBText>
+                    {course.long_description.clone()}
+                </BBText>
+                <BBCardList<Routes>
+                    card_data={articles_card_data}
+                    card_title_level={BBTitleLevel::Six}
+                />
+            </BBContainer>
+        }
     }
 }
