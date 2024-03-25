@@ -8,8 +8,9 @@ use crate::pages::{
     create_article::CreateArticle, create_course::CreateCourse, home::Home, tags::Tags,
 };
 
-#[derive(Clone, Routable, PartialEq, Debug)]
+#[derive(Clone, Routable, PartialEq, Debug, Default)]
 pub enum Routes {
+    #[default]
     #[at("/")]
     Home,
     #[at("/courses")]
