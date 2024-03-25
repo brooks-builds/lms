@@ -1,13 +1,11 @@
 use crate::{
-    auth::auth_login_uri,
+    api::auth::navigate_to_login,
     components::alert::Alert,
     logging::log_error,
     router::{switch, Routes},
-    stores::main_store::{self, MainStore},
+    stores::main_store::{self, error_alert, MainStore},
     utils::cookies::delete_cookie,
 };
-use dotenvy_macro::dotenv;
-use gloo::console::error;
 use ycl::{
     foundations::{roles::BBRole, states::BBLoadingState},
     modules::{
@@ -78,19 +76,9 @@ pub fn component() -> Html {
         let dispatch = dispatch.clone();
 
         Callback::from(move |_| {
-            let login_uri = match auth_login_uri() {
-                Ok(uri) => uri,
-                Err(error) => {
-                    gloo::console::error!("Error getting login uri:", error.to_string());
-                    // main_store::error_alert(dispatch, "Error calculating the login uri");
-                    "/".into()
-                }
-            };
-
-            gloo::utils::window()
-                .location()
-                .set_href(login_uri.as_str())
-                .expect("error navigating to login url");
+            if let Err(_error) = navigate_to_login() {
+                error_alert(dispatch.clone(), "There was a problem navigating to our authentication service, please try again");
+            }
         })
     };
 

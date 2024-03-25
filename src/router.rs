@@ -5,18 +5,13 @@ use crate::pages::{
     auth_redirect::AuthRedirect, course_access::CourseAccess,
     course_access_article::CourseAccessArticle, course_articles::CourseArticles,
     course_details::CourseDetails, course_purchase::CoursePurchase, courses::Courses,
-    create_account::CreateAccount, create_article::CreateArticle, create_course::CreateCourse,
-    home::Home, login::Login, tags::Tags,
+    create_article::CreateArticle, create_course::CreateCourse, home::Home, tags::Tags,
 };
 
 #[derive(Clone, Routable, PartialEq, Debug)]
 pub enum Routes {
     #[at("/")]
     Home,
-    #[at("/auth/create_account")]
-    CreateAccount,
-    #[at("/auth/login")]
-    Login,
     #[at("/courses")]
     Courses,
     #[at("/courses/:id")]
@@ -42,8 +37,6 @@ pub enum Routes {
 pub fn switch(routes: Routes) -> Html {
     match routes {
         Routes::Home => html! { <Home /> },
-        Routes::CreateAccount => html! { <CreateAccount /> },
-        Routes::Login => html! { <Login /> },
         Routes::Courses => html! { <Courses /> },
         Routes::CourseDetails { id } => html! { <CourseDetails {id} /> },
         Routes::AuthRedirect => html! { <AuthRedirect />},

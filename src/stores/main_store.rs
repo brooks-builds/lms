@@ -1,11 +1,10 @@
 use crate::{
     api,
-    logging::log_error,
     types::{Alert, Article, Auth0User, Course, DbUser, Tag, User},
     utils::cookies::{load_cookie, save_cookie},
 };
 use dotenvy_macro::dotenv;
-use gloo::console::{error, log};
+use gloo::console::error;
 use std::collections::HashMap;
 use ycl::foundations::states::BBLoadingState;
 use yew::AttrValue;
@@ -127,7 +126,7 @@ pub async fn login_from_redirect(dispatch: Dispatch<MainStore>) {
                     return;
                 }
 
-                if let Err(error) =
+                if let Err(_error) =
                     save_cookie(TOKEN_COOKIE_KEY, &access_token, TOKEN_COOKIE_MAX_LIFE)
                 {
                     store.alert.error("There was a problem handling the Auth0 login/signup. Please try again later and/or let us know in Discord");
@@ -405,24 +404,4 @@ pub fn move_article_before(
 
         course.move_article_before(moving_article_id, target_article_id);
     })
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum MainStoreError {
-    #[error("There was a problem handling the AUTH0 login/signup")]
-    MissingWindowLocationUri,
-    #[error("There was a problem handling the AUTH0 login/signup")]
-    MissingStateCookie,
-    #[error("There was a problem handling the AUTH0 login/signup")]
-    ErrorParsingUri,
-    #[error("There was a problem handling the AUTH0 login/signup")]
-    ErrorParsingUriFragment,
-    #[error("Thanks for signing up! Please verify your email before you can log in")]
-    EmailNotVerified,
-    #[error("There was a problem handling the AUTH0 login/signup")]
-    MissingUriState,
-    #[error("There was a problem handling the AUTH0 login/signup")]
-    StatesDoNotMatch,
-    #[error("There was a problem handling the AUTH0 login/signup")]
-    ErrorSavingToken,
 }

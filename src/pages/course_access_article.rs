@@ -15,10 +15,10 @@ use yew_router::prelude::use_navigator;
 use yewdux::prelude::use_store;
 
 use crate::{
-    api,
+    api::{self, auth::navigate_to_login},
     components::{course_nav::CourseNav, next_article::NextArticle},
     router::Routes,
-    stores::main_store::{self, MainStore},
+    stores::main_store::{self, error_alert, MainStore},
 };
 
 #[derive(Properties, PartialEq)]
@@ -78,13 +78,19 @@ pub fn component(props: &Props) -> Html {
     if let Some(course) = store.courses.get(&props.course_id) {
         let article_id = props.article_id;
         let course_id = course.id;
+        let dispatch = dispatch.clone();
+
         let onclick_purchase = {
             let store = store.clone();
+            let dispatch = dispatch.clone();
+
             Callback::from(move |_: ()| {
                 if store.logged_in() {
                     navigation.push(&Routes::CoursePurchase { course_id });
                 } else {
-                    navigation.push(&Routes::Login);
+                    if let Err(_error) = navigate_to_login() {
+                        error_alert(dispatch.clone(), "There was a problem navigating to the authentication service, please try again");
+                    }
                 }
             })
         };
