@@ -5,7 +5,7 @@ use ycl::{
     elements::title::BBTitleLevel,
     foundations::container::{BBContainer, BBContainerMargin},
     modules::{
-        card_list::{BBCardData, BBCardDataBuilder, BBCardList},
+        card_list::{BBCardData, BBCardDataBuilder, BBCardDataWidth, BBCardList},
         hero::BBHero,
     },
 };
@@ -62,8 +62,9 @@ fn create_card_data_list(store: Rc<MainStore>, live: bool) -> Vec<BBCardData<Rou
             Some(
                 BBCardDataBuilder::<Routes>::new()
                     .title(store_course.title.as_str())
-                    .text(store_course.short_description.as_str())
+                    .add_text(store_course.short_description.clone())
                     .link(Routes::CourseDetails { id: *id })
+                    .width(BBCardDataWidth::Small)
                     .build(),
             )
         })
