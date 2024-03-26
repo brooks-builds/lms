@@ -9,7 +9,10 @@ use ycl::{
         external_link::BBLink, image::BBImage, internal_link::BBInternalLink,
         youtube_video::BBYouTubeVideo,
     },
-    foundations::container::{BBContainer, BBContainerMargin},
+    foundations::{
+        container::{BBContainer, BBContainerMargin},
+        row::BBRow,
+    },
     modules::{
         hero::{BBHero, BBHeroLeftMedia},
         nav::{
@@ -31,29 +34,37 @@ pub fn component(props: &Props) -> Html {
     let (store, dispatch) = use_store::<MainStore>();
 
     if let Some(course) = store.courses.get(&props.id) {
+        let price = if store.own_course(course.id) {
+            None
+        } else {
+            Some(format!("${} USD", course.price.unwrap_or(0)))
+        };
+
         html! {
-            <div>
+            <BBContainer>
                 {
                     if store.user.is_author() {
                         html! {
-                            <BBContainer margin={BBContainerMargin::Normal}>
+                            <BBRow>
                                 <BBAdminNav<Routes>
                                     links={create_admin_nav_routes(props.id)}
                                 />
-                            </BBContainer>
+                            </BBRow>
                         }
                     } else {
-                    html! {}
+                        html! {}
+                    }
                 }
-                }
-                <BBHero
-                    title={format!("${}", course.price.unwrap_or(0))}
-                    subtitle={course.title.clone()}
-                    text={course.long_description.clone()}
-                    media={hero_left_media(course.trailer_uri.clone().map(|uri| uri.to_string()), course.title.to_string())}
-                    main={hero_main(props.id, store, dispatch)}
-                />
-            </div>
+                <BBRow>
+                    <BBHero
+                        subtitle={price}
+                        title={course.title.clone()}
+                        text={course.long_description.clone()}
+                        media={hero_left_media(course.trailer_uri.clone().map(|uri| uri.to_string()), course.title.to_string())}
+                        main={hero_main(props.id, store, dispatch)}
+                    />
+                </BBRow>
+            </BBContainer>
         }
     } else {
         html! {

@@ -41,7 +41,6 @@ fn community_cards_data() -> Vec<BBCardData<Routes>> {
             .add_text("Join our community on Discord to get help with courses, programming, and stay up to date with the latest BB news")
             .href("https://discord.gg/y7GkU6UMrm")
             .href_text("Join Discord")
-            .width(BBCardDataWidth::Small)
             .build(),
     ]
 }
