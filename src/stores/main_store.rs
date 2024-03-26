@@ -54,13 +54,20 @@ impl MainStore {
             .as_ref()?
             .articles
             .iter()
-            .map(|learner_article| learner_article.article_id)
+            .filter_map(|learner_article| {
+                if learner_article.completed_at.is_some() {
+                    Some(learner_article.article_id)
+                } else {
+                    None
+                }
+            })
             .collect::<Vec<i64>>();
         let course = self.courses.get(&course_id)?;
         let article_ids = course
             .articles
             .iter()
             .filter_map(|article| {
+                gloo::console::log!("article title:", &article.title.as_str().to_owned());
                 if article.content.is_some() {
                     Some(article.id)
                 } else {
