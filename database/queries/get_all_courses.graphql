@@ -16,6 +16,7 @@ query ApiGetAllData {
       article {
         title
         id
+        description
         content {
           content
         }
@@ -32,6 +33,7 @@ query ApiGetAllData {
     created_at
     id
     title
+    description
   }
   users {
     id

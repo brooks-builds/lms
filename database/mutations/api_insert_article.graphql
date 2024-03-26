@@ -6,5 +6,6 @@ mutation ApiInsertArticle($title: String!, $content: String!) {
     created_at
     id
     title
+    description
   }
 }

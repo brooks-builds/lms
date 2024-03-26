@@ -137,6 +137,7 @@ pub struct Article {
     pub id: i64,
     pub content: Option<AttrValue>,
     pub preview: Option<bool>,
+    pub description: Option<AttrValue>,
 }
 
 impl From<api_get_all_data::ApiGetAllDataLmsCoursesCourseArticlesArticle> for Article {
@@ -148,6 +149,7 @@ impl From<api_get_all_data::ApiGetAllDataLmsCoursesCourseArticlesArticle> for Ar
                 .content
                 .map(|api_content| api_content.content.into()),
             preview: None,
+            description: api_article.description.map(Into::into),
         }
     }
 }
@@ -161,6 +163,7 @@ impl From<api_insert_article::ApiInsertArticleInsertLmsArticlesOne> for Article 
                 .content
                 .map(|api_content| api_content.content.into()),
             preview: None,
+            description: api_article.description.map(Into::into),
         }
     }
 }
@@ -172,6 +175,7 @@ impl From<api_get_all_data::ApiGetAllDataLmsArticles> for Article {
             id: value.id,
             content: None,
             preview: None,
+            description: value.description.map(Into::into),
         }
     }
 }

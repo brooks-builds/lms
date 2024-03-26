@@ -19,14 +19,14 @@ pub fn component() -> Html {
             />
             <BBCardList<Routes>
                 card_data={about_us_cards_data()}
-                card_title_level={BBTitleLevel::Two}
+                card_title_level={BBTitleLevel::Three}
                 icon={BBIconType::Star}
                 title="About Us"
             />
 
             <BBCardList<Routes>
                 card_data={community_cards_data()}
-                card_title_level={BBTitleLevel::Two}
+                card_title_level={BBTitleLevel::Three}
                 icon={BBIconType::Heart}
                 title="Community Driven"
             />

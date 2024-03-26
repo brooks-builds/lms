@@ -1,5 +1,5 @@
 use crate::{
-    api::{self, articles},
+    api::{self},
     types::{Alert, Article, Auth0User, Course, DbUser, Tag, User},
     utils::cookies::{load_cookie, save_cookie},
 };
