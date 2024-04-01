@@ -73,10 +73,7 @@ pub fn component(props: &Props) -> Html {
                     </BBCol>
                 </BBRow>
                 <BBRow>
-                    <BBCol width={BBColWidth::Three}>
-                        <CourseNav course_id={course_id} {preview_articles} />
-                    </BBCol>
-                    <BBCol width={BBColWidth::Nine}>
+                    <BBCol width={BBColWidth::Twelve}>
                         <BBText>
                             {course.long_description.clone()}
                         </BBText>
