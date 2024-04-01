@@ -59,6 +59,6 @@ fn next_article(course: &Course, article_id: i64, own_course: bool) -> Option<&A
         course
             .articles
             .iter()
-            .find(move |article| article.id > article_id && article.preview.unwrap_or_default())
+            .find(move |article| article.id > article_id && article.preview)
     }
 }

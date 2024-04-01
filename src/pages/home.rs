@@ -2,7 +2,7 @@ use ycl::{
     elements::{icon::BBIconType, title::BBTitleLevel},
     foundations::container::{BBContainer, BBContainerMargin},
     modules::{
-        card_list::{BBCardData, BBCardDataBuilder, BBCardDataWidth, BBCardList},
+        card_list::{BBCardData, BBCardDataBuilder, BBCardList},
         hero::BBHero,
     },
 };

@@ -11,11 +11,11 @@ use ycl::{
     },
     modules::card_list::{BBCardData, BBCardDataBuilder, BBCardDataWidth, BBCardList},
 };
-use yew::{function_component, html, Html, Properties};
+use yew::{function_component, html, Callback, Html, Properties};
 use yew_router::hooks::use_navigator;
 use yewdux::prelude::use_store;
 
-use crate::{components::course_nav::CourseNav, router::Routes, stores::main_store::MainStore};
+use crate::{router::Routes, stores::main_store::MainStore};
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
@@ -51,6 +51,21 @@ pub fn component(props: &Props) -> Html {
 
                 if let Some(description) = &article.description {
                     card_builder = card_builder.add_text(description.clone());
+                }
+
+                if article.preview {
+                    let article_id = article.id;
+                    let navigator = navigator.clone();
+
+                    card_builder = card_builder
+                        .card_type(ycl::modules::card::BBCardType::CallToAction)
+                        .href_text("Preview the article")
+                        .onclick(Callback::from(move |_| {
+                            navigator.push(&Routes::CourseAccessArticle {
+                                course_id,
+                                article_id,
+                            });
+                        }));
                 }
 
                 card_builder.build()

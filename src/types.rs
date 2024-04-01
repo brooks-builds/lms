@@ -63,8 +63,13 @@ impl From<api_get_all_data::ApiGetAllDataLmsCourses> for Course {
             articles: api_course
                 .course_articles
                 .into_iter()
-                .filter_map(|api_course_articles| api_course_articles.article.map(Into::into))
+                .map(|course_article| Article::from(course_article))
                 .collect(),
+            // articles: api_course
+            //     .course_articles
+            //     .into_iter()
+            //     .filter_map(|api_course_articles| api_course_articles.article.map(Into::into))
+            //     .collect(),
             articles_dirty: false,
             live: api_course.live,
             launches_on: api_course.launches_on.map(Into::into),
@@ -136,8 +141,32 @@ pub struct Article {
     pub title: AttrValue,
     pub id: i64,
     pub content: Option<AttrValue>,
-    pub preview: Option<bool>,
+    pub preview: bool,
     pub description: Option<AttrValue>,
+}
+
+impl From<api_get_all_data::ApiGetAllDataLmsCoursesCourseArticles> for Article {
+    fn from(course_article: api_get_all_data::ApiGetAllDataLmsCoursesCourseArticles) -> Self {
+        let Some(article) = course_article.article else {
+            return Self {
+                title: "Unknown Article title".into(),
+                id: -1,
+                content: None,
+                preview: false,
+                description: None,
+            };
+        };
+
+        Self {
+            title: article.title.into(),
+            id: article.id,
+            content: article
+                .content
+                .map(|article_content| article_content.content.into()),
+            preview: course_article.preview,
+            description: article.description.map(Into::into),
+        }
+    }
 }
 
 impl From<api_get_all_data::ApiGetAllDataLmsCoursesCourseArticlesArticle> for Article {
@@ -148,7 +177,7 @@ impl From<api_get_all_data::ApiGetAllDataLmsCoursesCourseArticlesArticle> for Ar
             content: api_article
                 .content
                 .map(|api_content| api_content.content.into()),
-            preview: None,
+            preview: false,
             description: api_article.description.map(Into::into),
         }
     }
@@ -162,7 +191,7 @@ impl From<api_insert_article::ApiInsertArticleInsertLmsArticlesOne> for Article 
             content: api_article
                 .content
                 .map(|api_content| api_content.content.into()),
-            preview: None,
+            preview: false,
             description: api_article.description.map(Into::into),
         }
     }
@@ -174,7 +203,7 @@ impl From<api_get_all_data::ApiGetAllDataLmsArticles> for Article {
             title: value.title.into(),
             id: value.id,
             content: None,
-            preview: None,
+            preview: false,
             description: value.description.map(Into::into),
         }
     }
