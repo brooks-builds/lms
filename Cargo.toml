@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 yew = { version = "0.20.0", features = ["csr"] }
-ycl = { git = "https://github.com/brooks-builds/ycl", rev = "06beb8c" }
+ycl = { git = "https://github.com/brooks-builds/ycl", rev = "d15dc11" }
 # ycl = { path = "../ycl/" }
 yew-router = "0.17.0"
 gloo = "0.8.0"
