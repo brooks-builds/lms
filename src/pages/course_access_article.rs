@@ -1,5 +1,6 @@
 #![allow(non_camel_case_types)]
 use ycl::{
+    components::collapse::BBCollapse,
     elements::title::{BBTitle, BBTitleLevel},
     foundations::{
         align_text::AlignText,
@@ -152,7 +153,12 @@ pub fn component(props: &Props) -> Html {
                     </BBTitle>
                     <BBRow>
                         <BBCol width={BBColWidth::Three}>
-                            <CourseNav course_id={props.course_id} {preview_articles} />
+                            <BBCollapse
+                                id="course-nav"
+                                label="toggle lessons nav"
+                            >
+                                <CourseNav course_id={props.course_id} {preview_articles} />
+                            </BBCollapse>
                         </BBCol>
                         <BBCol width={BBColWidth::Nine}>
                             <BBCourseContent

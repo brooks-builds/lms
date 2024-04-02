@@ -72,12 +72,6 @@ pub fn component(props: &Props) -> Html {
             })
             .collect::<Vec<BBCardData<Routes>>>();
 
-        let preview_articles = store
-            .preview_articles_by_course
-            .get(&course.id)
-            .cloned()
-            .unwrap_or_default();
-
         html! {
             <BBContainer>
                 <BBRow>
