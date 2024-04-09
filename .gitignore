@@ -11,3 +11,7 @@ courses should
 .git
 .env_prod
 .env_dev
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
