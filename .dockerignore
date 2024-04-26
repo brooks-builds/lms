@@ -1,0 +1,10 @@
+.github
+.gitignore
+.nvmrc
+Dockerfile
+compose.yml
+e2e_tests
+package*.json
+playwright*
+tests*
+target
