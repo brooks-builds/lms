@@ -1,2 +1,2 @@
 [watch]
-ignore = [ "test-results" ]
+ignore = [ "e2e_tests", "playwright-report", "test-results" ]
