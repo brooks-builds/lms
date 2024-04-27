@@ -44,6 +44,7 @@ pub fn component() -> Html {
                 card_title_level={BBTitleLevel::Three}
                 title_level={BBTitleLevel::Two}
                 title="Featured Courses"
+                test_id="courses"
             />
             </BBContainer>
         </BBContainer>
