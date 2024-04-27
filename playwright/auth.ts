@@ -1,10 +1,9 @@
 import { Page, expect } from "@playwright/test";
 
 export async function login(page: Page, role: UserRole ) {
-  const url = process.env.TEST_URL || 'http://localhost:8080'
   const user = users[role]
 
-  await page.goto(url);
+  await page.goto('/');
   await page.getByRole('link', { name: 'Login or Signup' }).click();
   await page.getByLabel('Email address*').fill(user.username);
   await page.getByLabel('Password*').click();
