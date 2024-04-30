@@ -8,10 +8,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@playwright/test": "^1.43.0",
     "@types/node": "^20.12.6",
     "dotenv": "^16.4.5",
     "prettier": "^3.2.5",
+    "typescript": "^5.4.5",
     "typescript-language-server": "^4.3.3"
   }
 }

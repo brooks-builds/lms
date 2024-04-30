@@ -1,6 +1,9 @@
 import { Page, expect } from "@playwright/test";
+import dotenv from 'dotenv';
 
-export async function login(page: Page, role: UserRole ) {
+dotenv.config();
+
+export async function login(page: Page, role: UserRole) {
   const user = users[role]
 
   await page.goto('/');
@@ -22,11 +25,11 @@ const users = {
     username: process.env.TEST_AUTHOR_USERNAME || '',
     password: process.env.TEST_AUTHOR_PASSWORD || '',
     roleName: 'Author',
-    },
+  },
   [UserRole.learner]: {
     username: process.env.TEST_LEARNER_USERNAME || '',
     password: process.env.TEST_LEARNER_PASSWORD || '',
     roleName: 'Learner',
-    },
+  },
 }
 
