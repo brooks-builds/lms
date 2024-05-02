@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 
-test('test', async ({ page }) => {
+test('basic flow', async ({ page }) => {
   const tagName = faker.word.words(1);
   const courseTitle = faker.word.words(5);
   const longDescription = faker.lorem.sentences(5);

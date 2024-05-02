@@ -11,6 +11,7 @@ courses should
 .git
 .env_prod
 .env_dev
+.env_test
 /test-results/
 /playwright-report/
 /blob-report/
