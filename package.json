@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "## Example Mermaid",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "playwright test"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
