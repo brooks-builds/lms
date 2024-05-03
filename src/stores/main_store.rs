@@ -183,7 +183,7 @@ pub async fn login_from_redirect(dispatch: Dispatch<MainStore>) {
                     email_verified,
                     metadata,
                     updated_at: _updated_at,
-                } = api::auth::get_user_info(&access_token).await.unwrap();
+                } = api::auth::get_user_info(&access_token).await.unwrap_or_default();
 
                 store.user = User {
                     role: metadata.role.into(),

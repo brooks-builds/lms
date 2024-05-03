@@ -227,7 +227,7 @@ impl User {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub struct Auth0User {
     pub sub: String,
     pub nickname: String,
@@ -240,7 +240,7 @@ pub struct Auth0User {
     pub metadata: Auth0UserMetadata,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub struct Auth0UserMetadata {
     pub role: String,
 }
