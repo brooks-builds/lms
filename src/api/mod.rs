@@ -2,16 +2,6 @@ pub mod articles;
 pub mod auth;
 pub mod tags;
 
-use std::collections::HashMap;
-
-use dotenvy_macro::dotenv;
-use eyre::Result;
-use gloo::net::http::Request;
-use graphql_client::GraphQLQuery;
-use serde::{de::DeserializeOwned, Deserialize, Serialize};
-use ycl::foundations::roles::BBRole;
-use yew::AttrValue;
-
 use crate::{
     database_queries::{
         api_complete_user_article, api_get_all_data, api_insert_article, api_insert_course,
@@ -22,6 +12,14 @@ use crate::{
     errors::LmsError,
     types::{ApiAllData, Article, Course, Tag},
 };
+use dotenvy_macro::dotenv;
+use eyre::Result;
+use gloo::net::http::{Request, RequestBuilder};
+use graphql_client::GraphQLQuery;
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
+use std::collections::HashMap;
+use ycl::foundations::roles::BBRole;
+use yew::AttrValue;
 
 static GRAPHQL_URI: &str = dotenv!("GRAPHQL_URI");
 
@@ -30,27 +28,38 @@ pub struct Response<T> {
     data: T,
 }
 
-pub struct SendToGraphql {
-    request: Request,
+pub struct SendToGraphql<T: Serialize> {
+    request: RequestBuilder,
+    body: Option<T>,
 }
 
-impl SendToGraphql {
+impl<T: Serialize> SendToGraphql<T> {
     pub fn new() -> Self {
         let request = Request::post(GRAPHQL_URI);
-        Self { request }
+        Self {
+            request,
+            body: None,
+        }
     }
 
-    pub fn json(mut self, body: impl Serialize) -> Result<Self, LmsError> {
-        self.request = self.request.json(&body).map_err(|error| {
-            LmsError::SendingToGraphqlApi("adding json".to_owned(), error.to_string())
-        })?;
+    pub fn json(mut self, body: T) -> Result<Self, LmsError> {
+        self.body = Some(body);
 
         Ok(self)
     }
 
     pub async fn send<R: DeserializeOwned>(self) -> Result<R, LmsError> {
-        Ok(self
-            .request
+        let request = if let Some(body) = self.body {
+            self.request.json(&body).map_err(|error| {
+                LmsError::SendingToGraphqlApi("sending".to_owned(), error.to_string())
+            })?
+        } else {
+            self.request.build().map_err(|error| {
+                LmsError::SendingToGraphqlApi("sending".to_owned(), error.to_string())
+            })?
+        };
+
+        Ok(request
             .send()
             .await
             .map_err(|error| {
