@@ -6,27 +6,27 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-yew = { version = "0.20.0", features = ["csr"] }
-# ycl = { git = "https://github.com/brooks-builds/ycl", rev = "d15dc11" }
-ycl = { path = "../ycl/" }
-yew-router = "0.17.0"
-gloo = "0.8.0"
-graphql_client = "0.12.0"
-serde = { version = "1.0.152", features = ["derive"] }
-yewdux = "0.9.0"
-dotenvy_macro = "0.15.1"
-dotenvy = "0.15.6"
-yew-hooks = "0.2.0"
-thiserror = "1.0.38"
+yew = { version = "0.21.0", features = ["csr"] }
+ycl = { git = "https://github.com/brooks-builds/ycl", rev = "ae4e3ed" }
+# ycl = { path = "../ycl/" }
+yew-router = "0.18.0"
+gloo = "0.11.0"
+graphql_client = "0.14.0"
+serde = { version = "1.0.200", features = ["derive"] }
+yewdux = "0.10.0"
+dotenvy_macro = "0.15.7"
+dotenvy = "0.15.7"
+yew-hooks = "0.3.1"
+thiserror = "1.0.59"
 rand = "0.8.5"
-getrandom = { version = "0.2.8", features = ["js"] }
-web-sys = { version = "0.3.61", features = ["HtmlDocument", "FormData", "Location", "Window"] }
-wasm-bindgen = "0.2.84"
-stylist = { version = "0.12.0", features = ["yew"] }
-url = "2.3.1"
-wasm-bindgen-futures = "0.4.34"
-eyre = "0.6.8"
-js-sys = "0.3.64"
+getrandom = { version = "0.2.15", features = ["js"] }
+web-sys = { version = "0.3.69", features = ["HtmlDocument", "FormData", "Location", "Window"] }
+wasm-bindgen = "0.2.92"
+stylist = { version = "0.13.0", features = ["yew"] }
+url = "2.5.0"
+wasm-bindgen-futures = "0.4.42"
+eyre = "0.6.12"
+js-sys = "0.3.69"
 
 [profile.dev.package.wasm-bindgen]
 debug-assertions = false

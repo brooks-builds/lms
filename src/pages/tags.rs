@@ -2,6 +2,7 @@ use crate::{
     router::Routes,
     stores::main_store::{self, MainStore},
 };
+use gloo::console::log;
 use std::ops::Deref;
 use web_sys::FormData;
 use ycl::{
@@ -37,8 +38,12 @@ pub fn component() -> Html {
             let done = || {};
 
             match store.auth_loaded {
-                BBLoadingState::Initialized => {}
-                BBLoadingState::Loading => {}
+                BBLoadingState::Initialized => {
+                    gloo::console::log!("initialized");
+                }
+                BBLoadingState::Loading => {
+                    log!("loading");
+                }
                 BBLoadingState::Loaded => {
                     if !store.user.is_author() {
                         main_store::error_alert(dispatch, "Only Authors can manage tags");
